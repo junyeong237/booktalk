@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.product.service;
 
 import com.example.booktalk.domain.product.dto.request.ProductRegisterReq;
+import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
@@ -12,6 +13,7 @@ import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,7 +42,7 @@ public class ProdcutService {
 
     }
 
-    public ProductRegisterRes updateRegister(Long userId, Long productId, ProductRegisterReq req) {
+    public ProductRegisterRes updateRegister(Long userId, Long productId, ProductUpdateReq req) {
 
         User user = findUser(userId);
         Product product = findProduct(productId);
@@ -64,9 +66,12 @@ public class ProdcutService {
 
     }
 
-    public List<ProductListRes> getProductList() {
+    public List<ProductListRes> getProductList(String sortBy, boolean isAsc) {
 
-        List<Product> productList = productRepository.findAll();
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Product> productList = productRepository.findAll(sort);
 
         return productList.stream()
             .map(
@@ -76,6 +81,16 @@ public class ProdcutService {
             .toList();
 
     }
+
+//    public List<ProductSerachListRes> getProductSearchList(String sortBy, Boolean isAsc,
+//        String search) {
+//
+//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+//        Sort sort = Sort.by(direction, sortBy);
+//
+//        List<Product> productList = productRepository.findAllBySearch(search, sort);
+//
+//    }
 
 
     public ProductDeleteRes deleteProduct(Long userId, Long productId) {
