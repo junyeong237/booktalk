@@ -2,6 +2,7 @@ package com.example.booktalk.domain.review.entity;
 
 
 import com.example.booktalk.domain.common.BaseEntity;
+import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +29,8 @@ public class Review extends BaseEntity {
         this.content = content;
     }
 
+    public void update(ReviewUpdateReq req) {
+        this.title = req.title();
+        this.content = req.content();
+    }
 }
