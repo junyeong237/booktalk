@@ -1,7 +1,7 @@
 package com.example.booktalk.domain.product.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
-import com.example.booktalk.domain.product.dto.request.ProductRegisterReq;
+import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -59,12 +59,11 @@ public class Product extends BaseEntity {
         this.finished = false;
     }
 
-    public void update(ProductRegisterReq req) {
+    public void update(ProductUpdateReq req) {
         this.name = req.name();
         this.quantity = req.quantity();
         this.price = req.price();
         this.regions = req.regions();
-        this.finished = req.finished();
     }
 
     public void finish() { //거래 상태를 완료로 변경
