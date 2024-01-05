@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.comment.entity;
 
+import com.example.booktalk.domain.comment.dto.request.CommentUpdateReq;
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.review.entity.Review;
 import jakarta.persistence.*;
@@ -27,5 +28,9 @@ public class Comment extends BaseEntity {
     private Comment(String content, Review review) {
         this.content = content;
         this.review = review;
+    }
+
+    public void update(CommentUpdateReq req) {
+        this.content = req.content();
     }
 }
