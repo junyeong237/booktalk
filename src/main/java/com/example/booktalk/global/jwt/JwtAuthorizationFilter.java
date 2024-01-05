@@ -50,7 +50,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // -> now you can search with @AuthenticationPrincipal
 
             } else {
-                // when authorization doesn't exist
                 UserResDto responseDto = new UserResDto(
                     "this token is not valid",HttpStatus.BAD_REQUEST.value());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

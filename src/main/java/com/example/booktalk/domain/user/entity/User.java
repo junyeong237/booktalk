@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,4 +45,9 @@ public class User extends BaseEntity {
     @Column
     private UserRoleType role;
 
+    @Builder
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
