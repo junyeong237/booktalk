@@ -9,6 +9,7 @@ import com.example.booktalk.domain.product.dto.response.ProductListRes;
 import com.example.booktalk.domain.product.dto.response.ProductRegisterRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.service.ProdcutService;
+import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -2,6 +2,9 @@ package com.example.booktalk.domain.product.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
+import com.example.booktalk.domain.productcategory.entity.ProductCategory;
+import com.example.booktalk.domain.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,6 +54,9 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private final List<ProductCategory> productCategoryList = new ArrayList<>();
+
     @Builder
     private Product(String name, Long price, Long quantity, List<Region> regions, User user) {
         this.name = name;
@@ -68,6 +76,11 @@ public class Product extends BaseEntity {
 
     public void finish() { //거래 상태를 완료로 변경
         this.finished = true;
+    }
+
+    public void addProductCategory(ProductCategory productCategory) {
+        this.productCategoryList.add(productCategory);
+        productCategory.setProduct(this);
     }
 
 }
