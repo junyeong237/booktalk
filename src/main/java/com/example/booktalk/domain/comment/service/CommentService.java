@@ -1,13 +1,13 @@
 package com.example.booktalk.domain.comment.service;
 
-import com.example.booktalk.domain.comment.dto.request.CommentCreateReq;
 import com.example.booktalk.domain.comment.dto.request.CommentUpdateReq;
-import com.example.booktalk.domain.comment.dto.response.CommentCreateRes;
-import com.example.booktalk.domain.comment.dto.response.CommentDeleteRes;
 import com.example.booktalk.domain.comment.dto.response.CommentGetListRes;
 import com.example.booktalk.domain.comment.dto.response.CommentUpdateRes;
-import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.comment.repository.CommentRepository;
+import com.example.booktalk.domain.comment.dto.request.CommentCreateReq;
+import com.example.booktalk.domain.comment.dto.response.CommentCreateRes;
+import com.example.booktalk.domain.comment.dto.response.CommentDeleteRes;
+import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;

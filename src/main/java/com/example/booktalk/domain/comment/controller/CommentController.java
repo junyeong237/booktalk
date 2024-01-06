@@ -1,6 +1,5 @@
 package com.example.booktalk.domain.comment.controller;
 
-import com.example.booktalk.domain.comment.dto.request.CommentCreateReq;
 import com.example.booktalk.domain.comment.dto.request.CommentGetListReq;
 import com.example.booktalk.domain.comment.dto.request.CommentUpdateReq;
 import com.example.booktalk.domain.comment.dto.response.CommentCreateRes;
@@ -8,6 +7,7 @@ import com.example.booktalk.domain.comment.dto.response.CommentDeleteRes;
 import com.example.booktalk.domain.comment.dto.response.CommentGetListRes;
 import com.example.booktalk.domain.comment.dto.response.CommentUpdateRes;
 import com.example.booktalk.domain.comment.service.CommentService;
+import com.example.booktalk.domain.comment.dto.request.CommentCreateReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
