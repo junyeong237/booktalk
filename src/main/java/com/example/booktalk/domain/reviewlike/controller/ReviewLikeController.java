@@ -21,7 +21,7 @@ public class ReviewLikeController {
     @PostMapping("/{reviewId}/likes")
     public ResponseEntity<ReviewLiketoggleRes> toggleReviewLike(@PathVariable Long reviewId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewLikeService.toggleReviewLike(reviewId, userDetails.getUser().getId()));
+        return ResponseEntity.status(HttpStatus.OK).body(reviewLikeService.toggleReviewLike(reviewId, userDetails.getUser()));
     }
 
 }
