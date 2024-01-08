@@ -4,6 +4,7 @@ import com.example.booktalk.domain.user.dto.request.SignupReqDto;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,13 @@ public class UserService {
         if(!passwordEncoder.matches(passwordCheck,password)){
             throw new IllegalArgumentException("비밀번호와 비밀번호 확인을 일치시켜주세요");
         }
+        String randomNickname = UUID.randomUUID().toString();
 
         User user = User.builder()
             .email(email)
             .password(password)
             .role(role)
+            .randomNickname(randomNickname)
             .build();
 
         userRepository.save(user);

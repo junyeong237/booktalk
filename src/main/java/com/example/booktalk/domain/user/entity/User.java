@@ -49,9 +49,10 @@ public class User extends BaseEntity {
     private UserRoleType role;
 
     @Builder
-    public User(String email, String password, UserRoleType role) {
+    public User(String email, String password, UserRoleType role,String randomNickname) {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.nickname = randomNickname;
     }
 }
