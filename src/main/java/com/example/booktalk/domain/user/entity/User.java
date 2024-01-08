@@ -3,6 +3,8 @@ package com.example.booktalk.domain.user.entity;
 import com.example.booktalk.domain.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TB_USER")
 public class User extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,11 +46,14 @@ public class User extends BaseEntity {
     private boolean deleted;
 
     @Column
+    @Enumerated(value = EnumType.STRING)
     private UserRoleType role;
 
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, UserRoleType role, String randomNickname) {
         this.email = email;
         this.password = password;
+        this.role = role;
+        this.nickname = randomNickname;
     }
 }

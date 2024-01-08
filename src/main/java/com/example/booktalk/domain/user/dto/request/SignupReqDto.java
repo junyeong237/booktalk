@@ -10,7 +10,9 @@ public record SignupReqDto(
     @Size(min = 4, max = 15, message = "비밀번호는 4~15자만 가능합니다.")
     @Pattern(regexp = "^[a-zA-Z_0-9]*$", message = "알파벳과 숫자만 비밀번호 설정이 가능합니다.")
     String password,
-    String passwordCheck
+    String passwordCheck,
+    boolean admin,
+    String adminToken
 ) {
 
 }

@@ -1,8 +1,10 @@
 package com.example.booktalk.domain.user.controller;
 
+import com.example.booktalk.domain.user.dto.request.LoginReqDto;
 import com.example.booktalk.domain.user.dto.request.SignupReqDto;
 import com.example.booktalk.domain.user.dto.response.UserResDto;
 import com.example.booktalk.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +22,15 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResDto> signup (@Valid @RequestBody SignupReqDto req){
-        try {
-            userService.signup(req);
-            return ResponseEntity.ok().body(new UserResDto("회원가입 완료", HttpStatus.OK.value()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new UserResDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+    public ResponseEntity<UserResDto> signup(@Valid @RequestBody SignupReqDto req) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(userService.signup(req));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResDto> login(@RequestBody LoginReqDto req, HttpServletResponse res) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.login(req, res));
     }
 
 }
