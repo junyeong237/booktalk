@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtUtil.getTokenFromRequest(request);
+        String token = jwtUtil.resolveToken(request);
 
         if (Objects.nonNull(token)) {
             if (jwtUtil.validateToken(token)) {
@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             } else {
                 UserResDto responseDto = new UserResDto(
-                    "this token is not valid",HttpStatus.BAD_REQUEST.value());
+                    "유효하지 않은 토큰입니다.",HttpStatus.BAD_REQUEST.value());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json; charset=UTF-8");
                 response.getWriter().write(objectMapper.writeValueAsString(responseDto));

@@ -21,6 +21,7 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
@@ -42,6 +43,14 @@ public class JwtUtil {
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
     public boolean validateToken(String token) {
@@ -79,28 +88,4 @@ public class JwtUtil {
                 .compact();
     }
 
-    public void addJwtToCookie(String token, HttpServletResponse res) {
-        token = URLEncoder.encode(token, StandardCharsets.UTF_8)
-            .replaceAll("\\+", "%20");
-        int COOKIE_TIME =60*60*1000;
-
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token);
-        cookie.setPath("/");
-        cookie.setMaxAge(COOKIE_TIME);
-
-        res.addCookie(cookie);
-    }
-
-    public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    return URLDecoder.decode(cookie.getValue().replaceAll("Bearer%20", ""),
-                        StandardCharsets.UTF_8); // decode value
-                }
-            }
-        }
-        return null;
-    }
 }
