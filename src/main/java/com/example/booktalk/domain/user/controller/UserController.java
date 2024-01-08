@@ -22,15 +22,15 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResDto> signup (@Valid @RequestBody SignupReqDto req){
+    public ResponseEntity<UserResDto> signup(@Valid @RequestBody SignupReqDto req) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.signup(req));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResDto> login (@RequestBody LoginReqDto req, HttpServletResponse res) {
+    public ResponseEntity<UserResDto> login(@RequestBody LoginReqDto req, HttpServletResponse res) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.login(req,res));
+            .body(userService.login(req, res));
     }
 
 }

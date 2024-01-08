@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "TB_USER")
 public class User extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,7 +50,7 @@ public class User extends BaseEntity {
     private UserRoleType role;
 
     @Builder
-    public User(String email, String password, UserRoleType role,String randomNickname) {
+    public User(String email, String password, UserRoleType role, String randomNickname) {
         this.email = email;
         this.password = password;
         this.role = role;
