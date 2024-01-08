@@ -4,12 +4,12 @@ import com.example.booktalk.domain.category.entity.Category;
 import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
-import com.example.booktalk.domain.product.dto.request.ProductRegisterReq;
+import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
+import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.product.dto.response.ProductRegisterRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.NotFoundProductException;
@@ -37,7 +37,7 @@ public class ProdcutService {
     private final CategoryRepository categoryRepository;
     private final ProductCategoryRepository productCategoryRepository;
 
-    public ProductRegisterRes registerProduct(Long userId, ProductRegisterReq req) {
+    public ProductCreateRes createProduct(Long userId, ProductCreateReq req) {
 
         User user = findUser(userId);
 
@@ -53,7 +53,7 @@ public class ProdcutService {
 
         productRepository.save(product);
 
-        return new ProductRegisterRes(product.getId(), product.getName(), product.getQuantity()
+        return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity()
             , product.getRegions(), product.getFinished(), user,
             req.categoryList());
         // prodcut.getUser()와 user의 성능차이

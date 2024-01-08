@@ -1,12 +1,12 @@
 package com.example.booktalk.domain.product.controller;
 
 
-import com.example.booktalk.domain.product.dto.request.ProductRegisterReq;
+import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
+import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.product.dto.response.ProductRegisterRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.service.ProdcutService;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -31,11 +31,11 @@ public class ProductController {
     private final ProdcutService prodcutService;
 
     @PostMapping()
-    public ProductRegisterRes registerProduct(
+    public ProductCreateRes createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestBody ProductRegisterReq req
+        @RequestBody ProductCreateReq req
     ) {
-        return prodcutService.registerProduct(userDetails.getUser().getId(), req);
+        return prodcutService.createProduct(userDetails.getUser().getId(), req);
 
     }
 
