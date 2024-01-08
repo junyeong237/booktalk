@@ -2,9 +2,16 @@ package com.example.booktalk.domain.user.service;
 
 import com.example.booktalk.domain.user.dto.request.LoginReqDto;
 import com.example.booktalk.domain.user.dto.request.SignupReqDto;
+import com.example.booktalk.domain.user.dto.response.UserResDto;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
+import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
+import com.example.booktalk.domain.user.exception.BadLoginException;
+import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
+import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import com.example.booktalk.global.exception.ErrorCode;
 import com.example.booktalk.global.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -20,25 +27,25 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
-    public void signup(SignupReqDto req) {
+    public UserResDto signup(SignupReqDto req) {
         String email = req.email();
         String password = passwordEncoder.encode(req.password());
         String passwordCheck = req.passwordCheck();
         String adminToken = req.adminToken();
 
         if(userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이미 가입한 이메일 입니다.");
+            throw new AlreadyExistEmailException(UserErrorCode.ALREADY_EXIST_EMAIL);
         }
 
         UserRoleType role =  UserRoleType.USER;
         if(req.admin()){
             if(!ADMIN_TOKEN.equals(adminToken)){
-                throw new IllegalArgumentException("관리자 인증 번호가 틀렸습니다.");
+                throw new InvalidAdminCodeException(UserErrorCode.INVALID_ADMIN_CODE);
             }
             role = UserRoleType.ADMIN;
         }
         if(!passwordEncoder.matches(passwordCheck,password)){
-            throw new IllegalArgumentException("비밀번호와 비밀번호 확인을 일치시켜주세요");
+            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
         }
         String randomNickname = UUID.randomUUID().toString();
 
@@ -50,18 +57,21 @@ public class UserService {
             .build();
 
         userRepository.save(user);
+        return new UserResDto("회원 가입 완료");
     }
 
-    public void login(LoginReqDto req, HttpServletResponse res) {
+    public UserResDto login(LoginReqDto req, HttpServletResponse res) {
         String email = req.email();
         String password = req.password();
 
         User user = userRepository.findByEmail(email)
-            .orElseThrow(()->new IllegalArgumentException("이메일을 확인해주세요"));
+            .orElseThrow(()->new BadLoginException(UserErrorCode.BAD_LOGIN));
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new IllegalArgumentException("비밀번호를 확인해주세요");
+            throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
         res.addHeader(JwtUtil.AUTHORIZATION_HEADER,
             jwtUtil.createToken(req.email(), user.getRole()));
+
+        return new UserResDto("로그인 완료");
     }
 }

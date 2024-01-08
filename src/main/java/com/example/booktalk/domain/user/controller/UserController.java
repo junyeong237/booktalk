@@ -23,22 +23,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserResDto> signup (@Valid @RequestBody SignupReqDto req){
-        try {
-            userService.signup(req);
-            return ResponseEntity.ok().body(new UserResDto("회원가입 완료", HttpStatus.OK.value()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new UserResDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.signup(req));
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserResDto> login (@RequestBody LoginReqDto req, HttpServletResponse res) {
-        try {
-            userService.login(req, res);
-            return ResponseEntity.ok().body(new UserResDto("로그인 완료", HttpStatus.OK.value()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new UserResDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.login(req,res));
     }
 
 }
