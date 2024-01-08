@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserResDto> signup (@Valid @RequestBody SignupReqDto req){
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.signup(req));
     }
 

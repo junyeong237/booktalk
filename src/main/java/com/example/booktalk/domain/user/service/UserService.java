@@ -47,7 +47,7 @@ public class UserService {
         if(!passwordEncoder.matches(passwordCheck,password)){
             throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
         }
-        String randomNickname = UUID.randomUUID().toString();
+        String randomNickname = UUID.randomUUID().toString().replaceAll("-","").substring(0,10);
 
         User user = User.builder()
             .email(email)
