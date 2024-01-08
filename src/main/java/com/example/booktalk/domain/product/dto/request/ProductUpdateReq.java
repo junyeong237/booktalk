@@ -6,6 +6,6 @@ import lombok.Builder;
 
 @Builder
 public record ProductUpdateReq(String name, Long price, Long quantity, List<Region> regions,
-                               Boolean finished) {
+                               Boolean finished, List<String> categoryList) {
 
 }
