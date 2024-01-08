@@ -2,8 +2,8 @@ package com.example.booktalk.domain.reviewlike.entity;
 
 
 import com.example.booktalk.domain.review.entity.Review;
+import com.example.booktalk.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -2,6 +2,7 @@ package com.example.booktalk.domain.reviewlike.controller;
 
 import com.example.booktalk.domain.reviewlike.dto.response.ReviewLiketoggleRes;
 import com.example.booktalk.domain.reviewlike.service.ReviewLikeService;
+import com.example.booktalk.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class ReviewLikeController {
     @PostMapping("/{reviewId}/likes")
     public ResponseEntity<ReviewLiketoggleRes> toggleReviewLike(@PathVariable Long reviewId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewLikeService.toggleReviewLike(reviewId, userDetails.getUser()));
+        return ResponseEntity.status(HttpStatus.OK).body(reviewLikeService.toggleReviewLike(reviewId, userDetails.getUser().getId()));
     }
 
 }
