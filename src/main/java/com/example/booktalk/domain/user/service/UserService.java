@@ -2,6 +2,7 @@ package com.example.booktalk.domain.user.service;
 
 import com.example.booktalk.domain.user.dto.request.LoginReqDto;
 import com.example.booktalk.domain.user.dto.request.SignupReqDto;
+import com.example.booktalk.domain.user.dto.response.ProfileResDto;
 import com.example.booktalk.domain.user.dto.response.UserResDto;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
@@ -74,5 +75,15 @@ public class UserService {
             jwtUtil.createToken(req.email(), user.getRole()));
 
         return new UserResDto("로그인 완료");
+    }
+
+    public ProfileResDto getProfile(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("수정예정"));
+
+        String nickname = user.getNickname();
+        String description = user.getDescription();
+        String location = user.getLocation();
+
+        return new ProfileResDto(nickname,description,location);
     }
 }
