@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             } else {
                 UserResDto responseDto = new UserResDto(
-                    "유효하지 않은 토큰입니다.",HttpStatus.BAD_REQUEST.value());
+                    "유효하지 않은 토큰입니다.");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json; charset=UTF-8");
                 response.getWriter().write(objectMapper.writeValueAsString(responseDto));
