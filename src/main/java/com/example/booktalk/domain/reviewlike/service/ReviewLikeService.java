@@ -13,6 +13,7 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +23,11 @@ public class ReviewLikeService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
+    @Transactional
     public ReviewLiketoggleRes toggleReviewLike(Long reviewId, Long userId) {
+
         User user = findUser(userId);
         Review review = findReview(reviewId);
-
         validateReviewLikeUser(user, review);
 
         ReviewLike existReviewLike = reviewLikeRepository.findByReviewAndUser(review, user);
@@ -38,7 +40,10 @@ public class ReviewLikeService {
                     .build();
         }
 
-        ReviewLike reviewLike = new ReviewLike(user, review);
+        ReviewLike reviewLike = ReviewLike.builder()
+                .user(user)
+                .review(review)
+                .build();
         reviewLikeRepository.save(reviewLike);
         review.increaseReviewLike();
         return ReviewLiketoggleRes.builder()
