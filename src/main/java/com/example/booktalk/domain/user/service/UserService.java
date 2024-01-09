@@ -20,7 +20,6 @@ import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
-import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 import java.util.UUID;
@@ -98,7 +97,7 @@ public class UserService {
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
-        UserDetailsImpl userDetails) {
+        Long userDetailsId) {
         String password = req.password();
         String newPassword = passwordEncoder.encode(req.newPassword());
         String newPasswordCheck = req.newPasswordCheck();
@@ -106,12 +105,11 @@ public class UserService {
         String phone = req.phone();
         String location = req.location();
         String nickname = req.nickname();
-        User loginUser = userDetails.getUser();
 
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
 
-        if (!Objects.equals(user.getId(), loginUser.getId())) {
+        if (!Objects.equals(user.getId(), userDetailsId)) {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
         }
 
