@@ -31,12 +31,13 @@ public class WebSecurityConfig {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -50,7 +51,6 @@ public class WebSecurityConfig {
 
         http.csrf((csrf) -> csrf.disable());
 
-
         http.sessionManagement((sessionManagement) ->
             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
@@ -58,7 +58,13 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/v1/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+                .requestMatchers("/api/v1/users/login").permitAll()
+                .requestMatchers("/api/v1/users/signup").permitAll()
+                .requestMatchers("/api/v1/").permitAll()
+                .requestMatchers("/api/v1/admin/users/").permitAll()
+                .requestMatchers("/chat/**").permitAll()
+                .requestMatchers("/api/v1/chats/**").permitAll()
                 .anyRequest().authenticated()
         );
 
