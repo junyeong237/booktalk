@@ -43,9 +43,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
-    @Column(nullable = false)
+
     @Enumerated(EnumType.STRING)
-    private List<Region> regions;
+    private Region region;
 
     @Column(nullable = false)
     private Boolean finished;
@@ -54,15 +54,16 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
+// cascade = CascadeType.PERSIST, , orphanRemoval = true
     private final List<ProductCategory> productCategoryList = new ArrayList<>();
 
     @Builder
-    private Product(String name, Long price, Long quantity, List<Region> regions, User user) {
+    private Product(String name, Long price, Long quantity, Region region, User user) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
-        this.regions = regions;
+        this.region = region;
         this.user = user;
         this.finished = false;
     }
@@ -71,7 +72,7 @@ public class Product extends BaseEntity {
         this.name = req.name();
         this.quantity = req.quantity();
         this.price = req.price();
-        this.regions = req.regions();
+        this.region = req.region();
     }
 
     public void finish() { //거래 상태를 완료로 변경
