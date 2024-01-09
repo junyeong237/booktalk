@@ -34,7 +34,7 @@ public class ProductCategory {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Builder
@@ -42,7 +42,7 @@ public class ProductCategory {
         this.category = category;
         this.product = product;
     }
-    
+
     public void setProduct(Product product) {
         this.product = product;
     }

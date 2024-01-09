@@ -45,7 +45,7 @@ public class ProductController {
         @PathVariable Long productId,
         @RequestBody ProductUpdateReq req
     ) {
-        return prodcutService.updateRegister(userDetails.getUser().getId(), productId, req);
+        return prodcutService.updateProduct(userDetails.getUser().getId(), productId, req);
     }
 
     @DeleteMapping("/{productId}")
