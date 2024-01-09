@@ -43,6 +43,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
+    private Long productLikeCnt;
 
     @Enumerated(EnumType.STRING)
     private Region region;
@@ -60,6 +61,7 @@ public class Product extends BaseEntity {
 
     @Builder
     private Product(String name, Long price, Long quantity, Region region, User user) {
+        this.productLikeCnt = 0L;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
@@ -84,4 +86,11 @@ public class Product extends BaseEntity {
         productCategory.setProduct(this);
     }
 
+    public void updateProductLikeCnt(Boolean updated) {
+        if (updated) {
+            this.productLikeCnt++;
+        } else {
+            this.productLikeCnt--;
+        }
+    }
 }
