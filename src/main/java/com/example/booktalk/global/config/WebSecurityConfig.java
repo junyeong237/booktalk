@@ -65,6 +65,12 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/v1/admin/users/").permitAll()
                 .requestMatchers("/chat/**").permitAll()
                 .requestMatchers("/api/v1/chats/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/v1/users/**").permitAll()
+                .requestMatchers("/api/v1/image/**").permitAll()
+                .requestMatchers("/save").permitAll()
+                .requestMatchers("/api/v1/products/**").permitAll()
+                    .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
+
                 .anyRequest().authenticated()
         );
 

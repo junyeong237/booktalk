@@ -49,9 +49,15 @@ dependencies {
 
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	//S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 
     //thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	//mustache
+	implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
 
 
 }

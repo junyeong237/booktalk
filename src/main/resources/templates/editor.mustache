@@ -1,0 +1,31 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/js/build/ckeditor.js"></script>
+</head>
+<body>
+editor
+<form action="/save{{#data}}/{{data.id}}{{/data}}" method="POST">
+    <input name="title" {{#data}}value="{{data.title}}"{{/data}} type="text" placeholder="제목"/><br>
+    <textarea name="content" id="content">{{#data}}{{data.content}}{{/data}}</textarea><br>
+    <input type="submit" value="등록">
+</form>
+<script>
+
+    ClassicEditor.create( document.querySelector( '#content' ), {
+
+        language: "ko",
+        ckfinder : {
+
+            uploadUrl: "/api/v1/image",
+            withCredentials: true
+        }
+    } );
+
+</script>
+</body>
+</html>
