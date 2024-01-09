@@ -7,6 +7,6 @@ import lombok.Builder;
 public record CommentCreateRes (
         Long commentId,
         String content,
-        User user
+        String nickname
 ) {
 }

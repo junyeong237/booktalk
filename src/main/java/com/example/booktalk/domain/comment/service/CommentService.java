@@ -8,6 +8,7 @@ import com.example.booktalk.domain.comment.dto.response.CommentGetListRes;
 import com.example.booktalk.domain.comment.dto.response.CommentUpdateRes;
 import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.comment.exception.CommentErrorCode;
+import com.example.booktalk.domain.comment.exception.EmptyContentException;
 import com.example.booktalk.domain.comment.exception.NotFoundCommentException;
 import com.example.booktalk.domain.comment.exception.NotPermissionCommentAuthorityException;
 import com.example.booktalk.domain.comment.repository.CommentRepository;
@@ -36,6 +37,10 @@ public class CommentService {
         User user = findUser(userId);
         Review review = findReview(req.reviewId());
 
+        if(req.content().isEmpty()) {
+            throw new EmptyContentException(CommentErrorCode.EMPTY_CONTENT);
+        }
+
         Comment comment = Comment.builder()
                 .content(req.content())
                 .review(review)
@@ -47,7 +52,7 @@ public class CommentService {
         return CommentCreateRes.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
-                .user(comment.getUser())
+                .nickname(comment.getUser().getNickname())
                 .build();
     }
 
@@ -59,7 +64,7 @@ public class CommentService {
         return commentList.stream().map(comment -> CommentGetListRes.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
-                .user(comment.getUser())
+                .nickname(comment.getUser().getNickname())
                 .build()).toList();
     }
 
@@ -87,7 +92,7 @@ public class CommentService {
         commentRepository.delete(comment);
 
         return CommentDeleteRes.builder()
-                .msg("삭제되었습니다.")
+                .msg("댓글이 삭제되었습니다.")
                 .build();
     }
 
