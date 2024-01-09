@@ -1,10 +1,13 @@
 package com.example.booktalk.domain.user.service;
 
 
-import com.example.booktalk.domain.user.dto.request.LoginReq;
-import com.example.booktalk.domain.user.dto.request.SignupReq;
-import com.example.booktalk.domain.user.dto.response.ProfileRes;
-import com.example.booktalk.domain.user.dto.response.UserRes;
+import com.example.booktalk.domain.user.dto.request.UserLoginReq;
+import com.example.booktalk.domain.user.dto.request.UserProfileReq;
+import com.example.booktalk.domain.user.dto.request.UserSignupReq;
+import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
+import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
+import com.example.booktalk.domain.user.dto.response.UserSignupRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
@@ -19,11 +22,9 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public UserRes signup(SignupReq req) {
+    public UserSignupRes signup(UserSignupReq req) {
         String email = req.email();
         String password = passwordEncoder.encode(req.password());
         String passwordCheck = req.passwordCheck();
@@ -67,10 +68,10 @@ public class UserService {
             .build();
 
         userRepository.save(user);
-        return new UserRes("회원 가입 완료");
+        return new UserSignupRes("회원 가입 완료");
     }
 
-    public UserRes login(LoginReq req, HttpServletResponse res) {
+    public UserLoginRes login(UserLoginReq req, HttpServletResponse res) {
         String email = req.email();
         String password = req.password();
 
@@ -82,20 +83,22 @@ public class UserService {
         res.addHeader(JwtUtil.AUTHORIZATION_HEADER,
             jwtUtil.createToken(req.email(), user.getRole()));
 
-        return new UserRes("로그인 완료");
+        return new UserLoginRes("로그인 완료");
     }
 
-    public ProfileRes getProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("수정예정"));
+    public UserProfileGetRes getProfile(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
 
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
 
-        return new ProfileRes(nickname,description,location);
+        return new UserProfileGetRes(nickname, description, location);
     }
 
-    public UserResDto updateProfile(Long userId, ProfileReqdto req, UserDetailsImpl userDetails) {
+    public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
+        UserDetailsImpl userDetails) {
         String password = req.password();
         String newPassword = passwordEncoder.encode(req.newPassword());
         String newPasswordCheck = req.newPasswordCheck();
@@ -105,23 +108,24 @@ public class UserService {
         String nickname = req.nickname();
         User loginUser = userDetails.getUser();
 
-        User user = userRepository.findById(userId).orElseThrow(()->new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
 
-        if(!Objects.equals(user.getId(), loginUser.getId())){
+        if (!Objects.equals(user.getId(), loginUser.getId())) {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
         }
 
-        if(!passwordEncoder.matches(newPasswordCheck,newPassword)){
+        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
             throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
         }
 
-        if(!passwordEncoder.matches(password,user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
-        user.updateProfile(newPassword,description,phone,location,nickname);
+        user.updateProfile(newPassword, description, phone, location, nickname);
         userRepository.save(user);
 
-        return new UserResDto("수정 완료");
+        return new UserProfileUpdateRes("수정 완료");
     }
 
 

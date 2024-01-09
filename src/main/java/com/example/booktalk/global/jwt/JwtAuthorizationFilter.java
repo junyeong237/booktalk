@@ -1,5 +1,6 @@
 package com.example.booktalk.global.jwt;
 
+import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import com.example.booktalk.global.security.UserDetailsService;
@@ -49,11 +50,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // -> now you can search with @AuthenticationPrincipal
 
             } else {
-                UserRes responseDto = new UserRes(
+                UserLoginRes res = new UserLoginRes(
                     "유효하지 않은 토큰입니다.");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(responseDto));
+                response.getWriter().write(objectMapper.writeValueAsString(res));
                 return;
             }
         }

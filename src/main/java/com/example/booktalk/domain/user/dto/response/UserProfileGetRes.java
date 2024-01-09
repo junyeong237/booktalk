@@ -1,6 +1,6 @@
 package com.example.booktalk.domain.user.dto.response;
 
-public record ProfileRes(
+public record UserProfileGetRes(
     String nickname,
     String description,
     String location
