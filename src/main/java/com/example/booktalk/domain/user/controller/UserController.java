@@ -1,9 +1,9 @@
 package com.example.booktalk.domain.user.controller;
 
-import com.example.booktalk.domain.user.dto.request.LoginReqDto;
-import com.example.booktalk.domain.user.dto.request.SignupReqDto;
-import com.example.booktalk.domain.user.dto.response.ProfileResDto;
-import com.example.booktalk.domain.user.dto.response.UserResDto;
+import com.example.booktalk.domain.user.dto.request.LoginReq;
+import com.example.booktalk.domain.user.dto.request.SignupReq;
+import com.example.booktalk.domain.user.dto.response.ProfileRes;
+import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,19 +25,19 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResDto> signup(@Valid @RequestBody SignupReqDto req) {
+    public ResponseEntity<UserRes> signup(@Valid @RequestBody SignupReq req) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.signup(req));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResDto> login(@RequestBody LoginReqDto req, HttpServletResponse res) {
+    public ResponseEntity<UserRes> login(@RequestBody LoginReq req, HttpServletResponse res) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.login(req, res));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ProfileResDto> getProfile(@PathVariable Long userId){
+    public ResponseEntity<ProfileRes> getProfile(@PathVariable Long userId){
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.getProfile(userId));
     }

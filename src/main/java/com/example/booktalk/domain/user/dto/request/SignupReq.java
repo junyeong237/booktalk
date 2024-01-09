@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record SignupReqDto(
+public record SignupReq(
     @Email(message = "이메일 형식을 지켜주세요")
     String email,
     @Size(min = 4, max = 15, message = "비밀번호는 4~15자만 가능합니다.")

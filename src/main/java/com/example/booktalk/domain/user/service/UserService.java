@@ -1,9 +1,9 @@
 package com.example.booktalk.domain.user.service;
 
-import com.example.booktalk.domain.user.dto.request.LoginReqDto;
-import com.example.booktalk.domain.user.dto.request.SignupReqDto;
-import com.example.booktalk.domain.user.dto.response.ProfileResDto;
-import com.example.booktalk.domain.user.dto.response.UserResDto;
+import com.example.booktalk.domain.user.dto.request.LoginReq;
+import com.example.booktalk.domain.user.dto.request.SignupReq;
+import com.example.booktalk.domain.user.dto.response.ProfileRes;
+import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
@@ -29,7 +29,7 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public UserResDto signup(SignupReqDto req) {
+    public UserRes signup(SignupReq req) {
         String email = req.email();
         String password = passwordEncoder.encode(req.password());
         String passwordCheck = req.passwordCheck();
@@ -59,10 +59,10 @@ public class UserService {
             .build();
 
         userRepository.save(user);
-        return new UserResDto("회원 가입 완료");
+        return new UserRes("회원 가입 완료");
     }
 
-    public UserResDto login(LoginReqDto req, HttpServletResponse res) {
+    public UserRes login(LoginReq req, HttpServletResponse res) {
         String email = req.email();
         String password = req.password();
 
@@ -74,16 +74,16 @@ public class UserService {
         res.addHeader(JwtUtil.AUTHORIZATION_HEADER,
             jwtUtil.createToken(req.email(), user.getRole()));
 
-        return new UserResDto("로그인 완료");
+        return new UserRes("로그인 완료");
     }
 
-    public ProfileResDto getProfile(Long userId) {
+    public ProfileRes getProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->new IllegalArgumentException("수정예정"));
 
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
 
-        return new ProfileResDto(nickname,description,location);
+        return new ProfileRes(nickname,description,location);
     }
 }
