@@ -1,5 +1,9 @@
 package com.example.booktalk.domain.review.service;
 
+import com.example.booktalk.domain.comment.dto.response.CommentGetListRes;
+import com.example.booktalk.domain.comment.entity.Comment;
+import com.example.booktalk.domain.comment.repository.CommentRepository;
+import com.example.booktalk.domain.comment.service.CommentService;
 import com.example.booktalk.domain.review.dto.request.ReviewCreateReq;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
 import com.example.booktalk.domain.review.dto.response.*;
@@ -23,6 +27,8 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+
 
     public ReviewCreateRes createReview(ReviewCreateReq req, Long userId) {
 
@@ -40,7 +46,7 @@ public class ReviewService {
                 .reviewId(review.getId())
                 .title(review.getTitle())
                 .content(review.getContent())
-                .user(review.getUser())
+                .nickname(review.getUser().getNickname())
                 .build();
     }
 
@@ -65,8 +71,8 @@ public class ReviewService {
                 .reviewId(review.getId())
                 .title(review.getTitle())
                 .content(review.getContent())
-                .user(review.getUser())
-                .commentList(review.getCommentList())
+                .nickname(review.getUser().getNickname())
+                .commentList(getCommentList(reviewId))
                 .build();
     }
 
@@ -94,7 +100,7 @@ public class ReviewService {
         reviewRepository.delete(review);
 
         return ReviewDeleteRes.builder()
-                .msg("삭제되었습니다.")
+                .msg("리뷰 게시글이 삭제되었습니다.")
                 .build();
     }
 
@@ -113,6 +119,18 @@ public class ReviewService {
         if(!user.getId().equals(review.getUser().getId())) {
             throw new NotPermissionReviewAuthorityException(ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
         }
+    }
+
+    public List<CommentGetListRes> getCommentList(Long reviewId) {
+
+        Review review = findReview(reviewId);
+        List<Comment> commentList = commentRepository.findAllByReviewOrderByCreatedAtDesc(review);
+
+        return commentList.stream().map(comment -> CommentGetListRes.builder()
+                .commentId(comment.getId())
+                .content(comment.getContent())
+                .nickname(comment.getUser().getNickname())
+                .build()).toList();
     }
 
 }

@@ -38,14 +38,14 @@ public class ReviewController {
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewGetRes> getReview(
-            @PathVariable Long reviewId
+            @PathVariable(name = "reviewId") Long reviewId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(reviewId));
     }
 
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ReviewUpdateRes> updateReview(
-            @PathVariable Long reviewId,
+            @PathVariable(name = "reviewId") Long reviewId,
             @RequestBody ReviewUpdateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -54,7 +54,7 @@ public class ReviewController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewDeleteRes> deleteReview(
-            @PathVariable Long reviewId,
+            @PathVariable(name = "reviewId") Long reviewId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewId, userDetails.getUser().getId()));

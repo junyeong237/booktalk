@@ -8,6 +8,6 @@ public record ReviewCreateRes (
         Long reviewId,
         String title,
         String content,
-        User user
+        String nickname
 ) {
 }

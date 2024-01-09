@@ -19,7 +19,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_review")
+@EntityListeners(ReviewListener.class)
+@Table(name = "TB_REVIEW")
 public class Review extends BaseEntity {
 
     @Id
@@ -32,7 +33,6 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @ColumnDefault("0")
     @Column
     private Integer reviewLikeCount;
 
@@ -55,13 +55,17 @@ public class Review extends BaseEntity {
         this.content = req.content();
     }
 
+    public void setReviewLikeCount(Integer reviewLikeCount) {
+        this.reviewLikeCount = reviewLikeCount;
+    }
+
     public void increaseReviewLike() {
-        reviewLikeCount++;
+        this.reviewLikeCount++;
     }
 
     public void decreaseReviewLike() {
-        if(reviewLikeCount > 0) {
-            reviewLikeCount--;
+        if(this.reviewLikeCount > 0) {
+            this.reviewLikeCount--;
         }
     }
 }

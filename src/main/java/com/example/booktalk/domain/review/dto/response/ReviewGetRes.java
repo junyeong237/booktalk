@@ -12,7 +12,7 @@ public record ReviewGetRes (
         Long reviewId,
         String title,
         String content,
-        User user,
-        List<Comment> commentList
+        String nickname,
+        List<CommentGetListRes> commentList
 ) {
 }
