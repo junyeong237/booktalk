@@ -56,4 +56,13 @@ public class User extends BaseEntity {
         this.role = role;
         this.nickname = randomNickname;
     }
+
+    public void updateProfile(String newPassword, String description, String phone, String location,
+        String nickname) {
+        this.password = newPassword;
+        this.description = description;
+        this.phone = phone;
+        this.location = location;
+        this.nickname = nickname;
+    }
 }
