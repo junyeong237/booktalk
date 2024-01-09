@@ -28,9 +28,9 @@ public class ProductLike {
         private Product product;
 
         @Builder
-        private ProductLike(Long id, Boolean isProductLiked, User user, Product product) {
+        private ProductLike(Long id, User user, Product product) {
             this.id = id;
-            this.isProductLiked = isProductLiked;
+            this.isProductLiked = false;
             this.user = user;
             this.product = product;
         }
