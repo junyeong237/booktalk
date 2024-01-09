@@ -54,7 +54,7 @@ public class CommentService {
     public List<CommentGetListRes> getCommentList(Long reviewId) {
 
         Review review = findReview(reviewId);
-        List<Comment> commentList = commentRepository.findAllByReviewOOrderByCreatedAtDesc(review);
+        List<Comment> commentList = commentRepository.findAllByReviewOrderByCreatedAtDesc(review);
 
         return commentList.stream().map(comment -> CommentGetListRes.builder()
                 .commentId(comment.getId())
