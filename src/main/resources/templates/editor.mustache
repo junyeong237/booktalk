@@ -9,10 +9,10 @@
 </head>
 <body>
 editor
-<form action="/save{{#data}}/{{data.id}}{{/data}}" method="POST">
+<form action="/api/v1/image/save{{#data}}/{{data.id}}{{/data}}" method="POST">
     <input name="title" {{#data}}value="{{data.title}}"{{/data}} type="text" placeholder="제목"/><br>
     <textarea name="content" id="content">{{#data}}{{data.content}}{{/data}}</textarea><br>
-    <input type="submit" value="등록">
+    <input type="submit" value="등록"><a href="/api/v1/image/list">게시글 목록</a><br>
 </form>
 <script>
 

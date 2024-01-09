@@ -1,9 +1,11 @@
 package com.example.booktalk.domain.imageFile.controller;
 
 
+import com.example.booktalk.domain.imageFile.dto.request.ImageCreateReq;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -12,21 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/api/v1/image")
 public class ImageFileController {
 
     private ImageFileService imageFileService;
 
-    @Autowired
-    public ImageFileController(ImageFileService imageFileService) {
 
-        this.imageFileService = imageFileService;
-    }
 
     @GetMapping("/editor")
     public String editorPage(){
         return "editor";
     }
+
     @PostMapping
     @ResponseBody
     public Map<String, Object> imageUpload(MultipartRequest request) throws Exception {
@@ -42,5 +42,41 @@ public class ImageFileController {
         }
     }
 
+    @PostMapping("/save")
+    public String createImage(ImageCreateReq req) {
+        imageFileService.createImage(req);
+
+
+        return "editor";
+    }
+
+
+    @GetMapping("/list")
+    public String listPage(Model model) {
+
+
+        model.addAttribute("ContentList", imageFileService.getImages());
+
+
+        return "list";
+    }
+    @GetMapping("/{id}")
+    public String contentPage(@PathVariable("id")Long id, Model model) {
+
+        System.out.println(id);
+
+        model.addAttribute("Content", imageFileService.getImages(id));
+
+
+        return "content";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteC(@PathVariable("id")Long id) {
+
+        imageFileService.deleteImage(id);
+
+        return "editor";
+    }
 
 }

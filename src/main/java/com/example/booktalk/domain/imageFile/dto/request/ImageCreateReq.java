@@ -1,4 +1,4 @@
-package com.example.booktalk.domain.imageFile.dto;
+package com.example.booktalk.domain.imageFile.dto.request;
 
 import lombok.Data;
 
