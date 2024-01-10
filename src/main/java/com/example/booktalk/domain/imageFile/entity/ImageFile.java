@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Table(name="TB_IMAGE")
@@ -21,7 +20,8 @@ public class ImageFile {
 
 
     @Builder
-    private ImageFile(String image){
+    private ImageFile(Long id,String image){
+        this.id=id;
         this.image=image;
     };
 }

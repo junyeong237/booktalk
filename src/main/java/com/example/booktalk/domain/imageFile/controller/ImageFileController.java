@@ -63,20 +63,32 @@ public class ImageFileController {
     @GetMapping("/{id}")
     public String contentPage(@PathVariable("id")Long id, Model model) {
 
-        System.out.println(id);
-
-        model.addAttribute("Content", imageFileService.getImages(id));
+        model.addAttribute("Content", imageFileService.getImage(id));
 
 
         return "content";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteC(@PathVariable("id")Long id) {
+    public String deleteImage(@PathVariable("id")Long id) {
 
         imageFileService.deleteImage(id);
 
         return "editor";
     }
+    @GetMapping("/editor/{id}")
+    public String updatePage(@PathVariable("id")Long id, Model model) {
 
+        model.addAttribute("data", imageFileService.getImage(id));
+
+        return "editor";
+    }
+
+    @PostMapping("/save/{id}")
+    public String updateLogic(ImageCreateReq imageCreateReq, @PathVariable("id")Long id) {
+
+        imageFileService.updateOneContent(imageCreateReq, id);
+
+        return "redirect:/api/v1/image/" + id;
+    }
 }

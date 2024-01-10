@@ -71,7 +71,7 @@ public class ImageFileService {
         return imageFileRepository.findAll();
     }
 
-    public ImageFile getImages(Long id) {
+    public ImageFile getImage(Long id) {
 
 
         return imageFileRepository.findById(id).orElseThrow();
@@ -80,5 +80,16 @@ public class ImageFileService {
     public void deleteImage(Long id) {
 
         imageFileRepository.deleteById(id);
+    }
+
+    public void updateOneContent(ImageCreateReq imageCreateReq, Long id) {
+
+
+        ImageFile imageFile = ImageFile.builder()
+                .id(id)
+                .image(imageCreateReq.getContent())
+                .build();
+
+        imageFileRepository.save(imageFile);
     }
 }
