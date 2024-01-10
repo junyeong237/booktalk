@@ -31,25 +31,26 @@ public class WebSecurityConfig {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean // authorize
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper,
+            refreshTokenRepository);
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf((csrf) -> csrf.disable());
-
 
         http.sessionManagement((sessionManagement) ->
             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -58,11 +59,11 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/v1/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                 .requestMatchers("/api/v1/image/**").permitAll()
                 .requestMatchers("/save").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
-                    .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
+                .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
 
                 .anyRequest().authenticated()
         );

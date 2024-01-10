@@ -21,36 +21,29 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
 public class JwtUtil {
+
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
     public static final String  AUTHORIZATION_KEY="auth";
 
     public static final String BEARER_PREFIX = "Bearer ";
-
-    @Value("${jwt.secret.key}")
-    private String secretKey;
-
+    public final long ACCESS_TOKEN_TIME = 5 * 1000; //30초
+    public final long REFRESH_TOKEN_TIME = 60 * 60 * 1000L * 24;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
+    //public final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;
+    @Value("${jwt.secret.key}")
+    private String secretKey;
     private Key key;
 
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
-    }
-
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 
     public boolean validateToken(String token) {
@@ -73,16 +66,14 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public String createToken(String email, UserRoleType role) {
+    public String createAccessToken(String email, UserRoleType role) {
         Date date = new Date();
-        long TOKEN_TIME = 60*60*1000;
 
-        // token will be expired in 60 mins
         return BEARER_PREFIX +
             Jwts.builder()
                 .setSubject(email)
-                .claim(AUTHORIZATION_KEY,role)
-                .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                .claim(AUTHORIZATION_KEY, role)
+                .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                 .setIssuedAt(date)
                 .signWith(key, signatureAlgorithm)
                 .compact();
