@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewLikeService {
@@ -30,10 +32,10 @@ public class ReviewLikeService {
         Review review = findReview(reviewId);
         validateReviewLikeUser(user, review);
 
-        ReviewLike existReviewLike = reviewLikeRepository.findByReviewAndUser(review, user);
+        Optional<ReviewLike> existReviewLike = reviewLikeRepository.findByReviewAndUser(review, user);
 
-        if(existReviewLike != null) {
-            reviewLikeRepository.delete(existReviewLike);
+        if(existReviewLike.isPresent()) {
+            reviewLikeRepository.delete(existReviewLike.get());
             review.decreaseReviewLike();
             return ReviewLiketoggleRes.builder()
                     .msg("좋아요 취소")
