@@ -55,6 +55,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 
 
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 
 }
 

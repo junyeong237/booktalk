@@ -2,6 +2,7 @@ package com.example.booktalk.global.config;
 
 import com.example.booktalk.global.jwt.JwtAuthorizationFilter;
 import com.example.booktalk.global.jwt.JwtUtil;
+import com.example.booktalk.global.redis.RefreshTokenRepository;
 import com.example.booktalk.global.security.UserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
 
     private final ObjectMapper objectMapper;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
