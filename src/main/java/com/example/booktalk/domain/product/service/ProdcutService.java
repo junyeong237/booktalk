@@ -18,10 +18,10 @@ import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.productcategory.entity.ProductCategory;
 import com.example.booktalk.domain.productcategory.repository.ProductCategoryRepository;
+import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,23 +45,22 @@ public class ProdcutService {
             .name(req.name())
             .price(req.price())
             .quantity(req.quantity())
-            .regions(req.regions())
+            .region(req.region())
             .user(user)
             .build();
-
+        productRepository.save(product);
         addCategory(req.categoryList(), product);
 
-        productRepository.save(product);
+        UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
-        return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity()
-            , product.getRegions(), product.getFinished(), user,
+        return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
+            product.getPrice()
+            , product.getRegion(), product.getFinished(), userRes,
             req.categoryList());
-        // prodcut.getUser()와 user의 성능차이
-        // req.categoryList() 와 product.getProdcutCategoryList() 성능차이
 
     }
 
-    public ProductUpdateRes updateRegister(Long userId, Long productId, ProductUpdateReq req) {
+    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req) {
 
         User user = findUser(userId);
         Product product = findProduct(productId);
@@ -69,10 +68,10 @@ public class ProdcutService {
 
         product.update(req);
         updateCategory(req.categoryList(), product);
-
+        UserRes userRes = new UserRes(user.getId(), user.getNickname());
         return new ProductUpdateRes(product.getId(), product.getName(),
-            product.getQuantity(), product.getRegions(),
-            product.getFinished(), user, req.categoryList());
+            product.getQuantity(), product.getPrice(), product.getRegion(),
+            product.getFinished(), userRes, req.categoryList());
 
     }
 
@@ -80,9 +79,11 @@ public class ProdcutService {
     public ProductGetRes getProduct(Long productId) {
 
         Product product = findProduct(productId);
+        User user = product.getUser();
+        UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
-            , product.getQuantity(), product.getRegions(), product.getFinished());
+            , product.getQuantity(), userRes, product.getRegion(), product.getFinished());
 
     }
 
@@ -97,7 +98,7 @@ public class ProdcutService {
         return productList.stream()
             .map(
                 product -> new ProductListRes(product.getId(), product.getName()
-                    , product.getPrice(), product.getQuantity(), product.getRegions())
+                    , product.getPrice(), product.getQuantity(), product.getRegion())
             )
             .toList();
 
@@ -183,21 +184,21 @@ public class ProdcutService {
     }
 
 
-    private void updateCategory(List<String> categoryList, Product product) {
+    private void updateCategory(List<String> reqCategoryList, Product product) {
 
-        Stream<String> currentCategories = product.getProductCategoryList()
+        List<String> currentCategories = product.getProductCategoryList()
             .stream() //성능이슈 확인 N + 1
             .map(ProductCategory::getCategory)
-            .map(Category::getName);
+            .map(Category::getName).toList();
 
-        List<String> removeableCategoryList = currentCategories
-            .filter(category -> !categoryList.contains(category))
+        List<String> removeableCategoryList = currentCategories.stream()
+            .filter(category -> !reqCategoryList.contains(category))
             .toList();
 
         removeCategory(removeableCategoryList, product);
 
-        List<String> addableCategoryList = currentCategories
-            .filter(category -> categoryList.contains(category))
+        List<String> addableCategoryList = reqCategoryList.stream()
+            .filter(category -> !currentCategories.contains(category))
             .toList();
 
         addCategory(addableCategoryList, product);

@@ -18,3 +18,23 @@ spring:
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
+
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+cloud:
+  aws:
+    s3:
+      bucket: booktalk-s3-1
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: AKIA4LJM27FWEZNL6D5S
+      secret-key: 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
+

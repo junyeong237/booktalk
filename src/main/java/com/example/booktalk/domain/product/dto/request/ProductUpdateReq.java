@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record ProductUpdateReq(String name, Long price, Long quantity, List<Region> regions,
+public record ProductUpdateReq(String name, Long price, Long quantity, Region region,
                                Boolean finished, List<String> categoryList) {
 
 }
