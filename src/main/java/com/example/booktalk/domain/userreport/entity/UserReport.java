@@ -25,13 +25,13 @@ public class UserReport extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User reportUser;
 
     @Builder
-    private UserReport(String reason, User reportedUser, User user) {
+    private UserReport(String reason, User reportedUser, User reportUser) {
         this.reason = reason;
         this.reportedUser = reportedUser;
-        this.user = user;
+        this.reportUser = reportUser;
     }
 
 }

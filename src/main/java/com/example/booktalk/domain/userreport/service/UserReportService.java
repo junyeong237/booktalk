@@ -33,7 +33,7 @@ public class UserReportService {
         UserReport userReport = UserReport.builder()
                 .reason(req.reason())
                 .reportedUser(reportedUser)
-                .user(user)
+                .reportUser(user)
                 .build();
 
         userReportRepository.save(userReport);
