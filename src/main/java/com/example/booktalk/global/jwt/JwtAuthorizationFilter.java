@@ -35,30 +35,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtUtil.getTokenFromRequest(request, JwtUtil.AUTHORIZATION_HEADER);
+        String token = jwtUtil.getTokenFromRequest(request, JwtUtil.ACCESS_TOKEN_HEADER);
         if (Objects.nonNull(token)) {
             if (jwtUtil.validateToken(token)) {
-                Claims info = jwtUtil.getUserInfoFromToken(token);
-                // email -> search user
-                String email = info.getSubject();
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                // -> put this in userDetails
-                UserDetailsImpl userDetails = userDetailsService.getUserDetails(email);
-                // ->  put this in authentication principal
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                    null, userDetails.getAuthorities());
-                // -> put this in securityContent
-                context.setAuthentication(authentication);
-                // -> put this in SecurityContextHolder
-                SecurityContextHolder.setContext(context);
-                // -> now you can search with @AuthenticationPrincipal
-
+                setContext(token);
             } else {
-
                 //TODO 리프레시토큰 유효성 검사
-                //if(
                 String refreshtoekn = jwtUtil.getTokenFromRequest(request,
-                    JwtUtil.REFRESHTOKEN_HEADER);//
+                    JwtUtil.REFRESH_TOKEN_HEADER);//
                 //여기서 얻어낸 토큰이 유효하면 유효하다면
                 //Token이 BEARER
                 if (jwtUtil.validateToken(refreshtoekn)) {
@@ -79,39 +63,35 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     jwtUtil.addAccessJwtToCookie(accessToken, response);
                     accessToken = accessToken.substring(7);
-                    log.error(accessToken);
-                    Claims info = jwtUtil.getUserInfoFromToken(accessToken);
-                    // email -> search user
-                    String email = info.getSubject();
-                    SecurityContext context = SecurityContextHolder.createEmptyContext();
-                    // -> put this in userDetails
-                    UserDetailsImpl userDetails1 = userDetailsService.getUserDetails(email);
-                    // ->  put this in authentication principal
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails1,
-                        null, userDetails1.getAuthorities());
-                    // -> put this in securityContent
-                    context.setAuthentication(authentication);
-                    // -> put this in SecurityContextHolder
-                    SecurityContextHolder.setContext(context);
-                    // -> now you can search with @AuthenticationPrincipal
+                    setContext(accessToken);
 
                 } else {
-                    log.error("리프레시토큰 유효성하지 않음");
+                    UserLoginRes res = new UserLoginRes(
+                        "유효하지 않은 토큰입니다.");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json; charset=UTF-8");
+                    response.getWriter().write(objectMapper.writeValueAsString(res));
+                    return;
+
                 }
-
-
             }
-        } else {
-            UserLoginRes res = new UserLoginRes(
-                "유효하지 않은 토큰입니다.");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("application/json; charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(res));
-            return;
         }
         filterChain.doFilter(request, response);
     }
-
+    public void setContext(String token){
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        // email -> search user
+        String email = info.getSubject();
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        // -> put this in userDetails
+        UserDetailsImpl userDetails = userDetailsService.getUserDetails(email);
+        // ->  put this in authentication principal
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails,
+            null, userDetails.getAuthorities());
+        // -> put this in securityContent
+        context.setAuthentication(authentication);
+        // -> put this in SecurityContextHolder
+        SecurityContextHolder.setContext(context);
+    }
 
 }

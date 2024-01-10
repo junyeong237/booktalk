@@ -88,6 +88,7 @@ public class UserService {
         jwtUtil.addAccessJwtToCookie(accessToken, res);
         jwtUtil.addRefreshJwtToCookie(refreshToken, res);
         refreshTokenService.saveRefreshToken(refreshToken, user.getId());
+
         return new UserLoginRes("로그인 완료");
     }
 

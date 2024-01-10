@@ -70,6 +70,10 @@ public class WebSecurityConfig {
 
                 .anyRequest().authenticated()
         );
+        http.logout(logout->logout
+            .logoutUrl("/api/v1/users/logout")
+            .logoutSuccessUrl("/")
+            .deleteCookies("AccessToken","RefreshToken"));
 
         // filter
         http.addFilterBefore(jwtAuthorizationFilter(),
