@@ -1,6 +1,6 @@
 package com.example.booktalk.domain.user.dto.request;
 
-public record ProfileReqdto(
+public record UserProfileReq(
     String password,
     String newPassword,
     String newPasswordCheck,

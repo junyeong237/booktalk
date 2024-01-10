@@ -1,6 +1,7 @@
 package com.example.booktalk.global.jwt;
 
-import com.example.booktalk.domain.user.dto.response.UserResDto;
+import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import com.example.booktalk.global.security.UserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -50,11 +50,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // -> now you can search with @AuthenticationPrincipal
 
             } else {
-                UserResDto responseDto = new UserResDto(
+                UserLoginRes res = new UserLoginRes(
                     "유효하지 않은 토큰입니다.");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(responseDto));
+                response.getWriter().write(objectMapper.writeValueAsString(res));
                 return;
             }
         }
