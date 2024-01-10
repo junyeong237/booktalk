@@ -21,7 +21,7 @@ public class ProductLikeController {
     @PatchMapping("/{productId}/productLikes")
     public ResponseEntity<ProductLikeRes> switchLikeProduct(@PathVariable Long productId,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProductLikeRes productLikeRes = productLikeService.switchLikeProduct(productId, userDetails.getUser());
+        ProductLikeRes productLikeRes = productLikeService.switchLikeProduct(productId, userDetails.getUser().getId());
 
         return ResponseEntity.ok(productLikeRes);
     }
