@@ -1,6 +1,6 @@
 package com.example.booktalk.domain.user.dto.response;
 
-public record UserResDto(
+public record UserSignupRes(
     String message
 ) {
 
