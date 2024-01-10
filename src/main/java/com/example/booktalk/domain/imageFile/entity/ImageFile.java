@@ -20,8 +20,11 @@ public class ImageFile {
 
 
     @Builder
-    private ImageFile(Long id,String image){
-        this.id=id;
+    private ImageFile(String image){
         this.image=image;
     };
+
+    public void updateImage(String image){
+        this.image=image;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.booktalk.domain.imageFile.controller;
 
 
 import com.example.booktalk.domain.imageFile.dto.request.ImageCreateReq;
+import com.example.booktalk.domain.imageFile.dto.request.ImageUpdateReq;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -52,7 +53,7 @@ public class ImageFileController {
 
 
     @GetMapping("/list")
-    public String listPage(Model model) {
+    public String getImages(Model model) {
 
 
         model.addAttribute("ContentList", imageFileService.getImages());
@@ -61,7 +62,7 @@ public class ImageFileController {
         return "list";
     }
     @GetMapping("/{id}")
-    public String contentPage(@PathVariable("id")Long id, Model model) {
+    public String getImage(@PathVariable("id")Long id, Model model) {
 
         model.addAttribute("Content", imageFileService.getImage(id));
 
@@ -85,9 +86,9 @@ public class ImageFileController {
     }
 
     @PostMapping("/save/{id}")
-    public String updateLogic(ImageCreateReq imageCreateReq, @PathVariable("id")Long id) {
+    public String updateImage(ImageUpdateReq imageUpdateReq, @PathVariable("id")Long id) {
 
-        imageFileService.updateOneContent(imageCreateReq, id);
+        imageFileService.updateImage(imageUpdateReq, id);
 
         return "redirect:/api/v1/image/" + id;
     }

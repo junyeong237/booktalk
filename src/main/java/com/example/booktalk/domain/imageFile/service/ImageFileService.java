@@ -4,8 +4,11 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import com.example.booktalk.domain.imageFile.dto.request.ImageCreateReq;
+import com.example.booktalk.domain.imageFile.dto.request.ImageUpdateReq;
 import com.example.booktalk.domain.imageFile.entity.ImageFile;
 import com.example.booktalk.domain.imageFile.repository.ImageFileRepository;
+import com.example.booktalk.domain.product.exception.NotFoundProductException;
+import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.global.config.S3Config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,22 +77,24 @@ public class ImageFileService {
     public ImageFile getImage(Long id) {
 
 
-        return imageFileRepository.findById(id).orElseThrow();
+        return findImage(id);
     }
 
     public void deleteImage(Long id) {
-
-        imageFileRepository.deleteById(id);
+        ImageFile imageFile=findImage(id);
+        imageFileRepository.delete(imageFile);
     }
+    @Transactional
+    public void updateImage(ImageUpdateReq imageUpdateReq, Long id) {
 
-    public void updateOneContent(ImageCreateReq imageCreateReq, Long id) {
-
-
-        ImageFile imageFile = ImageFile.builder()
-                .id(id)
-                .image(imageCreateReq.getContent())
-                .build();
+        ImageFile imageFile=findImage(id);
+        imageFile.updateImage(imageUpdateReq.getContent());
 
         imageFileRepository.save(imageFile);
+    }
+
+    public ImageFile findImage(Long id){
+       return imageFileRepository.findById(id)
+                .orElseThrow(() -> new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
     }
 }
