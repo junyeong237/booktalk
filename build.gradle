@@ -1,56 +1,60 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.1'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	// JWT
-	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+    // JWT
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-	//web
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    //web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	//mysql
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    //mysql
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
-	//jpa
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	//security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	//validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    //websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	//S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	//mustache
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 
@@ -59,5 +63,5 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
