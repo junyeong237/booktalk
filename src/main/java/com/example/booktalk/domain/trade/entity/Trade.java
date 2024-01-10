@@ -38,7 +38,6 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Long score;
 
-
     @Builder
     private Trade(User buyer, Product product, Long score) {
         this.buyer = buyer;
