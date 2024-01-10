@@ -59,11 +59,12 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(HttpMethod.POST,"/api/v1/users/**").permitAll()
+                .requestMatchers("/api/v1/reviews/**").permitAll()
+                .requestMatchers("/api/v1/comments/**").permitAll()
                 .requestMatchers("/api/v1/image/**").permitAll()
                 .requestMatchers("/save").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
-                    .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
-
+                .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
                 .anyRequest().authenticated()
         );
 
