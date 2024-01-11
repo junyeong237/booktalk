@@ -18,7 +18,7 @@ public class ImageFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String image;
+    private String imagePathUrl;
 
 
 
@@ -33,13 +33,13 @@ public class ImageFile {
 
 
     @Builder
-    private ImageFile(String image,User user,Product product){
-        this.image=image;
+    private ImageFile(String imagePathUrl,User user,Product product){
+        this.imagePathUrl=imagePathUrl;
         this.user=user;
         this.product=product;
     };
 
-    public void updateImage(String image){
-        this.image=image;
+    public void updateImage(String imagePathUrl){
+        this.imagePathUrl=imagePathUrl;
     }
 }

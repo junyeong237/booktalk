@@ -21,11 +21,11 @@ public class ProductLikeService {
     private final ProductLikeRepository productLikeRepository;
     private final UserRepository userRepository;
     @Transactional
-    public ProductLikeRes switchLikeProduct(Long productId, Long userId) {
+    public ProductLikeRes switchProductLike(Long productId, Long userId) {
 
-        User user=findUser(userId);
+        User user=userRepository.findUserByIdWithThrow(userId);
 
-        Product product = findProduct(productId);
+        Product product = productRepository.findProductByIdWithThrow(productId);
 
         ProductLike productLike = productLikeRepository.findByProductAndUser(product,user)
                 .orElseGet(() -> saveProductLike(product,user));
@@ -47,13 +47,5 @@ public class ProductLikeService {
         return productLikeRepository.save(productLike);
     }
 
-    private Product findProduct(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-    }
 
-    private User findUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는유저가 없습니다."));
-    }
 }
