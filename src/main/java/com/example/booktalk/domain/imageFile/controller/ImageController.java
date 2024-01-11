@@ -1,6 +1,10 @@
 package com.example.booktalk.domain.imageFile.controller;
 
 
+import com.example.booktalk.domain.imageFile.dto.request.CreateImageReq;
+import com.example.booktalk.domain.imageFile.dto.request.DeleteImageReq;
+import com.example.booktalk.domain.imageFile.dto.request.GetImageReq;
+import com.example.booktalk.domain.imageFile.dto.request.UpdateImageReq;
 import com.example.booktalk.domain.imageFile.dto.response.*;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -14,42 +18,42 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/products/{productId}/image")
+@RequestMapping("/api/v1/image")
 public class ImageController {
 
     private ImageFileService imageFileService;
 
 
 
-    @PostMapping("/save")
+    @PostMapping
     @ResponseBody
     public ImageCreateRes createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @PathVariable Long productId,
+                                      @RequestBody CreateImageReq req,
                                       @RequestParam("upload") MultipartFile file) throws IOException {
 
-        return imageFileService.createImage(userDetails.getUser().getId(),productId,file);
+        return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),file);
     }
     @GetMapping("/{imageId}") //단일 조회
-    public ImageGetRes getImage(@PathVariable Long productId,
-            @PathVariable Long imageId) {
-        return imageFileService.getImage(productId,imageId);
+    public ImageGetRes getImage(@RequestBody GetImageReq req,
+                                @PathVariable Long imageId) {
+        return imageFileService.getImage(req.productId(),imageId);
     }
     @GetMapping//다건 조희
-    public List<ImageListRes> getImages(@PathVariable Long productId) {
-         return imageFileService.getImages(productId);
+    public List<ImageListRes> getImages(@RequestBody GetImageReq req) {
+         return imageFileService.getImages(req.productId());
     }
     @PutMapping("/{imageId}") //이미지 수정
     public ImageUpdateRes updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @PathVariable Long productId,
+                                      @RequestBody UpdateImageReq req,
                                       @PathVariable Long imageId,
                                       @RequestParam("upload") MultipartFile file) throws IOException {
-        return imageFileService.updateImage(userDetails.getUser().getId(), productId,imageId,file);
+        return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),imageId,file);
     }
     @DeleteMapping("/{imageId}") //이미지 삭제
     public ImageDeleteRes deleteImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @PathVariable Long productId,
+                                      @RequestBody DeleteImageReq req,
                                       @PathVariable Long imageId) {
-        return imageFileService.deleteImage(userDetails.getUser().getId(), productId,imageId);
+        return imageFileService.deleteImage(userDetails.getUser().getId(), req.productId(),imageId);
     }
 
 
