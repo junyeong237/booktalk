@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserReport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userReportId;
+    private Long id;
 
     @Column(nullable = false)
     private String reason;

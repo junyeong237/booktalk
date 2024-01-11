@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ReviewLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long reviewLikeId;
+    Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
