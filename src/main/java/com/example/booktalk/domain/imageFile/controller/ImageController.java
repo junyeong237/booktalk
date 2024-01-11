@@ -28,7 +28,7 @@ public class ImageController {
     @PostMapping
     @ResponseBody
     public ImageCreateRes createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody CreateImageReq req,
+                                      @RequestPart("productId") CreateImageReq req,
                                       @RequestParam("upload") MultipartFile file) throws IOException {
 
         return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),file);
@@ -44,7 +44,7 @@ public class ImageController {
     }
     @PutMapping("/{imageId}") //이미지 수정
     public ImageUpdateRes updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody UpdateImageReq req,
+                                      @RequestPart("productId") CreateImageReq req,
                                       @PathVariable Long imageId,
                                       @RequestParam("upload") MultipartFile file) throws IOException {
         return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),imageId,file);
