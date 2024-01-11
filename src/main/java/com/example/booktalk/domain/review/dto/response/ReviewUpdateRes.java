@@ -1,10 +1,15 @@
 package com.example.booktalk.domain.review.dto.response;
 
-import lombok.Builder;
+import com.example.booktalk.domain.review.entity.Review;
 
-@Builder
-public record ReviewUpdateRes (
-        String title,
-        String content
+public record ReviewUpdateRes(
+    Long id,
+
+    String title,
+    String content
 ) {
+
+    public ReviewUpdateRes(Review review) {
+        this(review.getId(), review.getTitle(), review.getContent());
+    }
 }
