@@ -23,7 +23,7 @@ public class UserReportService {
 
     public UserReportCreateRes createUserReport(UserReportCreateReq req, Long userId) {
 
-        User user = findUser(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
         User reportedUser = findReportedUser(req.reportedUserId());
 
         if(user.getId().equals(reportedUser.getId())) {
@@ -38,9 +38,7 @@ public class UserReportService {
 
         userReportRepository.save(userReport);
 
-        return UserReportCreateRes.builder()
-                .msg("신고가 완료되었습니다.")
-                .build();
+        return new UserReportCreateRes("신고가 완료되었습니다.");
     }
 
     private User findReportedUser(Long reportedUserId) {
@@ -48,8 +46,4 @@ public class UserReportService {
                 .orElseThrow(() -> new NotFoundReportedUserException(UserReportErrorCode.NOT_FOUND_REPORTED_USER));
     }
 
-    private User findUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
-    }
 }
