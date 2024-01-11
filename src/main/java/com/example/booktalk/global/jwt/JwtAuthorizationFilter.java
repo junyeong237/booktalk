@@ -50,8 +50,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     refreshtoken = JwtUtil.BEARER_PREFIX + refreshtoken;
 
-                    RefreshToken rf = refreshTokenRepository.findById(refreshtoken)
-                        .orElseThrow(() -> new NotFoundRefreshTokenException(UserErrorCode.NOT_FOUND_REFRESH_TOKEN));
+                    RefreshToken rf = refreshTokenRepository.findRefreshTokenByIdWithThrow(refreshtoken);
 
                     Long userId = rf.getUserId();
                     UserDetailsImpl userDetails = userDetailsService.loadUserById(userId);
