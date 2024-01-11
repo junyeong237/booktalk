@@ -32,7 +32,7 @@ public class ProductController {
 
     private final ProdcutService prodcutService;
 
-    @PostMapping()
+    @PostMapping
     public ProductCreateRes createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody ProductCreateReq req

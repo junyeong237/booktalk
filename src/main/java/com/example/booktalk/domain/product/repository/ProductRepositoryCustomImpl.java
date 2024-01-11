@@ -28,6 +28,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         JPAQuery<Product> query = jpaQueryFactory
             .selectFrom(product)
+            .where(product.deleted.eq(false))
             .where(hasProductName(search))
             .distinct();
 
@@ -57,6 +58,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .selectFrom(product)
             .leftJoin(product.productCategoryList, productCategory).fetchJoin()
             .leftJoin(productCategory.category, category).fetchJoin()
+            .where(product.deleted.eq(false))
             .where(hasTag(tag));
 
         // 정렬 적용
