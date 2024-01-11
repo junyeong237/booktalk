@@ -1,18 +1,15 @@
 package com.example.booktalk.domain.user.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.booktalk.domain.trade.entity.Trade;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,6 +46,12 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserRoleType role;
 
+    @Column
+    private Double score;
+
+    @OneToMany(mappedBy = "seller")
+    private List<Trade> tradeList = new ArrayList<>();;
+
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname) {
         this.email = email;
@@ -68,5 +71,17 @@ public class User extends BaseEntity {
 
     public void updateRole(UserRoleType role) {
         this.role = role;
+    }
+
+    public void averageScore() {
+        if(!tradeList.isEmpty()) {
+            Double sum = 0.0;
+            for(Trade trade : tradeList) {
+                sum += trade.getScore();
+            }
+            this.score = sum / tradeList.size();
+        } else {
+            this.score = 0.0;
+        }
     }
 }

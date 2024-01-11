@@ -35,14 +35,19 @@ public class Trade extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", nullable = false)
+    private User seller;
+
     @Column(nullable = false)
     private Long score;
 
     @Builder
-    private Trade(User buyer, Product product, Long score) {
+    private Trade(User buyer, Product product, Long score, User seller) {
         this.buyer = buyer;
         this.product = product;
         this.score = score;
+        this.seller = seller;
     }
 
 
