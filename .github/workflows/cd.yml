@@ -1,0 +1,58 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew    
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      with:
+        arguments: build
+
+
+      # 추가
+    - name: Make zip file #1
+      run: zip -qq -r ./$GITHUB_SHA.zip .
+      shell: bash
+
+    - name: Configure AWS credentials #2
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+        aws-region: ap-northeast-2
+
+    - name: Upload to S3 #3
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://awsdeploybucket/$GITHUB_SHA.zip
+
+    - name: Code Deploy #4
+      run: aws deploy create-deployment --application-name deploy-test
+        --deployment-config-name CodeDeployDefault.OneAtATime
+        --deployment-group-name dev
+        --s3-location bucket=awsdeploybucket,bundleType=zip,key=$GITHUB_SHA.zip
+
+        
