@@ -33,7 +33,7 @@ public class AdminCategoryService {
 
         category = categoryRepository.save(category);
 
-        return new CategoryCreateRes(category.getName());
+        return new CategoryCreateRes(category.getId(),category.getName());
     }
 
 
