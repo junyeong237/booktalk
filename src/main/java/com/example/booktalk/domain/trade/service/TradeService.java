@@ -1,6 +1,5 @@
 package com.example.booktalk.domain.trade.service;
 
-import com.example.booktalk.domain.product.dto.response.ProductRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.trade.dto.request.TradeCreateReq;
@@ -9,9 +8,8 @@ import com.example.booktalk.domain.trade.dto.response.TradeGetRes;
 import com.example.booktalk.domain.trade.dto.response.TradeListRes;
 import com.example.booktalk.domain.trade.entity.Trade;
 import com.example.booktalk.domain.trade.repository.TradeRepository;
-import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
-import com.example.booktalk.domain.admin.controller.repository.UserRepository;
+import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ public class TradeService {
         Product product = productRepository.findProductByIdWithThrow(req.productId());
 
         //구매자랑 판매자 아이디랑 같은지 확인
-        validateBuyerAndSeller(userId, req.sellerId());
+        validateBuyerAndSeller(userId, product);
 
         User seller = product.getUser();
 
@@ -46,13 +44,8 @@ public class TradeService {
 
         seller.averageScore();
 
-        UserRes userRes = new UserRes(seller.getId(), seller.getNickname());
-
-        //TODO : 판매자 평점 업데이트
-        ProductRes productRes = new ProductRes(
-            product.getId(), product.getName(), product.getPrice(), userRes
-        );
-        return new TradeCreateRes(trade.getId(), productRes,
+        return new TradeCreateRes(trade.getId(), buyer.getNickname(), product.getName(),
+            seller.getNickname(),
             trade.getScore());
 
     }
@@ -68,15 +61,9 @@ public class TradeService {
 
         Product soldProduct = trade.getProduct();
         User seller = soldProduct.getUser();
-        UserRes userResBuyer = new UserRes(buyer.getId(), buyer.getNickname());
-        UserRes userResSeller = new UserRes(seller.getId(), seller.getNickname());
 
-        //TODO : 판매자 평점 업데이트
-        ProductRes productRes = new ProductRes(
-            soldProduct.getId(), soldProduct.getName(), soldProduct.getPrice(), userResSeller
-        );
-
-        return new TradeGetRes(trade.getId(), userResBuyer, productRes, trade.getScore());
+        return new TradeGetRes(trade.getId(), buyer.getNickname(), soldProduct.getName(),
+            seller.getNickname(), trade.getScore());
 
     }
 
@@ -90,16 +77,10 @@ public class TradeService {
 
         List<TradeListRes> tradeListRes = tradeList.stream().map(
             trade -> {
-                Product soldProduct = trade.getProduct();
-                User seller = soldProduct.getUser();
-                UserRes userResBuyer = new UserRes(buyer.getId(), buyer.getNickname());
-                UserRes userResSeller = new UserRes(seller.getId(), seller.getNickname());
-                ProductRes productRes = new ProductRes(
-                    soldProduct.getId(), soldProduct.getName(), soldProduct.getPrice(),
-                    userResSeller
-                );
-
-                return new TradeListRes(trade.getId(), userResBuyer, productRes, trade.getScore());
+                //기능테스트
+                return new TradeListRes(trade.getId(), buyer.getNickname(),
+                    trade.getProduct().getName(), trade.getSeller().getNickname(),
+                    trade.getScore());
             }
 
         ).toList();
@@ -109,9 +90,9 @@ public class TradeService {
     }
 
 
-    private void validateBuyerAndSeller(Long buyerId, Long sellerId) {
+    private void validateBuyerAndSeller(Long buyerId, Product product) {
 
-        if (buyerId.equals(sellerId)) {
+        if (buyerId.equals(product.getUser().getId())) {
             throw new IllegalArgumentException("판매자는 본인의 상품을 구매할 수 없습니다.");
         }
 
