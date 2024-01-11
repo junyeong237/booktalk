@@ -10,6 +10,7 @@ import com.example.booktalk.domain.review.exception.NotPermissionReviewAuthority
 import com.example.booktalk.domain.review.exception.ReviewErrorCode;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,12 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
 
 
     public ReviewCreateRes createReview(ReviewCreateReq req, Long userId) {
 
-        User user = findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         Review review = Review.builder()
             .title(req.title())
@@ -70,7 +72,7 @@ public class ReviewService {
     @Transactional
     public ReviewUpdateRes updateReview(Long reviewId, ReviewUpdateReq req, Long userId) {
 
-        User user = findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         validateReviewUser(user, review);
 
@@ -81,7 +83,7 @@ public class ReviewService {
 
     public ReviewDeleteRes deleteReview(Long reviewId, Long userId) {
 
-        User user = findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         validateReviewUser(user, review);
 
