@@ -7,6 +7,8 @@ import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
+import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
+import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.service.ProdcutService;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -30,7 +32,7 @@ public class ProductController {
 
     private final ProdcutService prodcutService;
 
-    @PostMapping()
+    @PostMapping
     public ProductCreateRes createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody ProductCreateReq req
@@ -72,13 +74,22 @@ public class ProductController {
         return prodcutService.getProductList(sortBy, isAsc);
     }
 
-//    @GetMapping //상품 검색 리스트 조회
-//    public List<ProductSerachListRes> getProductSearchList(
-//        @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
-//        @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
-//        @RequestParam(value = "query", defaultValue = "") String search
-//    ) {
-//        return prodcutService.getProductSearchList(sortBy, isAsc, search);
-//    }
+    @GetMapping("/search") //상품 검색 리스트 조회
+    public List<ProductSerachListRes> getProductSearchList(
+        @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
+        @RequestParam(value = "query") String search
+    ) {
+        return prodcutService.getProductSearchList(sortBy, isAsc, search);
+    }
+
+    @GetMapping("/tag") //상품 검색 리스트 조회
+    public List<ProductTagListRes> getProductListByTag(
+        @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+        @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
+        @RequestParam(value = "tag") String search
+    ) {
+        return prodcutService.getProductSearchTagList(sortBy, isAsc, search);
+    }
 
 }

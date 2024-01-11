@@ -43,6 +43,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
+    @Column(nullable = false)
     private Long productLikeCnt;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +51,9 @@ public class Product extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean finished;
+
+    private Boolean deleted;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -68,6 +72,7 @@ public class Product extends BaseEntity {
         this.region = region;
         this.user = user;
         this.finished = false;
+        this.deleted = false;
     }
 
     public void update(ProductUpdateReq req) {
@@ -80,6 +85,11 @@ public class Product extends BaseEntity {
     public void finish() { //거래 상태를 완료로 변경
         this.finished = true;
     }
+
+    public void deleted() {
+        this.deleted = true;
+    }
+
 
     public void addProductCategory(ProductCategory productCategory) {
         this.productCategoryList.add(productCategory);

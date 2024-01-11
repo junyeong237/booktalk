@@ -44,6 +44,10 @@ public class UserController {
             .body(userService.login(req, res));
     }
 
+    @PostMapping("/logout")
+    public void logout() {
+
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable Long userId) {

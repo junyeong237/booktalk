@@ -15,11 +15,11 @@ import com.example.booktalk.domain.user.exception.BadLoginException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
+import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +34,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -74,20 +75,24 @@ public class UserService {
         String email = req.email();
         String password = req.password();
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadLoginException(UserErrorCode.BAD_LOGIN));
+        User user = userRepository.findUserByEmailWithThrow(email);
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
-        res.addHeader(JwtUtil.AUTHORIZATION_HEADER,
-            jwtUtil.createToken(req.email(), user.getRole()));
+
+        String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+        jwtUtil.addAccessJwtToCookie(accessToken, res);
+        jwtUtil.addRefreshJwtToCookie(refreshToken, res);
+        refreshTokenService.saveRefreshToken(refreshToken, user.getId());
 
         return new UserLoginRes("로그인 완료");
     }
 
     public UserProfileGetRes getProfile(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         String nickname = user.getNickname();
         String description = user.getDescription();
@@ -106,8 +111,7 @@ public class UserService {
         String location = req.location();
         String nickname = req.nickname();
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         if (!Objects.equals(user.getId(), userDetailsId)) {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);

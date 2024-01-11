@@ -1,5 +1,5 @@
 package com.example.booktalk.domain.category.dto.response;
 
-public record CategoryListRes(String name) {
+public record CategoryListRes(Long id, String name) {
 
 }

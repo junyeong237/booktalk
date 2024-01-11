@@ -10,9 +10,10 @@ import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
+import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
+import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.entity.Product;
-import com.example.booktalk.domain.product.exception.NotFoundProductException;
 import com.example.booktalk.domain.product.exception.NotPermissionAuthority;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.domain.product.repository.ProductRepository;
@@ -39,7 +40,7 @@ public class ProdcutService {
 
     public ProductCreateRes createProduct(Long userId, ProductCreateReq req) {
 
-        User user = findUser(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         Product product = Product.builder()
             .name(req.name())
@@ -57,13 +58,14 @@ public class ProdcutService {
             product.getPrice()
             , product.getRegion(), product.getFinished(), userRes,
             req.categoryList());
+        //TODO 생성자로 한줄정리
 
     }
 
     public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req) {
 
-        User user = findUser(userId);
-        Product product = findProduct(productId);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
 
         product.update(req);
@@ -71,19 +73,27 @@ public class ProdcutService {
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
         return new ProductUpdateRes(product.getId(), product.getName(),
             product.getQuantity(), product.getPrice(), product.getRegion(),
-            product.getFinished(), userRes, req.categoryList());
+            product.getFinished(), userRes, product.getProductLikeCnt(), req.categoryList());
 
     }
 
     @Transactional(readOnly = true)
     public ProductGetRes getProduct(Long productId) {
 
-        Product product = findProduct(productId);
+        Product product = productRepository.findProductByIdWithThrow(productId);
         User user = product.getUser();
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
+        List<String> categories = product.getProductCategoryList().stream()
+            .map(productCategory -> {
+                return productCategory.getCategory().getName();
+            })
+            .toList();
+
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
-            , product.getQuantity(), userRes, product.getRegion(), product.getFinished());
+            , product.getQuantity(), userRes, product.getRegion(), categories,
+            product.getProductLikeCnt(),
+            product.getFinished());
 
     }
 
@@ -93,49 +103,87 @@ public class ProdcutService {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
 
-        List<Product> productList = productRepository.findAll(sort);
+        List<Product> productList = productRepository.findAllByDeletedFalse(sort);
 
         return productList.stream()
-            .map(
-                product -> new ProductListRes(product.getId(), product.getName()
-                    , product.getPrice(), product.getQuantity(), product.getRegion())
-            )
+            .map(product -> {
+
+                List<String> categories = product.getProductCategoryList().stream()
+                    .map(productCategory -> {
+                        return productCategory.getCategory().getName();
+                    })
+                    .toList();
+
+                return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
+                    product.getQuantity(), product.getProductLikeCnt(), categories,
+                    product.getRegion());
+            })
             .toList();
 
     }
 
-//    public List<ProductSerachListRes> getProductSearchList(String sortBy, Boolean isAsc,
-//        String search) {
-//
-//        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-//        Sort sort = Sort.by(direction, sortBy);
-//
-//        List<Product> productList = productRepository.findAllBySearch(search, sort);
-//
-//    }
+    public List<ProductSerachListRes> getProductSearchList(String sortBy, Boolean isAsc,
+        String search) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Product> productList = productRepository.getPostListByName(sort, search);
+        return productList.stream()
+            .map(product -> {
+
+                List<String> categories = product.getProductCategoryList().stream()
+                    .map(productCategory -> {
+                        return productCategory.getCategory().getName();
+                    })
+                    .toList();
+
+                return new ProductSerachListRes(product.getId(), product.getName(),
+                    product.getPrice(),
+                    product.getQuantity(), product.getProductLikeCnt(), categories,
+                    product.getRegion());
+            })
+            .toList();
+
+    }
+
+
+    public List<ProductTagListRes> getProductSearchTagList(String sortBy, Boolean isAsc,
+        String tag) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Product> productList = productRepository.getProductListByTag(sort, tag);
+        return productList.stream()
+            .map(product -> {
+
+                List<String> categories = product.getProductCategoryList().stream()
+                    .map(productCategory -> {
+                        return productCategory.getCategory().getName();
+                    })
+                    .toList();
+
+                return new ProductTagListRes(product.getId(), product.getName(), product.getPrice(),
+                    product.getQuantity(), product.getProductLikeCnt(), categories,
+                    product.getRegion());
+            })
+            .toList();
+
+    }
 
 
     public ProductDeleteRes deleteProduct(Long userId, Long productId) {
-        User user = findUser(userId);
-        Product product = findProduct(productId);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
 
-        productRepository.delete(product);
+        product.deleted();
 
         return new ProductDeleteRes("삭제가 완료되었습니다.");
 
     }
 
-
-    private User findUser(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는유저가 없습니다."));
-    }
-
-    private Product findProduct(Long id) {
-        return productRepository.findById(id)
-            .orElseThrow(() -> new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
-    }
 
     private void validateProductUser(User user, Product product) {
 
