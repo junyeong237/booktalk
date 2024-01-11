@@ -1,8 +1,5 @@
 package com.example.booktalk.domain.user.repository;
 
-import com.example.booktalk.domain.review.entity.Review;
-import com.example.booktalk.domain.review.exception.NotFoundReviewException;
-import com.example.booktalk.domain.review.exception.ReviewErrorCode;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
@@ -17,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String name);
 
     default User findUserByEmailWithThrow(String email) {
-        return findByEmail(email).orElseThrow(()->
+        return findByEmail(email).orElseThrow(() ->
             new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
     }
 
@@ -25,5 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findById(id).orElseThrow(() ->
             new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
     }
+
     List<User> findAll();
 }

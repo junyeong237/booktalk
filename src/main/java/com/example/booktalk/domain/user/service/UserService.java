@@ -15,7 +15,6 @@ import com.example.booktalk.domain.user.exception.BadLoginException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;

@@ -1,8 +1,6 @@
 package com.example.booktalk.global.redis;
 
-import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.NotFoundRefreshTokenException;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import org.springframework.data.repository.CrudRepository;
 

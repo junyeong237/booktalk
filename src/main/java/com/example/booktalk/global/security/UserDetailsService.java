@@ -3,7 +3,6 @@ package com.example.booktalk.global.security;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

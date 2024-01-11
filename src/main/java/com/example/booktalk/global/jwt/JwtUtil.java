@@ -1,7 +1,6 @@
 package com.example.booktalk.global.jwt;
 
 import com.example.booktalk.domain.user.entity.UserRoleType;
-import com.example.booktalk.global.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -21,10 +20,6 @@ import java.util.Base64;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
