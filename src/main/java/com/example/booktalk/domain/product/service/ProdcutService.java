@@ -60,6 +60,7 @@ public class ProdcutService {
             product.getPrice()
             , product.getRegion(), product.getFinished(), userRes,
             req.categoryList());
+        //TODO 생성자로 한줄정리
 
     }
 
