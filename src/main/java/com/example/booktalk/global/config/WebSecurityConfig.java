@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -74,7 +73,7 @@ public class WebSecurityConfig {
 
                 .anyRequest().authenticated()
         );
-        http.logout(logout->logout
+        http.logout(logout -> logout
             .logoutUrl("/api/v1/users/logout")
             .logoutSuccessHandler((request, response, authentication) -> {
                 // 로그아웃 성공 시 권한을 비움
@@ -85,9 +84,10 @@ public class WebSecurityConfig {
                 // 응답을 보냄
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType("application/json; charset=UTF-8");
-                response.getWriter().write(objectMapper.writeValueAsString(new UserLogoutRes("로그아웃 완료")));
+                response.getWriter()
+                    .write(objectMapper.writeValueAsString(new UserLogoutRes("로그아웃 완료")));
             })
-            .deleteCookies("AccessToken","RefreshToken"));
+            .deleteCookies("AccessToken", "RefreshToken"));
 
         // filter
         http.addFilterBefore(jwtAuthorizationFilter(),

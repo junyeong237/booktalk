@@ -15,7 +15,6 @@ import com.example.booktalk.domain.user.exception.BadLoginException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -76,8 +75,8 @@ public class UserService {
         String email = req.email();
         String password = req.password();
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadLoginException(UserErrorCode.BAD_LOGIN));
+        User user = userRepository.findUserByEmailWithThrow(email);
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
@@ -93,8 +92,7 @@ public class UserService {
     }
 
     public UserProfileGetRes getProfile(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         String nickname = user.getNickname();
         String description = user.getDescription();
@@ -113,8 +111,7 @@ public class UserService {
         String location = req.location();
         String nickname = req.nickname();
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         if (!Objects.equals(user.getId(), userDetailsId)) {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);

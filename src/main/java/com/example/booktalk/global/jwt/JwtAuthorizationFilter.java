@@ -2,8 +2,6 @@ package com.example.booktalk.global.jwt;
 
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.entity.User;
-import com.example.booktalk.domain.user.exception.NotFoundRefreshTokenException;
-import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.global.redis.RefreshToken;
 import com.example.booktalk.global.redis.RefreshTokenRepository;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -50,8 +48,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     refreshtoken = JwtUtil.BEARER_PREFIX + refreshtoken;
 
-                    RefreshToken rf = refreshTokenRepository.findById(refreshtoken)
-                        .orElseThrow(() -> new NotFoundRefreshTokenException(UserErrorCode.NOT_FOUND_REFRESH_TOKEN));
+                    RefreshToken rf = refreshTokenRepository.findRefreshTokenByIdWithThrow(
+                        refreshtoken);
 
                     Long userId = rf.getUserId();
                     UserDetailsImpl userDetails = userDetailsService.loadUserById(userId);
@@ -78,7 +76,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-    public void setContext(String token){
+
+    public void setContext(String token) {
         Claims info = jwtUtil.getUserInfoFromToken(token);
         // email -> search user
         String email = info.getSubject();
