@@ -28,8 +28,8 @@ public class ReviewLikeService {
     @Transactional
     public ReviewLiketoggleRes toggleReviewLike(Long reviewId, Long userId) {
 
-        User user = findUser(userId);
-        Review review = findReview(reviewId);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         validateReviewLikeUser(user, review);
 
         Optional<ReviewLike> existReviewLike = reviewLikeRepository.findByReviewAndUser(review, user);
@@ -37,9 +37,7 @@ public class ReviewLikeService {
         if(existReviewLike.isPresent()) {
             reviewLikeRepository.delete(existReviewLike.get());
             review.decreaseReviewLike();
-            return ReviewLiketoggleRes.builder()
-                    .msg("좋아요 취소")
-                    .build();
+            return new ReviewLiketoggleRes("좋아요 취소");
         }
 
         ReviewLike reviewLike = ReviewLike.builder()
@@ -48,21 +46,8 @@ public class ReviewLikeService {
                 .build();
         reviewLikeRepository.save(reviewLike);
         review.increaseReviewLike();
-        return ReviewLiketoggleRes.builder()
-                .msg("좋아요!")
-                .build();
+        return new ReviewLiketoggleRes("좋아요!");
 
-    }
-
-
-    private User findUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 없습니다."));
-    }
-
-    private Review findReview(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NotFoundReviewException(ReviewErrorCode.NOT_FOUND_REVIEW));
     }
 
     private void validateReviewLikeUser(User user, Review review) {
