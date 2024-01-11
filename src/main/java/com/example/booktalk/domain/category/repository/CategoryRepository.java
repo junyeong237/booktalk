@@ -11,4 +11,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     // 해당하는 name 값들을 가진 Category 엔터티 리스트를 조회하는 메서드
     List<Category> findByNameIn(List<String> names);
 
+
 }

@@ -26,9 +26,7 @@ public class AdminCategoryService {
 
     public CategoryCreateRes createCategory(CategoryCreateReq req) {
 
-        if (categoryRepository.existsByName(req.name())) {
-            throw new ExistCategoryException(CategoryErrorCode.EXIST_CATEGORY);
-        }
+        validateDuplicateCategory(req.name());
         Category category = Category.builder()
             .name(req.name())
             .build();
@@ -43,6 +41,7 @@ public class AdminCategoryService {
         Long categoryId,
         CategoryUpdateReq req) {
         Category category = findCategory(categoryId);
+        validateDuplicateCategory(req.name());
         category.update(req.name());
         return new CategoryUpdateRes(category.getName());
     }
@@ -62,5 +61,14 @@ public class AdminCategoryService {
     private Category findCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
             .orElseThrow(() -> new NotFoundCategoryException(CategoryErrorCode.NOT_FOUND_CATEGORY));
+    }
+
+    private void validateDuplicateCategory(String updateName) {
+
+        if (categoryRepository.existsByName(updateName)) {
+            throw new ExistCategoryException(CategoryErrorCode.EXIST_CATEGORY);
+        }
+
+
     }
 }
