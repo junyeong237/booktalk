@@ -19,8 +19,8 @@ public class ChatRoomServcie {
 
 
     public ChatRoomCreateRes createChatRoom(Long userId, ChatRoomCreateReq req) {
-        User receiver = findUser(req.receiverId());
-        User sender = findUser(userId);
+        User receiver = userRepository.findUserByIdWithThrow(req.receiverId());
+        User sender = userRepository.findUserByIdWithThrow(userId);
 
         //receiver sender를 구별되지않게하기위함 (단순 DB저장용)
         if (chatRoomRepository.existsByReceiverIdAndSenderId(receiver.getId(), sender.getId())) {
@@ -61,11 +61,6 @@ public class ChatRoomServcie {
 
         return new ChatRoomCreateRes(room.getId(), receiver2, sender2);
 
-    }
-
-    private User findUser(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는유저가 없습니다."));
     }
 
 

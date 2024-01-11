@@ -7,6 +7,5 @@ import java.util.List;
 public record ProductCreateRes(Long id, String name, Long quantity, Long price,
                                Region region, Boolean finished, UserRes user,
                                List<String> categoryList) {
-
-
+    
 }
