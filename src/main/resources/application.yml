@@ -3,7 +3,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mydb.cdx0jrkrotbn.ap-northeast-2.rds.amazonaws.com:3306/booktalk?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://${LOCAL_HOST}:${DB_PORT}/${DB_DATABASE_NAME}
   jpa:
     hibernate:
       ddl-auto: update
