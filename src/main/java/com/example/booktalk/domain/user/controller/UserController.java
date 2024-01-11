@@ -5,6 +5,7 @@ import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserLogoutRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
@@ -44,6 +45,10 @@ public class UserController {
             .body(userService.login(req, res));
     }
 
+    @PostMapping("/logout")
+    public void logout(){
+
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable Long userId) {

@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    List<Product> findAll(Sort sort);
+    List<Product> findAllByDeletedFalse(Sort sort);
+
+    //List<Product> findAllBySearch(Sort sort);
 
 
 }

@@ -17,4 +17,14 @@ public class UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException(email + "을 찾을 수 없습니다."));
         return new UserDetailsImpl(user);
     }
+
+
+    public UserDetailsImpl loadUserById(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new NullPointerException("존재하지 않는 유저 아이디입니다."));
+
+        return new UserDetailsImpl(user);
+    }
+
+
 }
