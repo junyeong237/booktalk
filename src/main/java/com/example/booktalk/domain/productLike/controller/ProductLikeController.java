@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/products/{productId}/productLikes")
+@RequestMapping("/api/v1/products")
 public class ProductLikeController {
 
     private final ProductLikeService productLikeService;
 
-    @PatchMapping
+    @PatchMapping("/{productId}/productLikes")
     public ResponseEntity<ProductLikeRes> switchLikeProduct(@PathVariable Long productId,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProductLikeRes productLikeRes = productLikeService.switchLikeProduct(productId, userDetails.getUser());
+        ProductLikeRes productLikeRes = productLikeService.switchLikeProduct(productId, userDetails.getUser().getId());
 
         return ResponseEntity.ok(productLikeRes);
     }

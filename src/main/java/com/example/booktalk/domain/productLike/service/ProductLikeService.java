@@ -8,6 +8,7 @@ import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
 import com.example.booktalk.domain.productLike.entity.ProductLike;
 import com.example.booktalk.domain.productLike.repository.ProductLikeRepository;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductLikeService {
     private final ProductRepository productRepository;
     private final ProductLikeRepository productLikeRepository;
+    private final UserRepository userRepository;
     @Transactional
-    public ProductLikeRes switchLikeProduct(Long productId, User user) {
+    public ProductLikeRes switchLikeProduct(Long productId, Long userId) {
+
+        User user=findUser(userId);
 
         Product product = findProduct(productId);
 
@@ -46,5 +50,10 @@ public class ProductLikeService {
     private Product findProduct(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
+    }
+
+    private User findUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는유저가 없습니다."));
     }
 }
