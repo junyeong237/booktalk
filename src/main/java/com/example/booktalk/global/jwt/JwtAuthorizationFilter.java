@@ -2,6 +2,8 @@ package com.example.booktalk.global.jwt;
 
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.exception.NotFoundRefreshTokenException;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.global.redis.RefreshToken;
 import com.example.booktalk.global.redis.RefreshTokenRepository;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -41,17 +43,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 setContext(token);
             } else {
                 //TODO 리프레시토큰 유효성 검사
-                String refreshtoekn = jwtUtil.getTokenFromRequest(request,
-                    JwtUtil.REFRESH_TOKEN_HEADER);//
-                //여기서 얻어낸 토큰이 유효하면 유효하다면
-                //Token이 BEARER
-                if (jwtUtil.validateToken(refreshtoekn)) {
-                    log.error("리프레시토큰 유효성 체크");
+                String refreshtoken = jwtUtil.getTokenFromRequest(request,
+                    JwtUtil.REFRESH_TOKEN_HEADER);
 
-                    refreshtoekn = JwtUtil.BEARER_PREFIX + refreshtoekn;
+                if (jwtUtil.validateToken(refreshtoken)) {
 
-                    RefreshToken rf = refreshTokenRepository.findById(refreshtoekn)
-                        .orElseThrow(() -> new IllegalArgumentException("해당하는 어쩌구 오류"));
+                    refreshtoken = JwtUtil.BEARER_PREFIX + refreshtoken;
+
+                    RefreshToken rf = refreshTokenRepository.findById(refreshtoken)
+                        .orElseThrow(() -> new NotFoundRefreshTokenException(UserErrorCode.NOT_FOUND_REFRESH_TOKEN));
 
                     Long userId = rf.getUserId();
                     UserDetailsImpl userDetails = userDetailsService.loadUserById(userId);

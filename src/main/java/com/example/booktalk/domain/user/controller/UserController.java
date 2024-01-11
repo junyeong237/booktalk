@@ -46,9 +46,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<UserLogoutRes> logout(){
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(new UserLogoutRes("로그아웃 완료"));
+    public void logout(){
+
     }
 
     @GetMapping("/{userId}")
