@@ -20,6 +20,7 @@ import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
+import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -79,8 +81,13 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
-        res.addHeader(JwtUtil.AUTHORIZATION_HEADER,
-            jwtUtil.createToken(req.email(), user.getRole()));
+
+        String accessToken = jwtUtil.createAccessToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
+
+        jwtUtil.addAccessJwtToCookie(accessToken, res);
+        jwtUtil.addRefreshJwtToCookie(refreshToken, res);
+        refreshTokenService.saveRefreshToken(refreshToken, user.getId());
 
         return new UserLoginRes("로그인 완료");
     }
