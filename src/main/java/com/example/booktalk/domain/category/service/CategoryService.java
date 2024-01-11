@@ -23,7 +23,7 @@ public class CategoryService {
         return categoryList.stream()
             .map(
                 category ->
-                    new CategoryListRes(category.getName())
+                    new CategoryListRes(category.getId(), category.getName())
             ).toList();
 
     }
