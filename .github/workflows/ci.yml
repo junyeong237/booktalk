@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - chore/ci-cd
   pull_request:
     branches:
       - main
