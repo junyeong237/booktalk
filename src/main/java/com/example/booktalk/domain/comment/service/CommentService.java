@@ -34,8 +34,8 @@ public class CommentService {
 
     public CommentCreateRes createComment(CommentCreateReq req, Long userId) {
 
-        User user = findUser(userId);
-        Review review = findReview(req.reviewId());
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Review review = reviewRepository.findReviewByIdWithThrow(req.reviewId());
 
         if(req.content().isEmpty()) {
             throw new EmptyContentException(CommentErrorCode.EMPTY_CONTENT);
@@ -49,67 +49,44 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return CommentCreateRes.builder()
-                .commentId(comment.getId())
-                .content(comment.getContent())
-                .nickname(comment.getUser().getNickname())
-                .build();
+        return new CommentCreateRes(comment.getId(), comment.getContent(),
+                comment.getUser().getNickname());
     }
 
     public List<CommentGetListRes> getCommentList(Long reviewId) {
 
-        Review review = findReview(reviewId);
+        Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         List<Comment> commentList = commentRepository.findAllByReviewOrderByCreatedAtDesc(review);
 
-        return commentList.stream().map(comment -> CommentGetListRes.builder()
-                .commentId(comment.getId())
-                .content(comment.getContent())
-                .nickname(comment.getUser().getNickname())
-                .build()).toList();
+        return commentList.stream()
+                .map(comment -> new CommentGetListRes(comment.getId(),
+                        comment.getContent(), comment.getUser().getNickname()))
+                .toList();
     }
 
     @Transactional
     public CommentUpdateRes updateComment(Long commentId, CommentUpdateReq req, Long userId) {
 
-        User user = findUser(userId);
-        Comment comment = findComment(commentId);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Comment comment = commentRepository.findCommentByIdWithThrow(commentId);
         validateCommentUser(user, comment);
 
         comment.update(req);
 
-        return CommentUpdateRes.builder()
-                .commentId(comment.getId())
-                .content(comment.getContent())
-                .build();
+        return new CommentUpdateRes(comment.getId(), comment.getContent());
     }
 
     public CommentDeleteRes deleteComment(Long commentId, Long userId) {
 
-        User user = findUser(userId);
-        Comment comment = findComment(commentId);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        Comment comment = commentRepository.findCommentByIdWithThrow(commentId);
         validateCommentUser(user, comment);
 
         commentRepository.delete(comment);
 
-        return CommentDeleteRes.builder()
-                .msg("댓글이 삭제되었습니다.")
-                .build();
+        return new CommentDeleteRes("댓글이 삭제되었습니다.");
     }
 
-    private User findUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 없습니다."));
-    }
-
-    private Review findReview(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NotFoundReviewException(ReviewErrorCode.NOT_FOUND_REVIEW));
-    }
-
-    private Comment findComment(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundCommentException(CommentErrorCode.NOT_FOUND_COMMENT));
-    }
 
     private void validateCommentUser(User user, Comment comment) {
         if(!user.getId().equals(comment.getUser().getId())) {
