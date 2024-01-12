@@ -3,13 +3,12 @@ const host = 'http://' + window.location.host;
 $(document).ready(function () {
   const auth = getToken();
   if (auth !== undefined && auth !== '') {
-
+    console.log('auth:', auth);
     $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-      jqXHR.setRequestHeader('Authorization', auth);
+      jqXHR.setRequestHeader('AccessToken', auth);
       // ajax 요청헤더에 set
     });
   } else {
-    //showProduct();
     return; //지워도 될듯하다 //이거 지우면 밑에 .ajax가 실행되는듯
   }
 
@@ -238,7 +237,7 @@ function loadChat(roomId) {
 }
 
 function getToken() {
-  let auth = Cookies.get('Authorization');
+  let auth = Cookies.get('AccessToken');
 
   if (auth === undefined) {
     return '';
