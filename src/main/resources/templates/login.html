@@ -56,13 +56,10 @@
   // });
 
   let href = location.href;
-  const queryString = href.substring(href.indexOf("?") + 1)
-  if (queryString === 'error') {
-    const errorDiv = document.getElementById('login-failed');
-    errorDiv.style.display = 'block';
-  }
 
   const host = 'http://' + window.location.host;
+  console.log(href);
+  console.log(host);
 
   function onLogin() {
     let email = $('#email').val();
@@ -75,15 +72,12 @@
       data: JSON.stringify({email: email, password: password}),
     })
     .done(function (res, status, xhr) {
-      const token = xhr.getResponseHeader('Authorization');
-      Cookies.set('Authorization', token, {path: '/'})
-      console.log('token', token);
       alert("로그인 성공");
       window.location.href = host + '/api/v1/';
     })
     .fail(function (jqXHR, textStatus) {
       alert("Login Fail");
-      window.location.href = host + '/user/login-page?error'
+      window.location.href = host + '/api/v1/users/login';
     });
   }
 </script>
