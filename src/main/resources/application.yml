@@ -28,7 +28,7 @@ server:
 
 data:
   redis:
-    host: localhost
+    host: ${LOCAL_HOST}
     port: 6379
 
 
