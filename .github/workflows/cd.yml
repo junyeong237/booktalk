@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - chore/ci-cd
   pull_request:
     branches:
       - main
