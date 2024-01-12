@@ -11,7 +11,7 @@ import com.example.booktalk.domain.trade.entity.Trade;
 import com.example.booktalk.domain.trade.repository.TradeRepository;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
-import com.example.booktalk.domain.user.repository.UserRepository;
+import com.example.booktalk.domain.admin.controller.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,15 +33,18 @@ public class TradeService {
         //구매자랑 판매자 아이디랑 같은지 확인
         validateBuyerAndSeller(userId, req.sellerId());
 
+        User seller = product.getUser();
+
         Trade trade = Trade.builder()
             .buyer(buyer)
             .product(product)
             .score(req.score())
+            .seller(seller)
             .build();
 
         tradeRepository.save(trade);
 
-        User seller = product.getUser();
+        seller.averageScore();
 
         UserRes userRes = new UserRes(seller.getId(), seller.getNickname());
 
