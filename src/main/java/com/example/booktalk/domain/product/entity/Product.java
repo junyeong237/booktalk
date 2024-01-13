@@ -85,6 +85,7 @@ public class Product extends BaseEntity {
         this.quantity = req.quantity();
         this.price = req.price();
         this.region = req.region();
+        this.content = req.content();
     }
 
     public void finish() { //거래 상태를 완료로 변경

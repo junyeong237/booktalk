@@ -47,16 +47,17 @@ public class ProductService {
             .price(req.price())
             .quantity(req.quantity())
             .region(req.region())
+            .content(req.content())
             .user(user)
             .build();
-        productRepository.save(product);
+        product = productRepository.save(product);
         addCategory(req.categoryList(), product);
 
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
-            , product.getRegion(), product.getFinished(), userRes,
+            , product.getRegion(), product.getFinished(), userRes, product.getContent(),
             req.categoryList());
         //TODO 생성자로 한줄정리
 
@@ -73,7 +74,8 @@ public class ProductService {
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
         return new ProductUpdateRes(product.getId(), product.getName(),
             product.getQuantity(), product.getPrice(), product.getRegion(),
-            product.getFinished(), userRes, product.getProductLikeCnt(), req.categoryList());
+            product.getFinished(), userRes, product.getProductLikeCnt(), product.getContent(),
+            req.categoryList());
 
     }
 
@@ -92,7 +94,7 @@ public class ProductService {
 
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
             , product.getQuantity(), userRes, product.getRegion(), categories,
-            product.getProductLikeCnt(),
+            product.getProductLikeCnt(), product.getContent(),
             product.getFinished());
 
     }

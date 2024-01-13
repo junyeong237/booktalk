@@ -5,6 +5,7 @@ import java.util.List;
 
 
 public record ProductCreateReq(String name, Long price, Long quantity, Region region,
-                               Boolean finished, List<String> categoryList) {
+                               String content,
+                               List<String> categoryList) {
 
 }
