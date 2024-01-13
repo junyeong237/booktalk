@@ -6,6 +6,7 @@ import java.util.List;
 
 public record ProductUpdateRes(Long id, String name, Long quantity, Long price,
                                Region regions, Boolean finished, UserRes user, Long productLikes,
+                               String content,
                                List<String> categoryList) {
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 public record ProductGetRes(Long id, String name, Long price, Long quantity, UserRes user,
                             Region region, List<String> categories, Long productLikes,
+                            String content,
                             Boolean finished) {
 
 }
