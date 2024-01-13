@@ -10,7 +10,7 @@ import com.example.booktalk.domain.product.dto.response.ProductListRes;
 import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
 import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
-import com.example.booktalk.domain.product.service.ProdcutService;
+import com.example.booktalk.domain.product.service.ProductService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final ProdcutService prodcutService;
+    private final ProductService productService;
 
     @PostMapping
     public ProductCreateRes createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody ProductCreateReq req
     ) {
-        return prodcutService.createProduct(userDetails.getUser().getId(), req);
+        return productService.createProduct(userDetails.getUser().getId(), req);
 
     }
 
@@ -47,7 +47,7 @@ public class ProductController {
         @PathVariable Long productId,
         @RequestBody ProductUpdateReq req
     ) {
-        return prodcutService.updateProduct(userDetails.getUser().getId(), productId, req);
+        return productService.updateProduct(userDetails.getUser().getId(), productId, req);
     }
 
     @DeleteMapping("/{productId}")
@@ -55,14 +55,14 @@ public class ProductController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long productId
     ) {
-        return prodcutService.deleteProduct(userDetails.getUser().getId(), productId);
+        return productService.deleteProduct(userDetails.getUser().getId(), productId);
     }
 
     @GetMapping("/{productId}") //단일 조회
     public ProductGetRes getProduct(
         @PathVariable Long productId
     ) {
-        return prodcutService.getProduct(productId);
+        return productService.getProduct(productId);
     }
 
 
@@ -71,7 +71,7 @@ public class ProductController {
         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc
     ) {
-        return prodcutService.getProductList(sortBy, isAsc);
+        return productService.getProductList(sortBy, isAsc);
     }
 
     @GetMapping("/search") //상품 검색 리스트 조회
@@ -80,7 +80,7 @@ public class ProductController {
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
         @RequestParam(value = "query") String search
     ) {
-        return prodcutService.getProductSearchList(sortBy, isAsc, search);
+        return productService.getProductSearchList(sortBy, isAsc, search);
     }
 
     @GetMapping("/tag") //상품 검색 리스트 조회
@@ -89,7 +89,7 @@ public class ProductController {
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
         @RequestParam(value = "tag") String search
     ) {
-        return prodcutService.getProductSearchTagList(sortBy, isAsc, search);
+        return productService.getProductSearchTagList(sortBy, isAsc, search);
     }
 
 }

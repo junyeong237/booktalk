@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ProdcutService {
+public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
