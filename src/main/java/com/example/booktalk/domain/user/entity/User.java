@@ -84,4 +84,8 @@ public class User extends BaseEntity {
             this.score = 0.0;
         }
     }
+
+    public void withdraw() {
+        this.deleted = true;
+    }
 }
