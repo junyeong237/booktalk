@@ -18,13 +18,13 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-        DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
-        DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
