@@ -18,11 +18,7 @@ public class KakaoController {
 
     @GetMapping("/api/v1/users/kakao/callback")
     public String kakaologin(@RequestParam String code, HttpServletResponse res) throws JsonProcessingException {
-        String token = kakaoService.kakaoLogin(code);
-
-        Cookie cookie = new Cookie(JwtUtil.ACCESS_TOKEN_HEADER, token.substring(7));
-        cookie.setPath("/");
-        res.addCookie(cookie);
+        kakaoService.kakaoLogin(code, res);
 
         return "redirect:/";
     }
