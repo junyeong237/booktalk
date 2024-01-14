@@ -68,6 +68,9 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                 .requestMatchers("/api/v1/users/kakao/**").permitAll()
                 .requestMatchers("/api/v1/image/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1").permitAll() //메인페이지
+                .requestMatchers("/api/v1/users/signup").permitAll() //회원가입
+                .requestMatchers("/api/v1/users/login").permitAll() //로그인
                 .requestMatchers("/save").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
                 .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()

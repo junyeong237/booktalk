@@ -97,8 +97,13 @@ public class User extends BaseEntity {
         }
     }
 
+
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
     }
+    public void withdraw() {
+        this.deleted = true;
+    }
+  
 }

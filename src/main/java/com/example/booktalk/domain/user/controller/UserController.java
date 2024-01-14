@@ -4,10 +4,12 @@ package com.example.booktalk.domain.user.controller;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
+import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
+import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.service.UserService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,5 +63,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateProfile(userId, req, userDetails.getUser().getId()));
 
+    }
+
+    @PutMapping("/withdraw")
+    public ResponseEntity<UserWithdrawRes> withdraw(@RequestBody UserWithdrawReq req,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.withdraw(req,userDetails.getUser().getId()));
     }
 }

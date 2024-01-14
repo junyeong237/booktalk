@@ -4,10 +4,12 @@ package com.example.booktalk.domain.user.service;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
+import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
+import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
@@ -21,6 +23,7 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +80,10 @@ public class UserService {
 
         User user = userRepository.findUserByEmailWithThrow(email);
 
+        if(user.isDeleted()){
+            throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
+        }
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
@@ -131,4 +138,20 @@ public class UserService {
     }
 
 
+    @Transactional
+    public UserWithdrawRes withdraw(UserWithdrawReq req, Long id) {
+        String password = req.password();
+        String passwordCheck = req.passwordCheck();
+
+        User user = userRepository.findUserByIdWithThrow(id);
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadLoginException(UserErrorCode.BAD_LOGIN);
+        }
+        if(!Objects.equals(password, passwordCheck)){
+            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
+        }
+        user.withdraw();
+        return new UserWithdrawRes("탈퇴 완료");
+    }
 }
