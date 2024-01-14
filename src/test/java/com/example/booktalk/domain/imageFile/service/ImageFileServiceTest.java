@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.imageFile.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.booktalk.domain.imageFile.dto.response.ImageDeleteRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageUpdateRes;
 import com.example.booktalk.domain.imageFile.entity.ImageFile;
@@ -81,69 +82,66 @@ class ImageFileServiceTest {
         ReflectionTestUtils.setField(imageFile, "user", user);
     }
 
+    // 이미지 생성 테스트
     @Test
     @DisplayName("이미지 생성 테스트")
-    public void testCreateImage() throws IOException {
-        // Arrange
+    public void 이미지_생성_테스트() throws IOException {
+        // Given
         Long userId = 1L;
         Long productId = 1L;
 
         when(userRepository.findUserByIdWithThrow(anyLong())).thenReturn(user);
         when(productRepository.findProductByIdWithThrow(anyLong())).thenReturn(product);
         when(imageFileRepository.save(any())).thenReturn(imageFile);
-
-        when(s3ClientMock.getUrl(anyString(), anyString()))
-                .thenReturn(new URL("https://test"));
-
+        when(s3ClientMock.getUrl(anyString(), anyString())).thenReturn(new URL("https://test"));
         ReflectionTestUtils.setField(imageFileService, "bucket", "test");
 
-        // Act
+        // When
         imageFileService.createImage(userId, productId, file);
 
-        // Assert
-        Mockito.verify(imageFileRepository, Mockito.times(1)).save(any(ImageFile.class));
+        // Then
+        verify(imageFileRepository, times(1)).save(any(ImageFile.class));
     }
 
+    // 이미지 조회 테스트
     @Test
     @DisplayName("이미지 조회 테스트")
-    public void testGetImage() {
-        // Arrange
+    public void 이미지_조회_테스트() {
+        // Given
         Long productId = 1L;
         Long imageId = 1L;
-
         ImageFile mockImageFile = new ImageFile();
-        when(imageFileRepository.findImageFileByProductIdAndIdWithThrow(anyLong(), anyLong()))
-                .thenReturn(mockImageFile);
+        when(imageFileRepository.findImageFileByProductIdAndIdWithThrow(anyLong(), anyLong())).thenReturn(mockImageFile);
 
-        // Act
+        // When
         imageFileService.getImage(productId, imageId);
 
-        // Assert
-        Mockito.verify(imageFileRepository, Mockito.times(1)).findImageFileByProductIdAndIdWithThrow(anyLong(), anyLong());
+        // Then
+        verify(imageFileRepository, times(1)).findImageFileByProductIdAndIdWithThrow(anyLong(), anyLong());
     }
 
+    // 이미지 목록 조회 테스트
     @Test
     @DisplayName("이미지 목록 조회 테스트")
-    public void testGetImages() {
-        // Arrange
+    public void 이미지_목록_조회_테스트() {
+        // Given
         Long productId = 1L;
-
-        List<ImageFile> mockImageList = Stream.of(new ImageFile(), new ImageFile())
-                .collect(Collectors.toList());
+        List<ImageFile> mockImageList = Stream.of(new ImageFile(), new ImageFile()).collect(Collectors.toList());
         when(imageFileRepository.findByProductId(productId)).thenReturn(mockImageList);
 
-        // Act
+        // When
         List<ImageListRes> result = imageFileService.getImages(productId);
 
-        // Assert
-        Mockito.verify(imageFileRepository, Mockito.times(1)).findByProductId(productId);
+        // Then
+        verify(imageFileRepository, times(1)).findByProductId(productId);
         assertEquals(mockImageList.size(), result.size());
     }
 
+    // 이미지 업데이트 테스트
     @Test
     @DisplayName("이미지 업데이트 테스트")
-    public void testUpdateImageWithValidData() throws IOException {
-        // Arrange
+    public void 이미지_업데이트_테스트() throws IOException {
+        // Given
         Long userId = 1L;
         Long productId = 1L;
         Long imageId = 1L;
@@ -151,16 +149,38 @@ class ImageFileServiceTest {
         when(userRepository.findUserByIdWithThrow(anyLong())).thenReturn(user);
         when(imageFileRepository.findImageFileByProductIdAndIdWithThrow(anyLong(), anyLong())).thenReturn(imageFile);
         when(s3Config.amazonS3Client()).thenReturn(s3ClientMock);
-
         when(s3ClientMock.getUrl(anyString(), anyString())).thenReturn(new URL("https://example.com/test-image.jpg"));
-
         ReflectionTestUtils.setField(imageFileService, "bucket", "test");
 
-        // Act
+        // When
         ImageUpdateRes result = imageFileService.updateImage(userId, productId, imageId, file);
 
-        // Assert
+        // Then
         assertNotNull(result);
         assertEquals("https://example.com/test-image.jpg", result.imagePathUrl());
     }
+
+    // 이미지 삭제 테스트
+    @Test
+    @DisplayName("이미지 삭제 테스트")
+    public void 이미지_삭제_테스트() {
+        // Given
+        Long userId = 1L;
+        Long productId = 1L;
+        Long imageId = 1L;
+        when(userRepository.findUserByIdWithThrow(userId)).thenReturn(user);
+        when(imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId)).thenReturn(imageFile);
+
+        // When
+        ImageDeleteRes result = imageFileService.deleteImage(userId, productId, imageId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals("삭제가 완료되었습니다.", result.message());
+        verify(imageFileRepository, times(1)).delete(imageFile);
+        verify(userRepository, times(1)).findUserByIdWithThrow(userId);
+        verify(imageFileRepository, times(1)).findImageFileByProductIdAndIdWithThrow(productId, imageId);
+    }
+
+
 }
