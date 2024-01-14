@@ -17,14 +17,14 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+    # env:
+    #   DB_USERNAME: ${{ secrets.DB_USERNAME }}
+    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    #   LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
+    #   DB_PORT: ${{ secrets.DB_PORT }}
+    #   DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
+    #   REDIS_HOST: ${{ secrets.REDIS_HOST }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -34,10 +34,16 @@ jobs:
         distribution: 'zulu'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew    
+    - name: access to secrets
+      run: |
+        echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env
+      env:
+        JWT_SECRET_KEY: ${{secrets.JWT_SECRET_KEY}}
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
+      
       # 추가
     - name: Make zip file #1
       run: zip -qq -r ./$GITHUB_SHA.zip .
