@@ -18,7 +18,8 @@ spring:
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
-
+kakao:
+  key: d4ee4d56fb48da76a8de567698192d24
 
 server:
   servlet:
