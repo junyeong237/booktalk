@@ -31,8 +31,16 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
-
-
+    - name: Generate Environment Variables
+      env:
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
+        REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        
       # 추가
     - name: Make zip file #1
       run: zip -qq -r ./$GITHUB_SHA.zip .
