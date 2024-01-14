@@ -37,10 +37,10 @@ public class ReviewService {
             .user(user)
             .build();
 
-        reviewRepository.save(review);
+        Review result = reviewRepository.save(review);
 
-        return new ReviewCreateRes(review.getId(), review.getTitle(),
-                review.getContent(), review.getUser().getNickname());
+        return new ReviewCreateRes(result.getId(), result.getTitle(),
+                result.getContent(), result.getUser().getNickname());
     }
 
     public List<ReviewGetListRes> getReviewList(String sortBy, boolean isAsc) {
