@@ -1,11 +1,14 @@
 package com.example.booktalk.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
+import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
@@ -17,7 +20,9 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
 import com.example.booktalk.domain.user.exception.BadLoginException;
 import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import com.example.booktalk.global.exception.GlobalException;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -40,7 +45,7 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
-    @Spy
+    @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
     private UserRepository userRepository;
@@ -103,13 +108,11 @@ class UserServiceTest {
             given(userRepository.findByEmail(req.email())).willReturn(Optional.ofNullable(user1));
 
             //when
-            when(passwordEncoder.matches(req.passwordCheck(),
-                passwordEncoder.encode(req.password()))).thenReturn(true);
+            GlobalException exception = assertThrows(GlobalException.class, ()->{userService.signup(req);});
 
             //then
-            assertThatThrownBy(() -> userService.signup(req))
-                .isInstanceOf(AlreadyExistEmailException.class)
-                .hasMessage("이미 가입된 이메일입니다.");
+            assertEquals(UserErrorCode.ALREADY_EXIST_EMAIL,
+                    exception.getErrorCode());
         }
 
     }
@@ -123,9 +126,9 @@ class UserServiceTest {
             UserLoginReq req = new UserLoginReq("email@email.com", "password");
             given(userRepository.findUserByEmailWithThrow(req.email())).willReturn(user);
             given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
             // when
-            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
             UserLoginRes res = userService.login(req, response);
 
             // then
@@ -138,12 +141,15 @@ class UserServiceTest {
             UserLoginReq req = new UserLoginReq("email@email.com", "wrongPassword");
             given(userRepository.findUserByEmailWithThrow(req.email())).willReturn(user);
             given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(false);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-            // then
-            assertThatThrownBy(
-                () -> userService.login(req, Mockito.mock(HttpServletResponse.class)))
-                .isInstanceOf(BadLoginException.class)
-                .hasMessage("로그인 실패");
+            //when
+            GlobalException exception = assertThrows(GlobalException.class, ()->{userService.login(req,response);});
+
+            //then
+            assertEquals(UserErrorCode.BAD_LOGIN,
+                exception.getErrorCode());
+
         }
 
     }
@@ -212,12 +218,14 @@ class UserServiceTest {
                 "newNickname"
             );
             given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
-            given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(false);
+            given(passwordEncoder.matches("newPassword", null)).willReturn(false);
 
-            // then
-            assertThatThrownBy(() -> userService.updateProfile(userId, req, userDetailsId))
-                .isInstanceOf(NotMatchPasswordException.class)
-                .hasMessage("비밀번호가 일치하지 않습니다.");
+            //when
+            GlobalException exception = assertThrows(GlobalException.class, ()->{userService.updateProfile(userId,req,userDetailsId);});
+
+            //then
+            assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
+                exception.getErrorCode());
         }
     }
 }
