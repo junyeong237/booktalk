@@ -44,10 +44,10 @@ public class CommentService {
                 .user(user)
                 .build();
 
-        commentRepository.save(comment);
+        Comment result = commentRepository.save(comment);
 
-        return new CommentCreateRes(comment.getId(), comment.getContent(),
-                comment.getUser().getNickname());
+        return new CommentCreateRes(result.getId(), result.getContent(),
+                result.getUser().getNickname());
     }
 
     public List<CommentGetListRes> getCommentList(Long reviewId) {
