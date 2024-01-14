@@ -8,6 +8,7 @@ import com.example.booktalk.global.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public String kakaoLogin(String code) throws JsonProcessingException {
+    public void kakaoLogin(String code, HttpServletResponse res) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -43,9 +44,11 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createAccessToken(kakaoUser.getEmail(),kakaoUser.getRole());
+        String createAccessToken = jwtUtil.createAccessToken(kakaoUser.getEmail(),kakaoUser.getRole());
+        String createRefreshToken = jwtUtil.createRefreshToken(kakaoUser.getEmail());
 
-        return createToken;
+        jwtUtil.addAccessJwtToCookie(createAccessToken, res);
+        jwtUtil.addRefreshJwtToCookie(createRefreshToken, res);
 
     }
 
