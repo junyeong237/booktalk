@@ -3,6 +3,7 @@ package com.example.booktalk.domain.admin.service;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.*;
 class AdminUserRoleServiceTest {
 
     @Test
+    @DisplayName("사용자 차단 테스트")
     void 사용자_블록_처리_테스트() {
         // Given
         // UserRepository의 mock 객체를 생성합니다.
