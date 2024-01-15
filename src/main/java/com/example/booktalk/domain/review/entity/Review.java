@@ -5,7 +5,10 @@ import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
 
+
 import com.example.booktalk.domain.user.entity.User;
+
+import com.example.booktalk.domain.reviewlike.entity.ReviewLike;
 
 import com.example.booktalk.domain.reviewlike.entity.ReviewLike;
 
@@ -15,6 +18,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +47,7 @@ public class Review extends BaseEntity {
     private String content;
 
 
+
     @Column
     private Integer reviewLikeCount;
 
@@ -49,12 +56,19 @@ public class Review extends BaseEntity {
     private User user;
 
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private User user;
+
+
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
 
+
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
     private List<ReviewLike> reviewLikeList = new ArrayList<>();
+
 
 
     @Builder
