@@ -31,8 +31,9 @@
         }
 
         .card-img-top {
-            width: 500px;
+            width: 400px;
             height: auto;
+            margin-left: 100px;
         }
         .card-text-group{
             margin-left: 50px;
@@ -79,7 +80,7 @@
 </div>
     <div class="card mt-3">
         <div class="card-body">
-            <img src="https://via.placeholder.com/500" class="card-img-top" alt="Product Image">
+            <img src="https://via.placeholder.com/400" class="col-md-6 card-img-top" alt="Product Image">
             <div class="col-md-6 card-text-group">
                 <h5 class="card-title">상품 설명</h5>
                 <p class="card-text">상품이름: Used Book 1</p>
@@ -87,9 +88,14 @@
                 <p class="card-text">퀄리티: 3</p>
                 <p class="card-text">지역: Seoul, Busan</p>
                 <p class="card-text">판매여부: 아니요</p>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="interestCheckbox">
+                    <label class="form-check-label" for="interestCheckbox">관심상품</label>
+                </div>
+
                 <div class="card-button">
                     <a href="#" class="btn btn-primary btn-lg btn-block">상품리스트로 돌아가기</a>
-                    <a href="#" class="btn btn-primary btn-lg btn-block">대화 해보기</a>
+                    <a href="#" class="btn btn-primary btn-lg btn-block">채팅 신청하기</a>
                     <a href="#" class="btn btn-primary btn-lg btn-block">판매자 프로필 보기</a>
                 </div>
             </div>

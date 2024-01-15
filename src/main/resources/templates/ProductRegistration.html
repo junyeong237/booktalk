@@ -71,8 +71,7 @@
 <body>
 
 <div class="container">
-    <header
-            class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
             <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
                 <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
@@ -83,8 +82,7 @@
 
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
-                </li>
+                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
@@ -102,7 +100,8 @@
 </div>
 
 <div class="container1">
-    <img src="https://via.placeholder.com/200" class="card-img-top" alt="Product Image">
+    <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top" alt="Product Image">
+
     <form enctype="multipart/form-data">
         <div class="mb-3">
             <label for="productImage" class="form-label">상품 이미지 업로드</label>
@@ -125,13 +124,20 @@
             <label for="productRegions" class="form-label">지역</label>
             <input type="text" class="form-control" id="productRegions" placeholder="예: SEOUL, BUSAN" required>
         </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="productFinished">
-            <label class="form-check-label" for="productFinished">판매 종료 여부</label>
-        </div>
         <div class="mb-3">
             <label for="productCategories" class="form-label">카테고리 리스트</label>
-            <input type="text" class="form-control" id="productCategories" placeholder="예: 코미디, 추리" required>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    선택하세요
+                </button>
+                <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                    <a class="dropdown-item" href="#">코미디</a>
+                    <a class="dropdown-item" href="#">추리</a>
+                    <a class="dropdown-item" href="#">로맨스</a>
+                    <!-- 다른 카테고리 항목들 추가 -->
+                </div>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">상품 등록</button>
@@ -155,6 +161,7 @@
             preview.src = "";
         }
     }
+
 </script>
 </body>
 
