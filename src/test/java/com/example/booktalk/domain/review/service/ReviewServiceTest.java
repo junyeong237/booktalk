@@ -256,6 +256,7 @@ class ReviewServiceTest {
         @Test
         void Review_삭제_성공() {
             //given
+            given(userRepository.findUserByIdWithThrow(1L)).willReturn(user);
             Review review = Review.builder()
                     .user(user)
                     .title("delete_title")
