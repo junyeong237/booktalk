@@ -52,7 +52,8 @@ public class ReviewService {
 
         return reviewList.stream()
                 .map(review -> new ReviewGetListRes(review.getId(),
-                        review.getTitle(), review.getUser().getNickname()))
+                        review.getTitle(), review.getUser().getNickname(),
+                        review.getReviewLikeCount()))
                 .toList();
     }
 
@@ -64,7 +65,8 @@ public class ReviewService {
 
         return reviewList.stream()
                 .map(review -> new ReviewSearchListRes(review.getId(),
-                        review.getTitle(), review.getUser().getNickname()))
+                        review.getTitle(), review.getUser().getNickname(),
+                        review.getReviewLikeCount()))
                 .toList();
     }
 
@@ -78,7 +80,8 @@ public class ReviewService {
                 .toList();
 
         return new ReviewGetRes(review.getId(), review.getTitle(),
-                review.getContent(), review.getUser().getNickname(),commentList);
+                review.getContent(), review.getUser().getNickname(),
+                review.getReviewLikeCount(), commentList);
     }
 
     @Transactional
