@@ -67,7 +67,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
-        @RequestBody UserProfileReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @Valid @RequestBody UserProfileReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateProfile(userId, req, userDetails.getUser().getId()));
 
