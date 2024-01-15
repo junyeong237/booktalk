@@ -17,14 +17,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    # env:
-    #   DB_USERNAME: ${{ secrets.DB_USERNAME }}
-    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-    #   LOCAL_HOST: ${{ secrets.LOCAL_HOST }}
-    #   DB_PORT: ${{ secrets.DB_PORT }}
-    #   DB_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
-    #   REDIS_HOST: ${{ secrets.REDIS_HOST }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -32,6 +24,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'zulu'
+
+      env:
+        spring.datasource.url: jdbc:mysql://${{ secrets.LOCAL_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_DATABASE_NAME }}
+        spring.datasource.username: ${{ secrets.DB_USERNAME }} 
+        spring.datasource.password: ${{ secrets.DB_PASSWORD }} 
+        jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
+        data.redis.host: ${{ secrets.REDIS_HOST }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew    
     - name: access to secrets
