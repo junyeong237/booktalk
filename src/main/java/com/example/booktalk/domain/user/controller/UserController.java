@@ -6,6 +6,7 @@ import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserOwnProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
@@ -51,6 +52,13 @@ public class UserController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<UserOwnProfileGetRes> getOwnProfile(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.getOwnProfile(userDetails.getUser().getId()));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -66,8 +74,9 @@ public class UserController {
     }
 
     @PutMapping("/withdraw")
-    public ResponseEntity<UserWithdrawRes> withdraw(@RequestBody UserWithdrawReq req,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<UserWithdrawRes> withdraw(@RequestBody UserWithdrawReq req,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.withdraw(req,userDetails.getUser().getId()));
+            .body(userService.withdraw(req, userDetails.getUser().getId()));
     }
 }
