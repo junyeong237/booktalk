@@ -1,6 +1,14 @@
 REPOSITORY=/home/ubuntu/app
 cd $REPOSITORY
 
+
+export DB_USERNAME=${{ secrets.DB_USERNAME }} 
+export DB_PASSWORD=${{ secrets.DB_PASSWORD }} 
+export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} 
+export LOCAL_HOST=${{ secrets.LOCAL_HOST }} 
+export DB_PORT=${{ secrets.DB_DATABASE_NAME }} 
+export DB_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }} 
+export REDIS_HOST=${{ secrets.REDIS_HOST }} 
 APP_NAME=booktalk #1
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
@@ -15,14 +23,6 @@ else
   sudo kill -15 $CURRENT_PID
   sleep 5
 fi
-
-export DB_USERNAME=${{ secrets.DB_USERNAME }} 
-export DB_PASSWORD=${{ secrets.DB_PASSWORD }} 
-export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} 
-export LOCAL_HOST=${{ secrets.LOCAL_HOST }} 
-export DB_PORT=${{ secrets.DB_DATABASE_NAME }} 
-export DB_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }} 
-export REDIS_HOST=${{ secrets.REDIS_HOST }} 
 
 echo "> $JAR_PATH 배포" #3
 nohup java -jar /home/ubuntu/app/build/libs/booktalk-0.0.1-SNAPSHOT.jar > $REPOSITORY/nohup.out 2>&1 &
