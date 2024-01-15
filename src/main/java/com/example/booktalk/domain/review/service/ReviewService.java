@@ -61,7 +61,7 @@ public class ReviewService {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
 
-        List<Review> reviewList = reviewRepository.getReviewListByTitle(sort, search);
+        List<Review> reviewList = reviewRepository.getReviewListByTitleOrContent(sort, search);
 
         return reviewList.stream()
                 .map(review -> new ReviewSearchListRes(review.getId(),

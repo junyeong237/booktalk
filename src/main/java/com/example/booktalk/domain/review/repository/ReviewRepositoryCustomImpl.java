@@ -22,7 +22,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     QReview review = QReview.review;
 
     @Override
-    public List<Review> getReviewListByTitle(Sort sort, String search) {
+    public List<Review> getReviewListByTitleOrContent(Sort sort, String search) {
 
         JPAQuery<Review> query = jpaQueryFactory
                 .selectFrom(review)

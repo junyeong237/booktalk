@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewRepositoryCustom {
 
-    List<Review> getReviewListByTitle(Sort sort, String search);
+    List<Review> getReviewListByTitleOrContent(Sort sort, String search);
 }
