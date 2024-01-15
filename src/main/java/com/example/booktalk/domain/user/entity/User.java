@@ -72,9 +72,8 @@ public class User extends BaseEntity {
         this.kakaoId = kakaoId;
     }
 
-    public void updateProfile(String newPassword, String description, String phone, String location,
-        String nickname) {
-        this.password = newPassword;
+    public void updateProfile(String description, String phone, String location,
+                              String nickname) {
         this.description = description;
         this.phone = phone;
         this.location = location;
@@ -96,13 +95,12 @@ public class User extends BaseEntity {
             this.score = 0.0;
         }
     }
-
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
     }
-
     public void withdraw() {
         this.deleted = true;
     }
+
 }

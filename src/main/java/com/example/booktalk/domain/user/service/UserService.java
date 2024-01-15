@@ -6,6 +6,7 @@ import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserOwnProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
@@ -33,7 +34,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
+    
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -80,7 +81,7 @@ public class UserService {
 
         User user = userRepository.findUserByEmailWithThrow(email);
 
-        if(user.isDeleted()){
+        if (user.isDeleted()) {
             throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
         }
 
@@ -98,6 +99,18 @@ public class UserService {
         return new UserLoginRes("로그인 완료");
     }
 
+    public UserOwnProfileGetRes getOwnProfile(Long userId) {
+        User user = userRepository.findUserByIdWithThrow(userId);
+
+        String nickname = user.getNickname();
+        String description = user.getDescription();
+        String location = user.getLocation();
+
+        return new UserOwnProfileGetRes(user.getId(), nickname, user.getEmail(), description,
+            location, user.getPhone());
+
+    }
+
     public UserProfileGetRes getProfile(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -111,8 +124,8 @@ public class UserService {
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId) {
         String password = req.password();
-        String newPassword = passwordEncoder.encode(req.newPassword());
-        String newPasswordCheck = req.newPasswordCheck();
+//        String newPassword = passwordEncoder.encode(req.newPassword());
+//        String newPasswordCheck = req.newPasswordCheck();
         String description = req.description();
         String phone = req.phone();
         String location = req.location();
@@ -124,17 +137,18 @@ public class UserService {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
         }
 
-        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
-            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
-        }
+//        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
+//            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
+//        }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
-        user.updateProfile(newPassword, description, phone, location, nickname);
+        user.updateProfile(description, phone, location, nickname);
         userRepository.save(user);
 
-        return new UserProfileUpdateRes("수정 완료");
+        return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
+            location, user.getPhone());
     }
 
 
@@ -148,10 +162,11 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
         }
-        if(!Objects.equals(password, passwordCheck)){
+        if (!Objects.equals(password, passwordCheck)) {
             throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
         }
         user.withdraw();
         return new UserWithdrawRes("탈퇴 완료");
     }
+
 }
