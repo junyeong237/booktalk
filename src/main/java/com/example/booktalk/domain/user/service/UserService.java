@@ -15,6 +15,7 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
 import com.example.booktalk.domain.user.exception.BadLoginException;
+import com.example.booktalk.domain.user.exception.BlockedUserException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
@@ -83,6 +84,10 @@ public class UserService {
 
         if (user.isDeleted()) {
             throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
+        }
+
+        if(user.getRole() == UserRoleType.BLOCK){
+            throw new BlockedUserException(UserErrorCode.FORBIDDEN_BLOCKED_USER);
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
