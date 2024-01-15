@@ -191,6 +191,50 @@ class ReviewServiceTest {
         }
     }
 
+    @Test
+    void Review_검색_성공() {
+        //given
+        Sort.Direction direction = Sort.Direction.ASC;
+        String sortBy = "id";
+        Sort sort = Sort.by(direction, sortBy);
+
+        String search = "content";
+
+        Review review1 = Review.builder()
+                .title("title1")
+                .content("content")
+                .user(user)
+                .build();
+        Review review2 = Review.builder()
+                .title("title2")
+                .content("content")
+                .user(user2)
+                .build();
+        ReflectionTestUtils.setField(review1, "id", 1L);
+        ReflectionTestUtils.setField(review2, "id", 2L);
+
+        List<Review> reviewList = new ArrayList<>();
+        reviewList.add(review1);
+        reviewList.add(review2);
+
+        given(reviewRepository.getReviewListByTitleOrContent(sort, search))
+                .willReturn(reviewList);
+
+        //when
+        List<ReviewSearchListRes> result =
+                reviewService.getReviewSearchList(sortBy, true, search);
+
+        //then
+        assertThat(result.size()).isEqualTo(2);
+
+        assertThat(result.get(0).title()).isEqualTo("title1");
+        assertThat(result.get(1).title()).isEqualTo("title2");
+
+
+        verify(reviewRepository, times(1))
+                .getReviewListByTitleOrContent(sort, search);
+    }
+
     @Nested
     class Review_수정_테스트 {
 
