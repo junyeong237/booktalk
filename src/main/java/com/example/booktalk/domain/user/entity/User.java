@@ -102,8 +102,13 @@ public class User extends BaseEntity {
         this.kakaoId = kakaoId;
         return this;
     }
+
     public void withdraw() {
         this.deleted = true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 
 }
