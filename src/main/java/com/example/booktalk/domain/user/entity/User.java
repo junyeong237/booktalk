@@ -2,21 +2,14 @@ package com.example.booktalk.domain.user.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.trade.entity.Trade;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -56,6 +49,9 @@ public class User extends BaseEntity {
     @Column
     private Double score;
 
+    @Column
+    private Long kakaoId;
+
     @OneToMany(mappedBy = "seller")
     private List<Trade> tradeList = new ArrayList<>();
     ;
@@ -68,7 +64,16 @@ public class User extends BaseEntity {
         this.nickname = randomNickname;
     }
 
-    public void updateProfile(String description, String phone, String location,
+    public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
+        Long kakaoId) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.email = email;
+        this.role = userRoleType;
+        this.kakaoId = kakaoId;
+    }
+
+    public void updateProfile(String newPassword, String description, String phone, String location,
         String nickname) {
         this.description = description;
         this.phone = phone;
@@ -81,9 +86,9 @@ public class User extends BaseEntity {
     }
 
     public void averageScore() {
-        if (!tradeList.isEmpty()) {
+        if(!tradeList.isEmpty()) {
             Double sum = 0.0;
-            for (Trade trade : tradeList) {
+            for(Trade trade : tradeList) {
                 sum += trade.getScore();
             }
             this.score = sum / tradeList.size();
@@ -92,7 +97,13 @@ public class User extends BaseEntity {
         }
     }
 
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
     public void withdraw() {
         this.deleted = true;
     }
+
 }
