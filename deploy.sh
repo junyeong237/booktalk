@@ -4,11 +4,12 @@ cd $REPOSITORY
 
 export DB_USERNAME=${{ secrets.DB_USERNAME }} 
 export DB_PASSWORD=${{ secrets.DB_PASSWORD }} 
-export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} 
+export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
 export LOCAL_HOST=${{ secrets.LOCAL_HOST }} 
 export DB_PORT=${{ secrets.DB_DATABASE_NAME }} 
 export DB_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }} 
 export REDIS_HOST=${{ secrets.REDIS_HOST }} 
+
 APP_NAME=booktalk #1
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
