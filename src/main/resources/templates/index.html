@@ -39,20 +39,15 @@
       <ul class="nav justify-content-center">
         <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
     </div>
 
-    <div class="col-md-3 text-md-end">
+    <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <form class="d-inline-flex me-2">
-          <input class="form-control" type="search" placeholder="Search" aria-label="Search"
-                 style="width: 200px;">
-          <button class="btn btn-outline-primary" type="submit">Search</button>
-        </form>
-        <button type="button" class="btn btn-outline-primary me-1" onclick="redirectToLogin()">
+        <button type="button" class="btn btn-outline-primary" onclick="redirectToLogin()">
           Login
         </button>
       </div>
@@ -100,10 +95,6 @@
 <script>
   function redirectToLogin() {
     window.location.href = host + '/api/v1/users/login';
-  }
-
-  function redirectToSignup() {
-    window.location.href = host + '/api/v1/users/signup';
   }
 
   $(document).ready(function () {

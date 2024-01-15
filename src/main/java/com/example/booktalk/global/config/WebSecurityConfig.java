@@ -70,6 +70,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/v1/image/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/main").permitAll() //메인페이지
+                .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll() //상품목록페이지
                 .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").permitAll() //마이페이지
                 .requestMatchers("/api/v1/users/signup").permitAll() //회원가입
                 .requestMatchers("/api/v1/users/login").permitAll() //로그인

@@ -174,7 +174,7 @@ public class ProductService {
 
     }
 
-
+    @Transactional(readOnly = true)
     public List<ProductTagListRes> getProductSearchTagList(String sortBy, Boolean isAsc,
         String tag) {
 
