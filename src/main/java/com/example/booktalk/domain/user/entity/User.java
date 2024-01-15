@@ -73,7 +73,7 @@ public class User extends BaseEntity {
         this.kakaoId = kakaoId;
     }
 
-    public void updateProfile(String newPassword, String description, String phone, String location,
+    public void updateProfile(String description, String phone, String location,
         String nickname) {
         this.description = description;
         this.phone = phone;
