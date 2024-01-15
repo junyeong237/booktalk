@@ -19,6 +19,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
         return findById(id).orElseThrow(() ->
             new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));
     }
-
-
+    
 }
