@@ -12,6 +12,7 @@ import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
 import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
 import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
+import com.example.booktalk.domain.product.dto.response.ProductTopLikesListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.NotPermissionAuthority;
@@ -124,6 +125,30 @@ public class ProductService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductTopLikesListRes> getProductListByLikesTopThree() {
+
+        List<Product> productList = productRepository.findTop3ByOrderByProductLikeCntDesc();
+
+        return productList.stream()
+            .map(product -> {
+
+                List<String> categories = product.getProductCategoryList().stream()
+                    .map(productCategory -> {
+                        return productCategory.getCategory().getName();
+                    })
+                    .toList();
+
+                return new ProductTopLikesListRes(product.getId(), product.getName(),
+                    product.getPrice(),
+                    product.getQuantity(), product.getProductLikeCnt(), categories,
+                    product.getRegion());
+
+            })
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductSerachListRes> getProductSearchList(String sortBy, Boolean isAsc,
         String search) {
 

@@ -53,7 +53,8 @@ public class User extends BaseEntity {
     private Long kakaoId;
 
     @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();;
+    private List<Trade> tradeList = new ArrayList<>();
+    ;
 
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname) {
@@ -74,7 +75,6 @@ public class User extends BaseEntity {
 
     public void updateProfile(String newPassword, String description, String phone, String location,
         String nickname) {
-        this.password = newPassword;
         this.description = description;
         this.phone = phone;
         this.location = location;
@@ -105,5 +105,5 @@ public class User extends BaseEntity {
     public void withdraw() {
         this.deleted = true;
     }
-  
+
 }

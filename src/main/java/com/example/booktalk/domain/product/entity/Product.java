@@ -55,6 +55,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+
     private Boolean deleted;
 
 
@@ -95,7 +96,6 @@ public class Product extends BaseEntity {
     public void deleted() {
         this.deleted = true;
     }
-
 
     public void addProductCategory(ProductCategory productCategory) {
         this.productCategoryList.add(productCategory);

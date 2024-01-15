@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,38 +17,175 @@
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-  <script src="/js/basic.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 
 </head>
+
 <body>
 
 <div class="container">
-  <h1 class="text-center mb-4">Book톡방</h1>
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
 
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <!-- 게시물 폼 -->
-      <div class="card">
-        <div class="card-body">
-          <form>
-            <div class="mb-3">
-              <label for="postContent" class="form-label">게시물 내용</label>
-              <textarea class="form-control" id="postContent" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">게시물 등록</button>
-          </form>
-        </div>
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-3 text-md-end">
+      <div class="d-flex align-items-center">
+        <form class="d-inline-flex me-2">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search"
+                 style="width: 200px;">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+        <button type="button" class="btn btn-outline-primary me-1" onclick="redirectToLogin()">
+          Login
+        </button>
       </div>
+    </div>
+  </header>
+</div>
 
-      <!-- 게시물 목록 -->
-      <div class="body-container" id="body-container">
+
+<!-- Used items list -->
+<div class="container mt-2 mb-2">
+  <section class="py-2 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">Album example</h1>
+        <p class="lead text-body-secondary">Something short and leading about the collection
+          below—its contents, the creator, etc. Make it short and sweet, but not too short so
+          folks don’t simply skip over it entirely.</p>
 
       </div>
     </div>
+  </section>
+
+  <h2 class="text-top mb-2">현재 인기 상품!</h2>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="main-product-page">
+
   </div>
+
+  <footer class="text-muted py-5">
+    <div class="container">
+      <p class="float-end mb-1">
+        <a href="#">Back to top</a>
+      </p>
+      <p class="mb-1">Album example is © Bootstrap, but please download and customize it for
+        yourself!</p>
+      <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a
+          href="/docs/5.1/getting-started/introduction/">getting started guide</a>.</p>
+    </div>
+  </footer>
+
 </div>
 
+
+<!-- Bootstrap JS and other scripts can be included here -->
+<script>
+  function redirectToLogin() {
+    window.location.href = host + '/api/v1/users/login';
+  }
+
+  function redirectToSignup() {
+    window.location.href = host + '/api/v1/users/signup';
+  }
+
+  $(document).ready(function () {
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/products/main`,
+    })
+    .done(function (res) {
+      $('#main-product-page').empty();
+      res.forEach(function (product) {
+        renderMainProduct(product);
+      })
+
+    })
+    .fail(function (jqXHR, textStatus) {
+      alert('알수없는 오류가 발생했습니다.');
+    });
+
+  });
+
+  function renderMainProduct(product) {
+    var currentElement = document.getElementById('main-product-page');
+    var colDiv = document.createElement('div');
+    colDiv.className = 'col';
+
+    // card 엘리먼트 생성
+    var cardDiv = document.createElement('div');
+    cardDiv.className = 'card shadow-sm';
+
+    // 이미지 엘리먼트 생성
+    var imageElement = document.createElement('img');
+    imageElement.src = 'https://via.placeholder.com/150';
+    imageElement.className = 'card-img-top';
+    imageElement.alt = 'Item Image';
+
+    // card-body 엘리먼트 생성
+    var cardBodyDiv = document.createElement('div');
+    cardBodyDiv.className = 'card-body';
+
+    // card-title 엘리먼트 생성
+    var cardTitle = document.createElement('h3');
+    cardTitle.className = 'card-title';
+    cardTitle.id = 'product-name' + product.id;
+    cardTitle.textContent = product.name;
+
+    // card-text 엘리먼트 생성
+    var cardTextP = document.createElement('p');
+    cardTextP.className = 'card-price';
+    cardTextP.textContent = product.price + '원';
+
+    // d-flex 엘리먼트 생성
+    var dFlexDiv = document.createElement('div');
+    dFlexDiv.className = 'd-flex justify-content-between align-items-center';
+// btn-group 엘리먼트 생성
+    var btnGroupDiv = document.createElement('div');
+    btnGroupDiv.className = 'btn-group';
+    // 버튼 엘리먼트 생성
+    var buttonElement = document.createElement('a');
+    buttonElement.href = '#';
+    buttonElement.className = 'btn btn-outline-secondary'; // 부트스트랩 버튼 클래스 추가
+    buttonElement.textContent = '자세히보기';
+
+    // small 엘리먼트 생성
+    var smallLikesElement = document.createElement('small');
+    smallLikesElement.className = 'text-body-secondary';
+    smallLikesElement.textContent = '관심 ' + product.productLikes + '개';
+
+    btnGroupDiv.appendChild(buttonElement);
+    dFlexDiv.appendChild(btnGroupDiv);
+    dFlexDiv.appendChild(smallLikesElement);
+
+    cardBodyDiv.appendChild(cardTitle)
+    cardBodyDiv.appendChild(cardTextP);
+    cardBodyDiv.appendChild(dFlexDiv);
+    cardDiv.appendChild(imageElement);
+    cardDiv.appendChild(cardBodyDiv);
+    colDiv.appendChild(cardDiv);
+    currentElement.appendChild(colDiv);
+
+  }
+
+</script>
 </body>
+
 </html>
