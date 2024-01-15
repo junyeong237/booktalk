@@ -73,7 +73,7 @@ public class User extends BaseEntity {
     }
 
     public void updateProfile(String description, String phone, String location,
-                              String nickname) {
+        String nickname) {
         this.description = description;
         this.phone = phone;
         this.location = location;
@@ -95,6 +95,8 @@ public class User extends BaseEntity {
             this.score = 0.0;
         }
     }
+
+
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
