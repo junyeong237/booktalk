@@ -66,6 +66,7 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
+                .requestMatchers("/api/v1/users/kakao/**").permitAll()
                 .requestMatchers("/api/v1/image/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1").permitAll() //메인페이지
                 .requestMatchers("/api/v1/users/signup").permitAll() //회원가입
