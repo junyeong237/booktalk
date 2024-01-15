@@ -43,7 +43,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
     }
 
     private BooleanExpression hasReviewTitle(String search) {
-        return review.title.eq(search);
+        return review.title.containsIgnoreCase(search);
     }
 
 }
