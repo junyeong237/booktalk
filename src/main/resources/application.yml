@@ -3,7 +3,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:${DB_PORT}/${DB_DATABASE_NAME}
+    url: jdbc:mysql://${LOCAL_HOST}:${DB_PORT}/${DB_DATABASE_NAME}
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,7 +18,8 @@ spring:
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
-
+kakao:
+  key: d4ee4d56fb48da76a8de567698192d24
 
 server:
   servlet:
@@ -28,7 +29,7 @@ server:
 
 data:
   redis:
-    host: localhost
+    host: ${REDIS_HOST}
     port: 6379
 
 
@@ -43,4 +44,3 @@ cloud:
     credentials:
       access-key: AKIA4LJM27FWEZNL6D5S
       secret-key: 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
-

@@ -52,6 +52,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Boolean finished;
 
+    @Column(nullable = false)
+    private String content;
+
     private Boolean deleted;
 
 
@@ -64,12 +67,14 @@ public class Product extends BaseEntity {
     private final List<ProductCategory> productCategoryList = new ArrayList<>();
 
     @Builder
-    private Product(String name, Long price, Long quantity, Region region, User user) {
+    private Product(String name, Long price, Long quantity, Region region, String content,
+        User user) {
         this.productLikeCnt = 0L;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
         this.region = region;
+        this.content = content;
         this.user = user;
         this.finished = false;
         this.deleted = false;
@@ -80,6 +85,7 @@ public class Product extends BaseEntity {
         this.quantity = req.quantity();
         this.price = req.price();
         this.region = req.region();
+        this.content = req.content();
     }
 
     public void finish() { //거래 상태를 완료로 변경
