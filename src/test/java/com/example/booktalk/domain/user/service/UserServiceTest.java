@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.user.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -184,23 +185,22 @@ class UserServiceTest {
             Long userDetailsId = 2L;
             UserProfileReq req = new UserProfileReq(
                 "password",
-                "newPassword",
-                "newPassword",
-                "newDescription",
-                "newPhone",
-                "newLocation",
-                "newNickname"
+                "nickname",
+                "location",
+                "description",
+                "phone"
             );
             given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
             given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
-            given(passwordEncoder.matches(req.newPasswordCheck(),
-                passwordEncoder.encode(req.newPassword()))).willReturn(true);
 
             // when
             UserProfileUpdateRes res = userService.updateProfile(userId, req, userDetailsId);
 
             // then
-            assertNotNull(res.message());
+            assertThat(res.description()).isEqualTo(user.getDescription());
+            assertThat(res.nickname()).isEqualTo(user.getNickname());
+            assertThat(res.location()).isEqualTo(user.getLocation());
+            assertThat(res.phone()).isEqualTo(user.getPhone());
         }
 
         @Test
@@ -209,22 +209,19 @@ class UserServiceTest {
             Long userId = 2L;
             Long userDetailsId = 2L;
             UserProfileReq req = new UserProfileReq(
-                "wrongPassword",
-                "newPassword",
-                "newPassword",
-                "newDescription",
-                "newPhone",
+                "Password",
+                "newNickname",
                 "newLocation",
-                "newNickname"
+                "newDescription",
+                "newPhone"
             );
             given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
-            given(passwordEncoder.matches("newPassword", null)).willReturn(false);
 
             //when
             GlobalException exception = assertThrows(GlobalException.class, ()->{userService.updateProfile(userId,req,userDetailsId);});
 
             //then
-            assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
+            assertEquals(UserErrorCode.NOT_MATCH_PASSWORD,
                 exception.getErrorCode());
         }
     }
