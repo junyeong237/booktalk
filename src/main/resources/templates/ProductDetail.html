@@ -1,57 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Product Details</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+
+    <style>
+        body {
+            font-size: 18px; /* 수정된 부분: 전체 글꼴 크기를 조절하세요. */
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 100px;
+        }
+
+        .card-img-top {
+            width: 500px;
+            height: auto;
+        }
+        .card-text-group{
+            margin-left: 50px;
+        }
+
+        .card-title {
+            font-size: 24px; /* 수정된 부분: 카드 제목 글꼴 크기를 조절하세요. */
+        }
+
+        .card-text {
+            font-size: 20px; /* 수정된 부분: 카드 텍스트 글꼴 크기를 조절하세요. */
+        }
+    </style>
 </head>
+
 <body>
 
 <div class="container">
     <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
             <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
-                <span class="fs-4">BookRoom</span>
+                <span class="fs-4">Book톡방</span>
             </a>
         </div>
 
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
+                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+                </li>
                 <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
             </ul>
         </div>
 
-        <div class="col-md-3 text-md-end">
+        <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <form class="d-inline-flex me-2">
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" style="width: 200px;">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                </form>
+                <button type="button" class="btn btn-outline-primary">
+                    Login
+                </button>
             </div>
         </div>
     </header>
-
+</div>
     <div class="card mt-3">
         <div class="card-body">
-            <h5 class="card-title">상품 설명</h5>
-            <p class="card-text">상품이름: Used Book 1</p>
-            <p class="card-text">가격: $3000</p>
-            <p class="card-text">퀄리티: 3</p>
-            <p class="card-text">지역: Seoul, Busan</p>
-            <p class="card-text">판매여부: 아니요</p>
-            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image" style="width: 600px; height: auto;">
+            <img src="https://via.placeholder.com/500" class="card-img-top" alt="Product Image">
+            <div class="col-md-6 card-text-group">
+                <h5 class="card-title">상품 설명</h5>
+                <p class="card-text">상품이름: Used Book 1</p>
+                <p class="card-text">가격: $3000</p>
+                <p class="card-text">퀄리티: 3</p>
+                <p class="card-text">지역: Seoul, Busan</p>
+                <p class="card-text">판매여부: 아니요</p>
+                <div class="card-button">
+                    <a href="#" class="btn btn-primary btn-lg btn-block">상품리스트로 돌아가기</a>
+                    <a href="#" class="btn btn-primary btn-lg btn-block">대화 해보기</a>
+                    <a href="#" class="btn btn-primary btn-lg btn-block">판매자 프로필 보기</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="fixed-bottom text-end mb-4 me-4" style="position: fixed; bottom: 30px; right:300px;">
-        <a href="#" class="btn btn-primary btn-lg btn-block">상품리스트로 돌아가기</a>
-        <a href="#" class="btn btn-primary btn-lg btn-block">대화 해보기</a>
-    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -64,4 +108,5 @@
     }
 </script>
 </body>
+
 </html>
