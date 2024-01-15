@@ -52,13 +52,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable Long userId) {
+    public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.getProfile(userId));
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
+    public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable(name = "userId") Long userId,
         @RequestBody UserProfileReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateProfile(userId, req, userDetails.getUser().getId()));

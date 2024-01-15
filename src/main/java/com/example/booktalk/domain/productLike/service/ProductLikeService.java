@@ -1,8 +1,6 @@
 package com.example.booktalk.domain.productLike.service;
 
 import com.example.booktalk.domain.product.entity.Product;
-import com.example.booktalk.domain.product.exception.NotFoundProductException;
-import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
 import com.example.booktalk.domain.productLike.entity.ProductLike;

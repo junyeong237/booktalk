@@ -1,8 +1,6 @@
 package com.example.booktalk.domain.userreport.service;
 
 import com.example.booktalk.domain.user.entity.User;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
-import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.domain.userreport.dto.request.UserReportCreateReq;
 import com.example.booktalk.domain.userreport.dto.response.UserReportCreateRes;
