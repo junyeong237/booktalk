@@ -2,14 +2,21 @@ package com.example.booktalk.domain.user.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.trade.entity.Trade;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -50,7 +57,8 @@ public class User extends BaseEntity {
     private Double score;
 
     @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();;
+    private List<Trade> tradeList = new ArrayList<>();
+    ;
 
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname) {
@@ -60,9 +68,8 @@ public class User extends BaseEntity {
         this.nickname = randomNickname;
     }
 
-    public void updateProfile(String newPassword, String description, String phone, String location,
+    public void updateProfile(String description, String phone, String location,
         String nickname) {
-        this.password = newPassword;
         this.description = description;
         this.phone = phone;
         this.location = location;
@@ -74,9 +81,9 @@ public class User extends BaseEntity {
     }
 
     public void averageScore() {
-        if(!tradeList.isEmpty()) {
+        if (!tradeList.isEmpty()) {
             Double sum = 0.0;
-            for(Trade trade : tradeList) {
+            for (Trade trade : tradeList) {
                 sum += trade.getScore();
             }
             this.score = sum / tradeList.size();
