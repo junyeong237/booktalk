@@ -9,6 +9,7 @@ import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
 import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
 import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
+import com.example.booktalk.domain.product.dto.response.ProductTopLikesListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.service.ProductService;
 import com.example.booktalk.global.security.UserDetailsImpl;
@@ -72,6 +73,12 @@ public class ProductController {
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc
     ) {
         return productService.getProductList(sortBy, isAsc);
+    }
+
+    @GetMapping("/main") //메인화면에 관심상품 Top3 인 product 출력
+    public List<ProductTopLikesListRes> getProductListTopThree() {
+
+        return productService.getProductListByLikesTopThree();
     }
 
     @GetMapping("/search") //상품 검색 리스트 조회
