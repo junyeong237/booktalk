@@ -16,5 +16,13 @@ else
   sleep 5
 fi
 
+export DB_USERNAME=${{ secrets.DB_USERNAME }} 
+export DB_PASSWORD=${{ secrets.DB_PASSWORD }} 
+export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} 
+export LOCAL_HOST=${{ secrets.LOCAL_HOST }} 
+export DB_PORT=${{ secrets.DB_DATABASE_NAME }} 
+export DB_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }} 
+export REDIS_HOST=${{ secrets.REDIS_HOST }} 
+
 echo "> $JAR_PATH 배포" #3
 nohup java -jar /home/ubuntu/app/build/libs/booktalk-0.0.1-SNAPSHOT.jar > $REPOSITORY/nohup.out 2>&1 &
