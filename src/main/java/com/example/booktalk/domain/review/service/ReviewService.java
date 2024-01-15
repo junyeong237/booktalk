@@ -32,10 +32,10 @@ public class ReviewService {
         User user = userRepository.findUserByIdWithThrow(userId);
 
         Review review = Review.builder()
-            .title(req.title())
-            .content(req.content())
-            .user(user)
-            .build();
+                .title(req.title())
+                .content(req.content())
+                .user(user)
+                .build();
 
         reviewRepository.save(review);
 
@@ -52,6 +52,18 @@ public class ReviewService {
 
         return reviewList.stream()
                 .map(review -> new ReviewGetListRes(review.getId(),
+                        review.getTitle(), review.getUser().getNickname()))
+                .toList();
+    }
+
+    public List<ReviewSearchListRes> getReviewSearchList(String sortBy, boolean isAsc, String search) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Review> reviewList = reviewRepository.getReviewListByTitle(sort, search);
+
+        return reviewList.stream()
+                .map(review -> new ReviewSearchListRes(review.getId(),
                         review.getTitle(), review.getUser().getNickname()))
                 .toList();
     }
@@ -96,8 +108,9 @@ public class ReviewService {
     private void validateReviewUser(User user, Review review) {
         if (!user.getId().equals(review.getUser().getId())) {
             throw new NotPermissionReviewAuthorityException(
-                ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
+                    ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
         }
     }
+
 
 }
