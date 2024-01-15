@@ -179,6 +179,7 @@ class ImageFileServiceTest {
         assertEquals("삭제가 완료되었습니다.", result.message());
         verify(imageFileRepository, times(1)).delete(imageFile);
         verify(userRepository, times(1)).findUserByIdWithThrow(userId);
+
         verify(imageFileRepository, times(1)).findImageFileByProductIdAndIdWithThrow(productId, imageId);
     }
 
