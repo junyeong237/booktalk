@@ -26,7 +26,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
 
         JPAQuery<Review> query = jpaQueryFactory
                 .selectFrom(review)
-                .where(hasReviewTitle(search))
+                .where(hasReviewTitleOrContent(search))
                 .distinct();
 
         if(sort.isSorted()) {
@@ -42,8 +42,9 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         return reviewList;
     }
 
-    private BooleanExpression hasReviewTitle(String search) {
-        return review.title.containsIgnoreCase(search);
+    private BooleanExpression hasReviewTitleOrContent(String search) {
+        return review.title.containsIgnoreCase(search)
+                .or(review.content.containsIgnoreCase(search));
     }
 
 }
