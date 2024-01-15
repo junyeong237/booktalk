@@ -77,9 +77,9 @@ public class User extends BaseEntity {
     }
 
     public void averageScore() {
-        if (!tradeList.isEmpty()) {
+        if(!tradeList.isEmpty()) {
             Double sum = 0.0;
-            for (Trade trade : tradeList) {
+            for(Trade trade : tradeList) {
                 sum += trade.getScore();
             }
             this.score = sum / tradeList.size();
@@ -88,12 +88,13 @@ public class User extends BaseEntity {
         }
     }
 
+
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
     }
-
     public void withdraw() {
         this.deleted = true;
     }
+
 }
