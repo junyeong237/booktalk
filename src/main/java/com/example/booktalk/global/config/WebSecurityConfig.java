@@ -76,6 +76,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/save").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
                 .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                //hasRole 자체가 "ROLE_"을 포함하고 있어서 UserRoleType.ADMIN을 사용하려면 String타입의 "ROLE_ADMIN"에서 "ADMIN"만 사용필요
 
                 .anyRequest().authenticated()
         );
