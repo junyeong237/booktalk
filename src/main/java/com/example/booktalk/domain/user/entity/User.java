@@ -49,6 +49,9 @@ public class User extends BaseEntity {
     @Column
     private Double score;
 
+    @Column
+    private Long kakaoId;
+
     @OneToMany(mappedBy = "seller")
     private List<Trade> tradeList = new ArrayList<>();;
 
@@ -58,6 +61,15 @@ public class User extends BaseEntity {
         this.password = password;
         this.role = role;
         this.nickname = randomNickname;
+    }
+
+    public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
+        Long kakaoId) {
+        this.nickname = nickname;
+        this.password = encodedPassword;
+        this.email = email;
+        this.role = userRoleType;
+        this.kakaoId = kakaoId;
     }
 
     public void updateProfile(String newPassword, String description, String phone, String location,
@@ -85,7 +97,13 @@ public class User extends BaseEntity {
         }
     }
 
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
     public void withdraw() {
         this.deleted = true;
     }
+  
 }
