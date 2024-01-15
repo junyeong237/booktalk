@@ -72,9 +72,6 @@ function renderUsers(userList) {
 
     myButton.addEventListener("click", function () {
       // Redirect to the desired HTML file
-      const data = {
-        receiverId: user.id
-      };
 
       $.ajax({
         type: "POST",
