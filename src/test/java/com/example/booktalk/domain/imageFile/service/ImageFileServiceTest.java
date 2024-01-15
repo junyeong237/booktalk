@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.imageFile.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.booktalk.domain.imageFile.dto.response.ImageDeleteRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageUpdateRes;
 import com.example.booktalk.domain.imageFile.entity.ImageFile;
@@ -162,5 +163,27 @@ class ImageFileServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals("https://example.com/test-image.jpg", result.imagePathUrl());
+    }
+
+    // 이미지 삭제 테스트
+    @Test
+    @DisplayName("이미지 삭제 테스트")
+    public void 이미지_삭제_테스트() {
+        // Given
+        Long userId = 1L;
+        Long productId = 1L;
+        Long imageId = 1L;
+        when(userRepository.findUserByIdWithThrow(userId)).thenReturn(user);
+        when(imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId)).thenReturn(imageFile);
+
+        // When
+        ImageDeleteRes result = imageFileService.deleteImage(userId, productId, imageId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals("삭제가 완료되었습니다.", result.message());
+        verify(imageFileRepository, times(1)).delete(imageFile);
+        verify(userRepository, times(1)).findUserByIdWithThrow(userId);
+        verify(imageFileRepository, times(1)).findImageFileByProductIdAndIdWithThrow(productId, imageId);
     }
 }
