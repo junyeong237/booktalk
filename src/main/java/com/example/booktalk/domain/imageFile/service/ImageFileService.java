@@ -43,7 +43,7 @@ public class ImageFileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public List<ImageCreateRes> createImage(Long userId, Long productId,List<MultipartFile> files) throws IOException {
+    public List<ImageCreateRes> createImage(Long userId, Long productId, List<MultipartFile> files) throws IOException {
         List<ImageCreateRes> imageCreateResList = new ArrayList<>();
 
         for (MultipartFile file : files) {
@@ -56,13 +56,13 @@ public class ImageFileService {
                     .product(product)
                     .build();
             imageFileRepository.save(imageFile);
-            ImageCreateRes imageResponse = new ImageCreateRes( imageFile.getImagePathUrl());
+            ImageCreateRes imageResponse = new ImageCreateRes(imageFile.getImagePathUrl());
             imageCreateResList.add(imageResponse);
         }
         return imageCreateResList;
     }
 
-    public ImageCreateRes createProfileImage(Long userId,MultipartFile file) throws IOException {
+    public ImageCreateRes createProfileImage(Long userId, MultipartFile file) throws IOException {
         String imagePathUrl = imageUpload(file);
         User user = userRepository.findUserByIdWithThrow(userId);
         ImageFile imageFile = ImageFile.builder()
@@ -76,9 +76,9 @@ public class ImageFileService {
 
     @Transactional(readOnly = true)
     public ImageGetRes getProfileImage(Long userId) {
-        User user=userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
 
-            ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
+        ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
         if (imageFile != null) {
             return new ImageGetRes(imageFile.getImagePathUrl());
         }
@@ -93,21 +93,34 @@ public class ImageFileService {
                 .toList();
     }
 
-    public List<ImageCreateRes> updateImage(Long userId, Long productId,List<MultipartFile> files) throws IOException {
-        deleteImage(userId,productId);
-        return createImage(userId,productId,files);
+    public List<ImageCreateRes> updateImage(Long userId, Long productId, List<MultipartFile> files) throws IOException {
+        deleteImage(userId, productId);
+        return createImage(userId, productId, files);
+    }
+
+    public ImageCreateRes updateProfileImage(Long userId, MultipartFile file) throws IOException {
+        User user = userRepository.findUserByIdWithThrow(userId);
+        deleteProfileImage(user);
+        return createProfileImage(userId, file);
     }
 
     public ImageDeleteRes deleteImage(Long userId, Long productId) {
         User user = userRepository.findUserByIdWithThrow(userId);
         List<ImageFile> imageFileList = imageFileRepository.findByProductId(productId);
-        for(ImageFile imageFile:imageFileList) {
+        for (ImageFile imageFile : imageFileList) {
             validateProductUser(user, imageFile);
             imageFileRepository.delete(imageFile);
         }
         return new ImageDeleteRes("삭제가 완료되었습니다.");
     }
 
+    public ImageCreateRes deleteProfileImage(User user){
+    ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
+        if (imageFile != null) {
+            imageFileRepository.delete(imageFile);
+        }
+        return new ImageCreateRes(null);
+    }
     public String imageUpload(@RequestParam("upload") MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf("."));
