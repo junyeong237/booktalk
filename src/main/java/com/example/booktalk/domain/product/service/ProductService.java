@@ -214,6 +214,7 @@ public class ProductService {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
+        imageFileService.deleteImage(userId,productId);
 
         product.deleted();
 
