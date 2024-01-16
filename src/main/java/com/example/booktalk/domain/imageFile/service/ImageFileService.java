@@ -76,14 +76,9 @@ public class ImageFileService {
                 .toList();
     }
 
-    @Transactional
-    public ImageUpdateRes updateImage(Long userId, Long productId, Long imageId, @RequestParam("upload") MultipartFile file) throws IOException {
-        User user = userRepository.findUserByIdWithThrow(userId);
-        String image = imageUpload(file);
-        ImageFile imageFile = imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId);
-        validateProductUser(user, imageFile);
-        imageFile.updateImage(image);
-        return new ImageUpdateRes(imageFile.getId(), imageFile.getImagePathUrl());
+    public List<ImageCreateRes> updateImage(Long userId, Long productId,List<MultipartFile> files) throws IOException {
+        deleteImage(userId,productId);
+        return createImage(userId,productId,files);
     }
 
     public ImageDeleteRes deleteImage(Long userId, Long productId) {

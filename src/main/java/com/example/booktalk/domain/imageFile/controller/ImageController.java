@@ -42,12 +42,11 @@ public class ImageController {
     public List<ImageListRes> getImages(@RequestBody GetImageReq req) {
          return imageFileService.getImages(req.productId());
     }
-    @PutMapping("/{imageId}") //이미지 수정
-    public ImageUpdateRes updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    @PutMapping//이미지 수정
+    public List<ImageCreateRes> updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart("productId") CreateImageReq req,
-                                      @PathVariable Long imageId,
-                                      @RequestParam("upload") MultipartFile file) throws IOException {
-        return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),imageId,file);
+                                      @RequestParam("upload") List<MultipartFile> files) throws IOException {
+        return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),files);
     }
     @DeleteMapping //이미지 삭제
     public ImageDeleteRes deleteImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
