@@ -33,11 +33,6 @@ public class ImageController {
 
         return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),files);
     }
-    @GetMapping("/{imageId}") //단일 조회
-    public ImageGetRes getImage(@RequestBody GetImageReq req,
-                                @PathVariable Long imageId) {
-        return imageFileService.getImage(req.productId(),imageId);
-    }
     @GetMapping//다건 조희
     public List<ImageListRes> getImages(@RequestBody GetImageReq req) {
          return imageFileService.getImages(req.productId());

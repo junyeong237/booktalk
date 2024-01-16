@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.user.service;
 
 
+import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
@@ -38,7 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -116,9 +117,9 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-
+        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
         return new UserOwnProfileGetRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone());
+            location, user.getPhone(),imageGetRes);
 
     }
 

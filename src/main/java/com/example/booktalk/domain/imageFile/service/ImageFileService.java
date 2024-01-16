@@ -75,9 +75,10 @@ public class ImageFileService {
     }
 
     @Transactional(readOnly = true)
-    public ImageGetRes getImage(Long productId, Long imageId) {
-        ImageFile imageFile = imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId);
-        return new ImageGetRes(imageFile.getId(), imageFile.getImagePathUrl());
+    public ImageGetRes getProfileImage(Long userId) {
+        User user=userRepository.findUserByIdWithThrow(userId);
+        ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
+        return new ImageGetRes(imageFile.getImagePathUrl());
     }
 
     @Transactional(readOnly = true)
