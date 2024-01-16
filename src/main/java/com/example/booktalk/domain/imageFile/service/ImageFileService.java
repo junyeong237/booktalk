@@ -44,7 +44,7 @@ public class ImageFileService {
     private String bucket;
 
     public List<ImageCreateRes> createImage(Long userId, Long productId,List<MultipartFile> files) throws IOException {
-        List<ImageCreateRes> imageResponses = new ArrayList<>();
+        List<ImageCreateRes> imageCreateResList = new ArrayList<>();
 
         for (MultipartFile file : files) {
             String imagePathUrl = imageUpload(file);
@@ -57,9 +57,9 @@ public class ImageFileService {
                     .build();
             imageFileRepository.save(imageFile);
             ImageCreateRes imageResponse = new ImageCreateRes(imageFile.getId(), imageFile.getImagePathUrl());
-            imageResponses.add(imageResponse);
+            imageCreateResList.add(imageResponse);
         }
-        return imageResponses;
+        return imageCreateResList;
     }
 
     @Transactional(readOnly = true)
