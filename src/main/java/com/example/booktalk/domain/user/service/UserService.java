@@ -5,11 +5,13 @@ import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
+import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserOwnProfileGetRes;
+import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
@@ -195,4 +197,21 @@ public class UserService {
         return new UserWithdrawRes("탈퇴 완료");
     }
 
+    @Transactional
+    public UserPWUpdateRes passwordUpdate(UserPWUpdateReq req, Long id) {
+        String password = req.password();
+        String newPassword = passwordEncoder.encode(req.newPassword());
+        String newPasswordCheck = req.newPasswordCheck();
+
+        User user = userRepository.findUserByIdWithThrow(id);
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadLoginException(UserErrorCode.BAD_LOGIN);
+        }
+        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
+            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
+        }
+        user.updatePassword(newPassword);
+        return new UserPWUpdateRes("비밀번호 변경 완료");
+    }
 }

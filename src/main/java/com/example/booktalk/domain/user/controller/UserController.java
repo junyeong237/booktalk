@@ -1,7 +1,9 @@
 package com.example.booktalk.domain.user.controller;
 
 
+import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
+import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
@@ -79,5 +81,12 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.withdraw(req, userDetails.getUser().getId()));
+    }
+
+    @PutMapping("/password/{userId}")
+    public ResponseEntity<UserPWUpdateRes> passwordUpdate(@RequestBody UserPWUpdateReq req,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.passwordUpdate(req,userDetails.getUser().getId()));
     }
 }
