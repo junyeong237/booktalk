@@ -59,7 +59,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .leftJoin(product.productCategoryList, productCategory).fetchJoin()
             .leftJoin(productCategory.category, category).fetchJoin()
             .where(product.deleted.eq(false))
-            .where(hasTag(tag));
+            .where(hasTag(category, tag));
 
         // 정렬 적용
         if (sort.isSorted()) {
@@ -71,15 +71,15 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             }
         }
 
-        List<Product> productList = query
-            .fetch();
+        List<Product> productList = query.fetch();
 
         return productList;
     }
 
 
-    private BooleanExpression hasTag(String tagName) {
-        return QCategory.category.name.eq(tagName);
+    private BooleanExpression hasTag(QCategory category, String tagName) {
+        BooleanExpression a = category.name.eq(tagName);
+        return a;
     }
 
     private BooleanExpression hasProductName(String productName) {
