@@ -2,7 +2,10 @@ package com.example.booktalk.domain.chatRoom.service;
 
 import com.example.booktalk.domain.chatRoom.dto.ChatRoomCreateReq;
 import com.example.booktalk.domain.chatRoom.dto.ChatRoomCreateRes;
+import com.example.booktalk.domain.chatRoom.dto.ChatRoomDeleteRes;
 import com.example.booktalk.domain.chatRoom.entity.ChatRoom;
+import com.example.booktalk.domain.chatRoom.exception.ChatRoomErrorCode;
+import com.example.booktalk.domain.chatRoom.exception.NotChatRoomUserException;
 import com.example.booktalk.domain.chatRoom.repository.ChatRoomRepository;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
@@ -64,4 +67,15 @@ public class ChatRoomServcie {
     }
 
 
+    public ChatRoomDeleteRes deleteChatRoom(Long roomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomByIdWithThrow(roomId);
+        if (!(chatRoom.getReceiver().getId().equals(userId) || chatRoom.getSender().getId()
+            .equals(userId))) {
+            //작성자일경우만 채팅방 나가기 가능
+            throw new NotChatRoomUserException(ChatRoomErrorCode.NOT_CHATROOM_USER);
+        }
+        chatRoomRepository.delete(chatRoom);
+
+        return new ChatRoomDeleteRes("삭제가 완료되었습니다.");
+    }
 }
