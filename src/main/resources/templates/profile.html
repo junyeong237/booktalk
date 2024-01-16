@@ -49,6 +49,37 @@
 </head>
 <body>
 
+<div class="container">
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+      </ul>
+    </div>
+
+    <div class="text-md-end">
+      <div class="d-flex align-items-center">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+          Login
+        </a>
+      </div>
+    </div>
+  </header>
+</div>
+
 <div class="container mt-4">
   <h2 class="mb-4">프로필 조회</h2>
   <small id="userId" style="visibility: hidden;"></small>
