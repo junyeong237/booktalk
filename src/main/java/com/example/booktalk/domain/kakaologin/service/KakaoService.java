@@ -1,6 +1,6 @@
-package com.example.booktalk.domain.kakao.service;
+package com.example.booktalk.domain.kakaologin.service;
 
-import com.example.booktalk.domain.kakao.dto.KakaoUserInfoDto;
+import com.example.booktalk.domain.kakaologin.dto.KakaoUserInfoDto;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;

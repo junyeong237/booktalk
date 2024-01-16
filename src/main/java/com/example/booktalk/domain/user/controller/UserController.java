@@ -66,9 +66,13 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
+
+        @Valid @RequestBody UserProfileReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
                                                               @RequestPart("req") UserProfileReq req,
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                               @RequestParam("upload") MultipartFile file) throws IOException {
+
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateProfile(userId, req, userDetails.getUser().getId(),file));
 
