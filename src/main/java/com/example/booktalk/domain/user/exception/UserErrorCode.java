@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
     FORBIDDEN_ACCESS_PROFILE(HttpStatus.FORBIDDEN, "본인만 수정할 수 있습니다."),
+    FORBIDDEN_BLOCKED_USER(HttpStatus.FORBIDDEN, "차단된 유저입니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "해당 리프레시 토큰을 찾을 수 없습니다."),
     ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입된 이메일입니다."),
