@@ -72,11 +72,13 @@ public class ProductService {
 
     }
 
-    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req) {
+    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req, List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
+
+        List<ImageCreateRes> imageCreateResList =imageFileService.updateImage(userId, productId,files);
 
         product.update(req);
         updateCategory(req.categoryList(), product);
@@ -84,7 +86,7 @@ public class ProductService {
         return new ProductUpdateRes(product.getId(), product.getName(),
             product.getQuantity(), product.getPrice(), product.getRegion(),
             product.getFinished(), userRes, product.getProductLikeCnt(), product.getContent(),
-            req.categoryList());
+            req.categoryList(),imageCreateResList);
 
     }
 

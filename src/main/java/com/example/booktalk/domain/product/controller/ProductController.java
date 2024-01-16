@@ -42,9 +42,10 @@ public class ProductController {
     public ProductUpdateRes updateProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long productId,
-        @RequestBody ProductUpdateReq req
-    ) {
-        return productService.updateProduct(userDetails.getUser().getId(), productId, req);
+        @RequestPart("req") ProductUpdateReq req,
+        @RequestParam("upload") List<MultipartFile> files
+    ) throws IOException {
+        return productService.updateProduct(userDetails.getUser().getId(), productId, req,files);
     }
 
     @DeleteMapping("/{productId}")
