@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <style>
+    /* 추가한 스타일 */
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 50px;
+    }
+
+    .chat-header {
+      background-color: #007bff;
+      color: #ffffff;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .chat-body {
+      padding: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #user-message {
+      background-color: #a9d29d;
+    }
+
+    .message p {
+      margin: 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .chat-input {
+      border-top: 1px solid #dee2e6;
+      padding: 10px;
+    }
+
+    .btn-send {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+    .btn-out {
+      background-color: #dc3545;
+      float: right;
+      color: #ffffff;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+
+<div class="container chat-container">
+  <div class="chat-header">
+    채팅방
+  </div>
+  <div class="chat-body" id="chat-box">
+    <!-- 여기에 더 많은 채팅 메시지 추가 가능 -->
+  </div>
+  <div class="chat-input">
+    <input type="text" class="form-control" id="message-input" placeholder="메시지를 입력하세요">
+    <div>
+      <button class="btn btn-send" onclick="sendMessage()">전송</button>
+      <button class="btn btn-out" onclick="disconnect()">채팅방 나가기</button>
+    </div>
+
+  </div>
+</div>
+
+<script th:inline="javascript">
+  const roomId = /*[[${roomId}]]*/
+  const username = /*[[${username}]]*/
+      $(document).ready(function () {
+
+        connect(roomId,username);
+
+      });
+
+  function chat() {
+
+  }
+
+  function connect(roomId, username) {
+
+    var socket = new SockJS('/chat');
+    console.log(roomId);
+    console.log(username);
+    stompClient = Stomp.over(socket);
+    var headers = {
+      name: username
+    };
+
+    stompClient.connect(headers, function (frame) {
+      //setConnected(true);
+      console.log('Connected: ' + frame);
+      loadChat(roomId);
+      stompClient.subscribe('/topic/' + roomId,
+          function (greeting) {
+            showGreeting(JSON.parse(greeting.body));
+          });
+      stompClient.send("/app/" + roomId + "/enter", {},
+          JSON.stringify({'message': $("#message-input").val()}));
+    });
+  }
+
+  function sendMessage() {
+    stompClient.send("/app/" + roomId + "/chat", {},
+        JSON.stringify({'message': $("#message-input").val()}));
+    $('#message-input').val('');
+  }
+
+  function showGreeting(message) {
+
+    if (message.name == null) {
+      $("#chat-box").append(createMessage("<tr><td>" + message.message + "</td></tr>"));
+    } else {
+      $("#chat-box").append(createMessage(
+          "<tr><td>" + message.name + ": " + message.message
+          + "</td></tr>"));
+    }
+
+  }
+
+  function loadChat(roomId) {
+    $.ajax({
+      url: `/api/v1/chats/rooms/` + roomId,
+      type: 'GET',
+      success: function (chatList) {
+        console.log(chatList)
+        if (chatList != null) {
+
+          for (ct in chatList) {
+
+            $("#chat-box").append(
+                createMessage("<tr><td>" + chatList[ct].name + ": " + chatList[ct].content
+                + "</td></tr>"));
+          }
+
+        }
+
+        $("#chat-box").append("여기까지 읽으셨습니다.")
+      },
+      error: function (error) {
+        // 서버 요청 중 오류가 발생했을 때의 처리
+        console.error('Error:', error);
+        window.location.href = "/";
+      }
+    });
+
+  }
+
+  function createMessage(msg){
+    var msgContainer = document.createElement('div');
+    msgContainer.style = "background-color: #f2f2f2; color: #000000";
+    msgContainer.id = "user-message";
+    var msgContent = document.createElement('p');
+    msgContent.innerHTML = msg;
+    console.log(msgContent);
+    msgContainer.appendChild(msgContent);
+    console.log(msgContent);
+    return msgContainer;
+  }
+
+  function disconnect(username) {
+    if (stompClient !== null) {
+      exit();
+      stompClient.disconnect();
+    }
+
+    $.ajax({
+      type: "DELETE",
+      url: `/api/v1/chats/room/` + roomId,
+    })
+    .done(function (res) {
+      console.log("채팅방을 종료하였습니다.");
+      window.location.href = host + '/api/v1';
+    })
+    .fail(function (jqXHR, textStatus) {
+      alert("chatingReoom Fail");
+      window.location.href = host;
+    });
+
+  }
+
+
+</script>
+
+</body>
+</html>
