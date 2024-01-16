@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+
+  <style>
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-control {
+      width: calc(100%);
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .card-img-top {
+      width: 250px;
+      height: auto;
+      display: block;
+
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #info-top {
+      max-width: 100%;
+    }
+
+    #imagePreview {
+      max-width: 70%;
+      height: auto;
+      margin: auto;
+    }
+
+  </style>
+
+</head>
+<body>
+
+
+<div class="container">
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+      </ul>
+    </div>
+
+    <div class="text-md-end">
+      <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-outline-primary" onclick="redirectToLogin()">
+          Login
+        </button>
+      </div>
+    </div>
+  </header>
+</div>
+
+<div class="container" id="product-container">
+  <!-- Include your nav.jsp content here -->
+  <main class="mt-2">
+    <div class="container-fluid px-2">
+      <div class="mb-4 main-container">
+        <div class="card-body">
+          <div class="d-flex justify-content-center">
+            <div id="image-container" class="d-flex flex-wrap mx-1">
+
+            </div>
+          </div>
+          <div class="d-flex justify-content-between my-2" id="info-top">
+            <div class="mb-2">
+              <label for="product-sale" class="form-label">판매완료여부</label>
+              <input type="checkbox" class="form-check-input" id="product-sale" name="sale-checkbox"
+                     disabled>
+            </div>
+            <div class="mb-2">
+              <button class="btn btn-outline-primary"
+                      id="productLikes"></button>
+            </div>
+            <div class="mb-2">
+              <button class="btn btn-outline-primary mb-2" id="chat-user"></button>
+              <h5 id="product-author"></h5>
+            </div>
+          </div>
+
+          <div class="mb-3" id="upload-container">
+          </div>
+
+          <div class="mb-3"><label for="product-name" class="form-label">상품명</label>
+            <input type="text" class="form-control" id="product-name" name="bno" disabled="">
+          </div>
+          <div class="mb-3"><label for="product-content" class="form-label">상품내용</label>
+            <textarea
+                class="form-control" id="product-content" name="content" disabled="">
+            </textarea>
+          </div>
+
+          <div class="mb-3"><label for="product-price" class="form-label">상품가격</label>
+            <input type="text" class="form-control" id="product-price" name="regDate" disabled="">
+          </div>
+          <div class="mb-3"><label for="product-quantity" class="form-label">상품수</label>
+            <input type="text" class="form-control" id="product-quantity" name="regDate2"
+                   disabled="">
+          </div>
+
+          <div class="mb-3"><label for="product-region" class="form-label"
+                                   id="product-region-label">상품판매지역</label>
+            <input type="text" class="form-control" id="product-region" name="regDate3" disabled="">
+          </div>
+          <div class="mb-3"><label for="product-category" class="form-label"
+                                   id="product-category-label">상품 카테고리</label>
+            <input type="text" class="form-control" id="product-category" name="category"
+                   disabled="">
+          </div>
+          <div class="d-flex justify-content-end" id="button-group">
+            <a id="productListButoon" href="/api/v1/products/list"
+               class="btn btn-outline-primary mx-1">상품목록</a>
+            <a id="productEditButton" href="#" class="btn btn-outline-primary mx-1"
+               onclick="updateProduct()">수정하기</a>
+            <a id="productDeleteButton" href="#" class="btn btn-outline-danger mx-1"
+               onclick="deleteProduct()">삭제하기</a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<script th:inline="javascript">
+  const host = 'http://' + window.location.host;
+  const productId = /*[[${productId}]]*/
+      $(document).ready(function () {
+        $.ajax({
+          type: 'GET',
+          url: `/api/v1/products/` + productId,
+        })
+        .done(function (res) {
+          //$('#product-container').empty(); //
+          renderProductInfo(res);
+          //renderProduct(res);
+        })
+
+        .fail(function (res) {
+          const jsonObject = JSON.parse(res.responseText);
+          const messages = jsonObject.messages;
+          alert(messages);
+
+        });
+
+      });
+
+  function renderProductInfo(product) {
+    var productCheckbox = document.getElementById('product-sale');
+    productCheckbox.checked = product.finished === true;
+
+    var productLikes = document.getElementById('productLikes');
+    productLikes.innerText = "관심 : " + product.productLikes;
+    productLikes.addEventListener('click', function () {
+      addProductLikes(product.id);
+    });
+
+    var productAuthor = document.getElementById('product-author');
+    productAuthor.innerText = "작성자: " + product.user.name;
+
+    var chatTrybutton = document.getElementById('chat-user');
+    chatTrybutton.innerText = "채팅걸기";
+    chatTrybutton.addEventListener('click', function () {
+      chatTry(product.user.id);
+    });
+    //이미지 값 세팅
+    var imageContainer = document.getElementById('image-container');
+    const imageUrls = product.imageListRes;
+    console.log(imageUrls);
+
+    if (imageUrls.length) {
+      imageUrls.forEach((imageUrl) => {
+        const img = document.createElement('img');
+        img.src = imageUrl.imagePathUrl;
+        img.className = 'card-img-top mx-2';
+        img.alt = 'Product Image';
+        imageContainer.appendChild(img);
+      });
+    } else {
+      const img = document.createElement('img');
+      img.className = 'card-img-top mx-2';
+      img.alt = '사진이없습니다.';
+      imageContainer.appendChild(img);
+    }
+
+    // input 요소의 값 세팅
+    var nameInput = document.getElementById('product-name');
+    nameInput.value = product.name;
+
+    // textarea 요소의 값 세팅
+    var contentTextarea = document.getElementById('product-content');
+    contentTextarea.value = product.content;
+
+    var prictInput = document.getElementById('product-price');
+    prictInput.value = product.price;
+
+    var quantityInput = document.getElementById('product-quantity');
+    quantityInput.value = product.quantity;
+
+    var quantityRegion = document.getElementById('product-region');
+    quantityRegion.value = product.region;
+
+    var quantityCategories = document.getElementById('product-category');
+    quantityCategories.value = product.categories;
+
+  }
+
+  function addProductLikes(productId) { //api/v1/productLikes
+
+    const data = {
+      productId: productId
+    };
+    $.ajax({
+      type: 'PATCH',
+      url: `/api/v1/productLikes`,
+      contentType: "application/json",
+      data: JSON.stringify(data),
+    })
+    .done(function (res) {
+      location.reload();
+    })
+
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+  }
+
+  function updateProduct() {
+
+    // 부모 요소 생성
+    var parentDiv = document.getElementById("upload-container");
+
+// 레이블 요소 생성
+    var label = document.createElement("label");
+    label.htmlFor = "productImage";
+    label.className = "form-label";
+    label.textContent = "상품 이미지 업로드";
+
+// 파일 입력 요소 생성
+    var input = document.createElement("input");
+    input.type = "file";
+    input.className = "form-control";
+    input.id = "productImage";
+    input.accept = "image/*";
+    input.multiple = true;
+    input.required = true;
+    input.addEventListener("change", previewImage);
+
+// 부모 요소에 자식 요소 추가
+    parentDiv.appendChild(label);
+    parentDiv.appendChild(input);
+
+// 문서에 추가
+
+    var productSaleCheckbox = document.getElementById('product-sale');
+    productSaleCheckbox.disabled = false;
+    // 체크박스 클릭 이벤트 리스너 추가
+
+    var productNameInput = document.getElementById('product-name');
+    productNameInput.removeAttribute('disabled');
+
+    var productPriceInput = document.getElementById('product-price');
+    productPriceInput.removeAttribute('disabled');
+
+    var productContentInput = document.getElementById('product-content');
+    productContentInput.removeAttribute('disabled');
+
+    var productQuantityInput = document.getElementById('product-quantity');
+    productQuantityInput.removeAttribute('disabled');
+
+    var productRegionlabel = document.getElementById('product-region-label');
+    $("#product-region").remove();
+    var regionItems = ['SEOUL', 'INCHEON', 'BUSAN', 'DAEGU', 'ULSAN', 'GWANGJU', 'DAEJEON',
+      'CHEONGJU', 'JEJU'];
+
+    // 동적 드롭다운 메뉴 생성
+    var dropdown = document.createElement('div');
+    dropdown.className = "dropdown";
+
+    var dropdownButton = document.createElement('button');
+    dropdownButton.className = 'btn btn-secondary dropdown-toggle';
+    dropdownButton.type = 'button';
+    dropdownButton.id = 'productRegion';
+    dropdownButton.setAttribute('data-bs-toggle', 'dropdown');
+    dropdownButton.setAttribute('aria-haspopup', 'true');
+    dropdownButton.setAttribute('aria-expanded', 'false');
+    dropdownButton.innerText = '선택하세요';
+    console.log(dropdownButton);
+    var dropdownMenu = document.createElement('div');
+    dropdownMenu.className = 'dropdown-menu';
+    dropdownMenu.setAttribute('aria-labelledby', 'productRegion');
+
+    regionItems.forEach(function (region) {
+      var dropdownItem = document.createElement('a');
+      dropdownItem.className = 'dropdown-item';
+      dropdownItem.href = '#';
+      dropdownItem.innerText = region;
+
+      // 드롭다운 아이템 클릭 이벤트 처리
+      dropdownItem.addEventListener('click', function () {
+        dropdownButton.innerText = region;
+      });
+
+      dropdownMenu.appendChild(dropdownItem);
+    });
+
+    dropdown.appendChild(dropdownButton);
+    dropdown.appendChild(dropdownMenu);
+    productRegionlabel.appendChild(dropdown);
+
+    var productCategorylabel = document.getElementById('product-category-label');
+    $("#product-category").remove();
+
+    var parentDiv = document.createElement("div");
+    parentDiv.id = "category-list-label";
+
+// 자식 요소 생성 및 추가
+    var checkboxContainer = document.createElement("div");
+    checkboxContainer.className = "mb-3";
+    checkboxContainer.style.display = "flex";
+    checkboxContainer.style.flexDirection = "row";
+    checkboxContainer.appendChild(createCheckbox('추리', 'categoryCheckbox1', '추리'));
+    checkboxContainer.appendChild(createCheckbox('코미디', 'categoryCheckbox2', '코미디'));
+    checkboxContainer.appendChild(createCheckbox('힐링', 'categoryCheckbox3', '힐링'));
+    checkboxContainer.appendChild(createCheckbox('SF', 'categoryCheckbox4', 'SF'));
+    checkboxContainer.appendChild(createCheckbox('정보공학', 'categoryCheckbox5', '정보공학'));
+    console.log(checkboxContainer);
+    // Append the container to the body
+    parentDiv.appendChild(checkboxContainer);
+    productCategorylabel.appendChild(parentDiv);
+
+    $('#button-group').empty();
+    var buttonGroup = document.getElementById('button-group');
+
+    var button1 = document.createElement("button");
+    button1.className = "btn btn-outline-primary mx-1";
+    button1.textContent = "수정완료";
+
+    button1.addEventListener('click', function () {
+      CompleteEditProduct(productId);
+    });
+
+    var button2 = document.createElement("button");
+    button2.className = "btn btn-outline-primary mx-1";
+    button2.textContent = "목록으로돌아가기";
+    //button2.addEventListener("click", handleButton1Click);
+
+    buttonGroup.appendChild(button1);
+    buttonGroup.appendChild(button2);
+
+  }
+
+  function createCheckbox(value, id, labelText) {
+    var checkboxDiv = document.createElement('div');
+    checkboxDiv.classList.add('form-check');
+
+    var checkboxInput = document.createElement('input');
+    checkboxInput.classList.add('form-check-input');
+    checkboxInput.setAttribute('type', 'checkbox');
+    checkboxInput.setAttribute('value', value);
+    checkboxInput.setAttribute('id', id);
+    checkboxInput.setAttribute('name', 'category-checkbox');
+
+    var label = document.createElement('label');
+    label.classList.add('form-check-label');
+    label.setAttribute('for', id);
+    label.textContent = labelText;
+
+    checkboxDiv.appendChild(checkboxInput);
+    checkboxDiv.appendChild(label);
+
+    return checkboxDiv;
+  }
+
+  function CompleteEditProduct(productId) {
+
+    var selectedRegion = document.getElementById("productRegion").innerText;
+
+    const query = 'input[name="category-checkbox"]:checked';
+    const selectedEls = document.querySelectorAll(query);
+    console.log(selectedEls);
+    // 선택된 목록에서 value 찾기
+    let result = [];
+    selectedEls.forEach((el) => {
+      result.push(el.value);
+    });
+    console.log(result);
+
+    var input = document.getElementById('productImage');
+    console.log(input);
+    alert('체크');
+    var formData = new FormData();
+    for (var i = 0; i < input.files.length; i++) {
+      formData.append('upload', input.files[i]);
+    }
+
+    const req = {
+      name: $('#product-name').val(),
+      price: $('#product-price').val(),
+      quantity: $('#product-quantity').val(),
+      content: $('#product-content').val(),
+      region: selectedRegion,
+      finished: !!document.getElementById('product-sale').checked,
+      categoryList: result
+    }
+
+    const json = JSON.stringify(req);
+    const blob = new Blob([json], {type: "application/json"});
+    formData.append("req", blob);
+    console.log(formData);
+
+    $.ajax({
+      type: "PATCH",
+      url: `/api/v1/products/` + productId,
+      data: formData,		// 필수
+      processData: false,	// 필수
+      contentType: false,	// 필수
+    })
+    .done(function (res) {
+      alert('전송완료');
+      location.reload();
+    })
+    .fail(function (res) {
+      alert('전송실패');
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+
+  }
+
+  function deleteProduct() {
+
+    var userConfirmed = confirm('삭제하시겠습니까?');
+
+    if (userConfirmed) {
+      $.ajax({
+        type: "DELETE",
+        url: `/api/v1/products/` + productId,
+      })
+      .done(function (res) {
+        alert('삭제완료료');
+        location.reload();
+      })
+      .fail(function (res) {
+        alert('삭제실패');
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
+      });
+    }
+
+  }
+
+  function redirectToLogin() {
+    window.location.href = host + '/api/v1/users/login';
+  }
+
+  function chatTry(userId) {
+
+    const data = {
+      receiverId: userId
+    }
+    $.ajax({
+      type: "POST",
+      url: `/api/v1/chats/room`,
+      contentType: "application/json",
+      data: JSON.stringify(data),
+    })
+    .done(function (res) {
+      res.id;
+      window.location.href = host + '/api/v1/chats/room/' + res.id;
+    })
+    .fail(function (jqXHR, textStatus) {
+      alert("chatingReoom Fail");
+      window.location.href = host;
+    });
+
+  }
+
+  function previewImage() {
+
+    var imageContainer = document.getElementById('image-container');
+    $('#image-container').empty();
+    const img = document.createElement('img');
+    img.className = 'card-img-top mx-2';
+    img.id = 'imagePreview'
+    img.alt = 'Product Image';
+    imageContainer.appendChild(img);
+    var input = document.getElementById('productImage');
+    var preview = document.getElementById('imagePreview');
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+  }
+
+</script>
+
+</body>
+</html>
