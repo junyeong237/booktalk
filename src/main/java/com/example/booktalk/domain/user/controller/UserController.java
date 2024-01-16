@@ -35,10 +35,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserSignupRes> signup(@Valid @RequestPart("req") UserSignupReq req,
-                                                @RequestParam("upload") MultipartFile file) throws IOException {
+    public ResponseEntity<UserSignupRes> signup(@Valid @RequestBody UserSignupReq req) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(userService.signup(req,file));
+            .body(userService.signup(req));
     }
 
     @PostMapping("/login")
