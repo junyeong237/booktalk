@@ -1,9 +1,7 @@
-package com.example.booktalk.domain.kakao.controller;
+package com.example.booktalk.domain.kakaologin.controller;
 
-import com.example.booktalk.domain.kakao.service.KakaoService;
-import com.example.booktalk.global.jwt.JwtUtil;
+import com.example.booktalk.domain.kakaologin.service.KakaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

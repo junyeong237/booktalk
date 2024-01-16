@@ -56,8 +56,7 @@ public class User extends BaseEntity {
     private Long kakaoId;
 
     @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();
-    ;
+    private List<Trade> tradeList = new ArrayList<>();;
 
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname) {
@@ -106,10 +105,16 @@ public class User extends BaseEntity {
         this.kakaoId = kakaoId;
         return this;
     }
+
     public void withdraw() {
         this.deleted = true;
     }
 
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+  
     public void increaseReportCount() {
         this.reportCount++;
     }

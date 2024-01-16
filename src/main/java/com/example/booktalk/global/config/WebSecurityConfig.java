@@ -71,13 +71,20 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/main").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll() //상품목록페이지
+                .requestMatchers(HttpMethod.GET, "/api/v1/products/detail/**")
+                .permitAll() //상품단건조회페이지
+                //.requestMatchers(HttpMethod.GET, "/api/v1/products/register").permitAll() //상품등록페이지
                 .requestMatchers(HttpMethod.GET, "/api/v1/users/profile").permitAll() //마이페이지
+                //.requestMatchers(HttpMethod.GET, "/api/v1/chats/room").permitAll()//채팅페이지
                 .requestMatchers("/api/v1/users/signup").permitAll() //회원가입
                 .requestMatchers("/api/v1/users/login").permitAll() //로그인
                 .requestMatchers("/save").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
                 .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                //hasRole 자체가 "ROLE_"을 포함하고 있어서 UserRoleType.ADMIN을 사용하려면 String타입의 "ROLE_ADMIN"에서 "ADMIN"만 사용필요
                 .requestMatchers("/api/v1/reports").permitAll()
+
 
                 .anyRequest().authenticated()
         );

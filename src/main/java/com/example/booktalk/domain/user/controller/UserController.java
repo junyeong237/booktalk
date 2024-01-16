@@ -1,7 +1,9 @@
 package com.example.booktalk.domain.user.controller;
 
 
+import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
+import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
 import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
@@ -19,13 +21,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,9 +35,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserSignupRes> signup(@Valid @RequestBody UserSignupReq req) {
+    public ResponseEntity<UserSignupRes> signup(@Valid @RequestPart("req") UserSignupReq req,
+                                                @RequestParam("upload") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(userService.signup(req));
+            .body(userService.signup(req,file));
     }
 
     @PostMapping("/login")
@@ -60,16 +61,18 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable Long userId) {
+    public ResponseEntity<UserProfileGetRes> getProfile(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.getProfile(userId));
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
-        @RequestBody UserProfileReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                              @RequestPart("req") UserProfileReq req,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                              @RequestParam("upload") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.updateProfile(userId, req, userDetails.getUser().getId()));
+            .body(userService.updateProfile(userId, req, userDetails.getUser().getId(),file));
 
     }
 
@@ -78,5 +81,12 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.withdraw(req, userDetails.getUser().getId()));
+    }
+
+    @PutMapping("/password/{userId}")
+    public ResponseEntity<UserPWUpdateRes> passwordUpdate(@RequestBody UserPWUpdateReq req,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.passwordUpdate(req,userDetails.getUser().getId()));
     }
 }

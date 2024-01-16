@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/chats/room")
+@RequestMapping("/api/v1/chats/rooms")
 public class ChatController {
 
     private final ChatService chatService;

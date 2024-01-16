@@ -60,15 +60,15 @@ class UserServiceTest {
     @BeforeEach
     void init() {
         user1 = User.builder()
-            .email("email@email.com")
-            .password("password")
-            .build();
+                .email("email@email.com")
+                .password("password")
+                .build();
         ReflectionTestUtils.setField(user1, "id", 1L); // user1의 id를 1로 설정
 
         user = User.builder()
-            .email("email@email.com")
-            .password("wrongPassword")
-            .build();
+                .email("email@email.com")
+                .password("wrongPassword")
+                .build();
         ReflectionTestUtils.setField(user, "id", 2L); // user의 id를 2로 설정
     }
 
@@ -79,17 +79,17 @@ class UserServiceTest {
         void 회원가입_성공() {
             //given
             UserSignupReq req = new UserSignupReq(
-                "email@email.com",
-                "password",
-                "password",
-                false,
-                "invalidToken");
+                    "email@email.com",
+                    "password",
+                    "password",
+                    false,
+                    "invalidToken");
             given(userRepository.findByEmail(req.email())).willReturn(
-                Optional.empty());//중복 이메일이 없음을 설정
+                    Optional.empty());//중복 이메일이 없음을 설정
 
             //when
             when(passwordEncoder.matches(req.passwordCheck(),
-                passwordEncoder.encode(req.password()))).thenReturn(true);
+                    passwordEncoder.encode(req.password()))).thenReturn(true);
             when(userRepository.save(any())).thenReturn(user);
             UserSignupRes res = userService.signup(req);
 
@@ -101,11 +101,11 @@ class UserServiceTest {
         void 회원가입_실패() {
             //given
             UserSignupReq req = new UserSignupReq(
-                "email@email.com",
-                "password",
-                "password",
-                false,
-                "invalidToken");
+                    "email@email.com",
+                    "password",
+                    "password",
+                    false,
+                    "invalidToken");
             given(userRepository.findByEmail(req.email())).willReturn(Optional.ofNullable(user1));
 
             //when
@@ -149,7 +149,7 @@ class UserServiceTest {
 
             //then
             assertEquals(UserErrorCode.BAD_LOGIN,
-                exception.getErrorCode());
+                    exception.getErrorCode());
 
         }
 
@@ -184,11 +184,11 @@ class UserServiceTest {
             Long userId = 2L;
             Long userDetailsId = 2L;
             UserProfileReq req = new UserProfileReq(
-                "password",
-                "nickname",
-                "location",
-                "description",
-                "phone"
+                    "password",
+                    "nickname",
+                    "location",
+                    "description",
+                    "phone"
             );
             given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
             given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
@@ -209,11 +209,11 @@ class UserServiceTest {
             Long userId = 2L;
             Long userDetailsId = 2L;
             UserProfileReq req = new UserProfileReq(
-                "Password",
-                "newNickname",
-                "newLocation",
-                "newDescription",
-                "newPhone"
+                    "Password",
+                    "newNickname",
+                    "newLocation",
+                    "newDescription",
+                    "newPhone"
             );
             given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
 
@@ -222,7 +222,7 @@ class UserServiceTest {
 
             //then
             assertEquals(UserErrorCode.NOT_MATCH_PASSWORD,
-                exception.getErrorCode());
+                    exception.getErrorCode());
         }
     }
 }

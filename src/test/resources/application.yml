@@ -22,6 +22,11 @@ data:
 jwt:
   secret:
     key: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+kakao:
+  key: d4ee4d56fb48da76a8de567698192d24
+
+kakao:
+  key: d4ee4d56fb48da76a8de567698192d24
 
 cloud:
   aws:

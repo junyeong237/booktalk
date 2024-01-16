@@ -9,12 +9,9 @@ import com.example.booktalk.domain.comment.dto.response.CommentUpdateRes;
 import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.comment.exception.CommentErrorCode;
 import com.example.booktalk.domain.comment.exception.EmptyContentException;
-import com.example.booktalk.domain.comment.exception.NotFoundCommentException;
 import com.example.booktalk.domain.comment.exception.NotPermissionCommentAuthorityException;
 import com.example.booktalk.domain.comment.repository.CommentRepository;
 import com.example.booktalk.domain.review.entity.Review;
-import com.example.booktalk.domain.review.exception.NotFoundReviewException;
-import com.example.booktalk.domain.review.exception.ReviewErrorCode;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -47,10 +44,10 @@ public class CommentService {
                 .user(user)
                 .build();
 
-        commentRepository.save(comment);
+        Comment result = commentRepository.save(comment);
 
-        return new CommentCreateRes(comment.getId(), comment.getContent(),
-                comment.getUser().getNickname());
+        return new CommentCreateRes(result.getId(), result.getContent(),
+                result.getUser().getNickname());
     }
 
     public List<CommentGetListRes> getCommentList(Long reviewId) {
