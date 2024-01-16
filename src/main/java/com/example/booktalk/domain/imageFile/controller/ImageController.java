@@ -27,33 +27,26 @@ public class ImageController {
 
     @PostMapping
     @ResponseBody
-    public ImageCreateRes createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public List<ImageCreateRes> createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart("productId") CreateImageReq req,
-                                      @RequestParam("upload") MultipartFile file) throws IOException {
+                                      @RequestParam("upload") List<MultipartFile> files) throws IOException {
 
-        return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),file);
-    }
-    @GetMapping("/{imageId}") //단일 조회
-    public ImageGetRes getImage(@RequestBody GetImageReq req,
-                                @PathVariable Long imageId) {
-        return imageFileService.getImage(req.productId(),imageId);
+        return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),files);
     }
     @GetMapping//다건 조희
     public List<ImageListRes> getImages(@RequestBody GetImageReq req) {
          return imageFileService.getImages(req.productId());
     }
-    @PutMapping("/{imageId}") //이미지 수정
-    public ImageUpdateRes updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    @PutMapping//이미지 수정
+    public List<ImageCreateRes> updateImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart("productId") CreateImageReq req,
-                                      @PathVariable Long imageId,
-                                      @RequestParam("upload") MultipartFile file) throws IOException {
-        return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),imageId,file);
+                                      @RequestParam("upload") List<MultipartFile> files) throws IOException {
+        return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),files);
     }
-    @DeleteMapping("/{imageId}") //이미지 삭제
+    @DeleteMapping //이미지 삭제
     public ImageDeleteRes deleteImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody DeleteImageReq req,
-                                      @PathVariable Long imageId) {
-        return imageFileService.deleteImage(userDetails.getUser().getId(), req.productId(),imageId);
+                                      @RequestBody DeleteImageReq req) {
+        return imageFileService.deleteImage(userDetails.getUser().getId(), req.productId());
     }
 
 
