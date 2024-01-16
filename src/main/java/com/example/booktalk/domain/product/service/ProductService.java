@@ -4,6 +4,8 @@ import com.example.booktalk.domain.category.entity.Category;
 import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
+import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
+import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
 import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
@@ -23,11 +25,14 @@ import com.example.booktalk.domain.productcategory.repository.ProductCategoryRep
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +43,9 @@ public class ProductService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final ImageFileService imageFileService;
 
-    public ProductCreateRes createProduct(Long userId, ProductCreateReq req) {
+    public ProductCreateRes createProduct(Long userId, ProductCreateReq req, List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -53,13 +59,15 @@ public class ProductService {
             .build();
         product = productRepository.save(product);
         addCategory(req.categoryList(), product);
-
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
+
+        List<ImageCreateRes> imageCreateResList =imageFileService.createImage(userId, product.getId(), files);
+
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
             , product.getRegion(), product.getFinished(), userRes, product.getContent(),
-            req.categoryList());
+            req.categoryList(), imageCreateResList);
         //TODO 생성자로 한줄정리
 
     }
