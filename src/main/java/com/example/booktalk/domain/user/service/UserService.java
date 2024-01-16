@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.user.service;
 
 
+import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
@@ -135,7 +136,7 @@ public class UserService {
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
-        Long userDetailsId) {
+        Long userDetailsId,MultipartFile file) throws IOException {
         String password = req.password();
 //        String newPassword = passwordEncoder.encode(req.newPassword());
 //        String newPasswordCheck = req.newPasswordCheck();
@@ -160,8 +161,15 @@ public class UserService {
         user.updateProfile(description, phone, location, nickname);
         userRepository.save(user);
 
+        ImageCreateRes imageCreateRes;
+        if (file != null && !file.isEmpty()) {
+            imageCreateRes = imageFileService.updateProfileImage(userId, file);
+        }else {
+            imageCreateRes=imageFileService.deleteProfileImage(user);
+        }
+
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone());
+            location, user.getPhone(),imageCreateRes);
     }
 
 
