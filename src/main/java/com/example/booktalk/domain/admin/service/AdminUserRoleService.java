@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminUserRoleService {
     private final UserRepository userRepository;
     @Transactional
-    public void userBlock(Long userId){
+    public String userBlock(Long userId){
         User user=findUser(userId);
         UserRoleType role = UserRoleType.BLOCK;
         user.updateRole(role);
+
+        return "차단 되었습니다";
     }
     private User findUser(Long id) {
         return userRepository.findById(id)
