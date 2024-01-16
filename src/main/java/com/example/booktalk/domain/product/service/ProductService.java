@@ -5,6 +5,7 @@ import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
+import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
@@ -102,11 +103,12 @@ public class ProductService {
                 return productCategory.getCategory().getName();
             })
             .toList();
+        List<ImageListRes> imageListRes =imageFileService.getImages(productId);
 
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
             , product.getQuantity(), userRes, product.getRegion(), categories,
             product.getProductLikeCnt(), product.getContent(),
-            product.getFinished());
+            product.getFinished(),imageListRes);
 
     }
 

@@ -72,7 +72,7 @@ public class ImageFileService {
     public List<ImageListRes> getImages(Long productId) {
         List<ImageFile> imageList = imageFileRepository.findByProductId(productId);
         return imageList.stream()
-                .map(imageFile -> new ImageListRes(imageFile.getId(), imageFile.getImagePathUrl()))
+                .map(imageFile -> new ImageListRes(imageFile.getImagePathUrl()))
                 .toList();
     }
 
