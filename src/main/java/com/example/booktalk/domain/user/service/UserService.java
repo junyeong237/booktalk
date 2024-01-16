@@ -52,7 +52,7 @@ public class UserService {
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public UserSignupRes signup(UserSignupReq req, MultipartFile file) throws IOException {
+    public UserSignupRes signup(UserSignupReq req) {
         String email = req.email();
         String password = passwordEncoder.encode(req.password());
         String passwordCheck = req.passwordCheck();
@@ -82,11 +82,6 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
-
-        // 이미지 파일이 있는 경우에만 업로드
-        if (file != null && !file.isEmpty()) {
-            imageFileService.createProfileImage(user.getId(), file);
-        }
 
         return new UserSignupRes("회원 가입 완료");
     }
