@@ -16,12 +16,6 @@ import java.util.Optional;
 
 public interface ImageFileRepository extends JpaRepository<ImageFile,Long> {
     List<ImageFile> findByProductId(Long productId);
-
-    Optional<ImageFile> findByProductIdAndId(Long productId, Long imageId);
-
-    default ImageFile findImageFileByProductIdAndIdWithThrow(Long productId,Long imageId) {
-        return findByProductIdAndId(productId, imageId)
-                .orElseThrow(() -> new NotFoundImageFileException(ImageFileErrorCode.NOT_FOUND_IMAGE));
-    }
+    ImageFile findByUserNickname(String nickname);
 
 }

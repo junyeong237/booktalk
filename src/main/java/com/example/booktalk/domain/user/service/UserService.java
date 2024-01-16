@@ -1,6 +1,9 @@
 package com.example.booktalk.domain.user.service;
 
 
+import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
+import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
+import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
@@ -15,6 +18,7 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
 import com.example.booktalk.domain.user.exception.BadLoginException;
+import com.example.booktalk.domain.user.exception.BlockedUserException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
@@ -25,24 +29,28 @@ import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+
+import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+    private final ImageFileService imageFileService;
 
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public UserSignupRes signup(UserSignupReq req) {
+    public UserSignupRes signup(UserSignupReq req, MultipartFile file) throws IOException {
         String email = req.email();
         String password = passwordEncoder.encode(req.password());
         String passwordCheck = req.passwordCheck();
@@ -65,13 +73,19 @@ public class UserService {
         String randomNickname = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
 
         User user = User.builder()
-            .email(email)
-            .password(password)
-            .role(role)
-            .randomNickname(randomNickname)
-            .build();
+                .email(email)
+                .password(password)
+                .role(role)
+                .randomNickname(randomNickname)
+                .build();
 
         userRepository.save(user);
+
+        // 이미지 파일이 있는 경우에만 업로드
+        if (file != null && !file.isEmpty()) {
+            imageFileService.createProfileImage(user.getId(), file);
+        }
+
         return new UserSignupRes("회원 가입 완료");
     }
 
@@ -83,6 +97,10 @@ public class UserService {
 
         if (user.isDeleted()) {
             throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
+        }
+
+        if(user.getRole() == UserRoleType.BLOCK){
+            throw new BlockedUserException(UserErrorCode.FORBIDDEN_BLOCKED_USER);
         }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -105,9 +123,9 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-
+        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
         return new UserOwnProfileGetRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone());
+            location, user.getPhone(),imageGetRes);
 
     }
 
@@ -117,12 +135,13 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
+        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
 
-        return new UserProfileGetRes(nickname, description, location);
+        return new UserProfileGetRes(nickname, description, location,imageGetRes);
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
-        Long userDetailsId) {
+        Long userDetailsId,MultipartFile file) throws IOException {
         String password = req.password();
 //        String newPassword = passwordEncoder.encode(req.newPassword());
 //        String newPasswordCheck = req.newPasswordCheck();
@@ -147,8 +166,15 @@ public class UserService {
         user.updateProfile(description, phone, location, nickname);
         userRepository.save(user);
 
+        ImageCreateRes imageCreateRes;
+        if (file != null && !file.isEmpty()) {
+            imageCreateRes = imageFileService.updateProfileImage(userId, file);
+        }else {
+            imageCreateRes=imageFileService.deleteProfileImage(user);
+        }
+
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone());
+            location, user.getPhone(),imageCreateRes);
     }
 
 

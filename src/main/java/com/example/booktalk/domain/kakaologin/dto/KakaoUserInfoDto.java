@@ -1,4 +1,4 @@
-package com.example.booktalk.domain.kakao.dto;
+package com.example.booktalk.domain.kakaologin.dto;
 
 public record KakaoUserInfoDto(
     Long id,

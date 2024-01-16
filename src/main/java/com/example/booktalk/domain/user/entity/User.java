@@ -50,6 +50,9 @@ public class User extends BaseEntity {
     private Double score;
 
     @Column
+    private Integer reportCount;
+
+    @Column
     private Long kakaoId;
 
     @OneToMany(mappedBy = "seller")
@@ -61,6 +64,7 @@ public class User extends BaseEntity {
         this.password = password;
         this.role = role;
         this.nickname = randomNickname;
+        this.reportCount = 0;
     }
 
     public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
@@ -103,6 +107,10 @@ public class User extends BaseEntity {
     }
     public void withdraw() {
         this.deleted = true;
+    }
+
+    public void increaseReportCount() {
+        this.reportCount++;
     }
 
 }

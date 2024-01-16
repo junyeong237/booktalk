@@ -33,7 +33,7 @@ public class UserReportService {
                 .reportedUser(reportedUser)
                 .reportUser(user)
                 .build();
-
+        reportedUser.increaseReportCount();
         userReportRepository.save(userReport);
 
         return new UserReportCreateRes("신고가 완료되었습니다.");
