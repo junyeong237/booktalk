@@ -92,7 +92,7 @@
     })
     .fail(function (jqXHR, textStatus) {
       alert("signup Fail");
-      window.location.href = host;
+      window.location.href = 'http://' + window.location.host + '/api/v1/users/signup';
     });
   }
 

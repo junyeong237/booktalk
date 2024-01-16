@@ -60,6 +60,7 @@ public class ProductService {
             .user(user)
             .build();
         product = productRepository.save(product);
+
         addCategory(req.categoryList(), product);
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
 

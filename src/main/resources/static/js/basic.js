@@ -199,13 +199,8 @@ function disconnect(username) {
     exit();
     stompClient.disconnect();
   }
-  setConnected(false);
-  console.log("Disconnected");
-}
 
-function setConnected(connected) {
-  $("#disconnect").prop("disabled", !connected);
-  $("#chatBox").html("");
+  console.log("Disconnected");
 }
 
 function loadChat(roomId) {

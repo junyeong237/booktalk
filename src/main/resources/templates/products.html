@@ -28,7 +28,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -39,7 +39,7 @@
       <ul class="nav justify-content-center">
         <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
@@ -47,9 +47,9 @@
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
           Login
-        </button>
+        </a>
       </div>
     </div>
   </header>
@@ -259,7 +259,7 @@
   }
 
   function showProductsByTag(category) {
-    event.preventDefault(); // 기본 동작 막기 새로고침막음
+    //event.preventDefault(); // 기본 동작 막기 새로고침막음
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
     $.ajax({
       type: 'GET',
