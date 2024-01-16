@@ -86,11 +86,13 @@ public class ImageFileService {
         return new ImageUpdateRes(imageFile.getId(), imageFile.getImagePathUrl());
     }
 
-    public ImageDeleteRes deleteImage(Long userId, Long productId, Long imageId) {
+    public ImageDeleteRes deleteImage(Long userId, Long productId) {
         User user = userRepository.findUserByIdWithThrow(userId);
-        ImageFile imageFile = imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId);
-        validateProductUser(user, imageFile);
-        imageFileRepository.delete(imageFile);
+        List<ImageFile> imageFileList = imageFileRepository.findByProductId(productId);
+        for(ImageFile imageFile:imageFileList) {
+            validateProductUser(user, imageFile);
+            imageFileRepository.delete(imageFile);
+        }
         return new ImageDeleteRes("삭제가 완료되었습니다.");
     }
 

@@ -49,11 +49,10 @@ public class ImageController {
                                       @RequestParam("upload") MultipartFile file) throws IOException {
         return imageFileService.updateImage(userDetails.getUser().getId(), req.productId(),imageId,file);
     }
-    @DeleteMapping("/{imageId}") //이미지 삭제
+    @DeleteMapping //이미지 삭제
     public ImageDeleteRes deleteImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody DeleteImageReq req,
-                                      @PathVariable Long imageId) {
-        return imageFileService.deleteImage(userDetails.getUser().getId(), req.productId(),imageId);
+                                      @RequestBody DeleteImageReq req) {
+        return imageFileService.deleteImage(userDetails.getUser().getId(), req.productId());
     }
 
 
