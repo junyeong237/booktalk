@@ -60,6 +60,15 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewId, userDetails.getUser().getId()));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ReviewSearchListRes>> getReviewSearchList(
+            @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+            @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
+            @RequestParam(value = "query") String search
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReviewSearchList(sortBy, isAsc, search));
+    }
+
 
 
 }

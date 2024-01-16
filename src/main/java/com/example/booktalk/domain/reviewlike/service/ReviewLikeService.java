@@ -1,8 +1,6 @@
 package com.example.booktalk.domain.reviewlike.service;
 
 import com.example.booktalk.domain.review.entity.Review;
-import com.example.booktalk.domain.review.exception.NotFoundReviewException;
-import com.example.booktalk.domain.review.exception.ReviewErrorCode;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.reviewlike.dto.response.ReviewLiketoggleRes;
 import com.example.booktalk.domain.reviewlike.entity.ReviewLike;

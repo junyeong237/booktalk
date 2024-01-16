@@ -9,6 +9,7 @@ public record ReviewGetRes(
     String title,
     String content,
     String nickname,
+    Integer reviewLike,
     List<CommentGetListRes> commentList
 ) {
 }

@@ -32,15 +32,15 @@ public class ReviewService {
         User user = userRepository.findUserByIdWithThrow(userId);
 
         Review review = Review.builder()
-            .title(req.title())
-            .content(req.content())
-            .user(user)
-            .build();
+                .title(req.title())
+                .content(req.content())
+                .user(user)
+                .build();
 
-        reviewRepository.save(review);
+        Review result = reviewRepository.save(review);
 
-        return new ReviewCreateRes(review.getId(), review.getTitle(),
-                review.getContent(), review.getUser().getNickname());
+        return new ReviewCreateRes(result.getId(), result.getTitle(),
+                result.getContent(), result.getUser().getNickname());
     }
 
     public List<ReviewGetListRes> getReviewList(String sortBy, boolean isAsc) {
@@ -52,7 +52,21 @@ public class ReviewService {
 
         return reviewList.stream()
                 .map(review -> new ReviewGetListRes(review.getId(),
-                        review.getTitle(), review.getUser().getNickname()))
+                        review.getTitle(), review.getUser().getNickname(),
+                        review.getReviewLikeCount()))
+                .toList();
+    }
+
+    public List<ReviewSearchListRes> getReviewSearchList(String sortBy, boolean isAsc, String search) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Review> reviewList = reviewRepository.getReviewListByTitleOrContent(sort, search);
+
+        return reviewList.stream()
+                .map(review -> new ReviewSearchListRes(review.getId(),
+                        review.getTitle(), review.getUser().getNickname(),
+                        review.getReviewLikeCount()))
                 .toList();
     }
 
@@ -66,7 +80,8 @@ public class ReviewService {
                 .toList();
 
         return new ReviewGetRes(review.getId(), review.getTitle(),
-                review.getContent(), review.getUser().getNickname(),commentList);
+                review.getContent(), review.getUser().getNickname(),
+                review.getReviewLikeCount(), commentList);
     }
 
     @Transactional
@@ -96,8 +111,9 @@ public class ReviewService {
     private void validateReviewUser(User user, Review review) {
         if (!user.getId().equals(review.getUser().getId())) {
             throw new NotPermissionReviewAuthorityException(
-                ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
+                    ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
         }
     }
+
 
 }
