@@ -68,9 +68,9 @@
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
                 <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+                <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+                <li class="nav-item"><a href="/api/v1/report" class="nav-link">회원신고</a></li>
             </ul>
         </div>
 
@@ -111,17 +111,16 @@
 
         $.ajax({
             type: "POST",
-            url: "/api/v1/report",
+            url: "/api/v1/reports",
             contentType: "application/json",
-            data: JSON.stringify({reportedUser: reportedUserId, reportReason: reason}),
+            data: JSON.stringify({reportedUserId: reportedUserId, reason: reason}),
         })
-            .done(function (res, status, xhr) {
-                alert("신고가 접수되었습니다.");
-                // 추가적인 동작을 수행하거나 리다이렉션할 수 있습니다.
+            .done(function (res) {
+                alert("신고 완료, 메인페이지로 이동합니다.");
+                window.location.href = '/api/v1';
             })
             .fail(function (jqXHR, textStatus) {
                 alert("신고 제출 실패");
-                // 실패 시 추가적인 동작을 수행하거나 에러 메시지를 표시할 수 있습니다.
             });
     }
 </script>
