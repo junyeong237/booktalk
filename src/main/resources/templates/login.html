@@ -76,8 +76,10 @@
       alert("로그인 성공");
       window.location.href = host + '/api/v1';
     })
-    .fail(function (jqXHR, textStatus) {
-      alert("Login Fail");
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
       window.location.href = host + '/api/v1/users/login';
     });
   }
