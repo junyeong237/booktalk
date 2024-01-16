@@ -28,7 +28,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -47,9 +47,9 @@
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-outline-primary" onclick="redirectToLogin()">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
           Login
-        </button>
+        </a>
       </div>
     </div>
   </header>
@@ -93,6 +93,8 @@
 
 <!-- Bootstrap JS and other scripts can be included here -->
 <script>
+  const host = 'http://' + window.location.host;
+
   function redirectToLogin() {
     window.location.href = host + '/api/v1/users/login';
   }
