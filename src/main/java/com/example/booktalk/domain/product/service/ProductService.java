@@ -4,6 +4,10 @@ import com.example.booktalk.domain.category.entity.Category;
 import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
+import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
+import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
+import com.example.booktalk.domain.imageFile.entity.ImageFile;
+import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
 import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
@@ -23,11 +27,14 @@ import com.example.booktalk.domain.productcategory.repository.ProductCategoryRep
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +45,9 @@ public class ProductService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final ImageFileService imageFileService;
 
-    public ProductCreateRes createProduct(Long userId, ProductCreateReq req) {
+    public ProductCreateRes createProduct(Long userId, ProductCreateReq req, List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -53,22 +61,26 @@ public class ProductService {
             .build();
         product = productRepository.save(product);
         addCategory(req.categoryList(), product);
-
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
+
+        List<ImageCreateRes> imageCreateResList =imageFileService.createImage(userId, product.getId(), files);
+
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
             , product.getRegion(), product.getFinished(), userRes, product.getContent(),
-            req.categoryList());
+            req.categoryList(), imageCreateResList);
         //TODO 생성자로 한줄정리
 
     }
 
-    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req) {
+    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req, List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
+
+        List<ImageCreateRes> imageCreateResList =imageFileService.updateImage(userId, productId,files);
 
         product.update(req);
         updateCategory(req.categoryList(), product);
@@ -76,7 +88,7 @@ public class ProductService {
         return new ProductUpdateRes(product.getId(), product.getName(),
             product.getQuantity(), product.getPrice(), product.getRegion(),
             product.getFinished(), userRes, product.getProductLikeCnt(), product.getContent(),
-            req.categoryList());
+            req.categoryList(),imageCreateResList);
 
     }
 
@@ -92,11 +104,12 @@ public class ProductService {
                 return productCategory.getCategory().getName();
             })
             .toList();
+        List<ImageListRes> imageListRes =imageFileService.getImages(productId);
 
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
             , product.getQuantity(), userRes, product.getRegion(), categories,
             product.getProductLikeCnt(), product.getContent(),
-            product.getFinished());
+            product.getFinished(),imageListRes);
 
     }
 
@@ -108,8 +121,11 @@ public class ProductService {
 
         List<Product> productList = productRepository.findAllByDeletedFalse(sort);
 
+
+
         return productList.stream()
             .map(product -> {
+                List<ImageListRes> imageListRes=imageFileService.getImages(product.getId());
 
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
@@ -119,7 +135,7 @@ public class ProductService {
 
                 return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(),imageListRes.get(0));
             })
             .toList();
 
@@ -174,7 +190,7 @@ public class ProductService {
 
     }
 
-
+    @Transactional(readOnly = true)
     public List<ProductTagListRes> getProductSearchTagList(String sortBy, Boolean isAsc,
         String tag) {
 
@@ -204,6 +220,7 @@ public class ProductService {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
+        imageFileService.deleteImage(userId,productId);
 
         product.deleted();
 
