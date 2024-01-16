@@ -6,6 +6,7 @@ import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
+import com.example.booktalk.domain.imageFile.entity.ImageFile;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
@@ -120,8 +121,11 @@ public class ProductService {
 
         List<Product> productList = productRepository.findAllByDeletedFalse(sort);
 
+
+
         return productList.stream()
             .map(product -> {
+                List<ImageListRes> imageListRes=imageFileService.getImages(product.getId());
 
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
@@ -131,7 +135,7 @@ public class ProductService {
 
                 return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(),imageListRes.get(0));
             })
             .toList();
 
