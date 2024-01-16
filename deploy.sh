@@ -1,6 +1,7 @@
 REPOSITORY=/home/ubuntu/app
 cd $REPOSITORY
 
+
 APP_NAME=booktalk #1
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep '.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
@@ -17,4 +18,4 @@ else
 fi
 
 echo "> $JAR_PATH 배포" #3
-nohup java -jar /home/ubuntu/app/build/libs/booktalk-0.0.1-SNAPSHOT.jar > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar /home/ubuntu/app/build/libs/booktalk-0.0.1-SNAPSHOT.jar > $REPOSITORY/nohup.out 2>&1 &
