@@ -1,8 +1,11 @@
 package com.example.booktalk.domain.product.dto.request;
 
-import lombok.Builder;
+import com.example.booktalk.domain.product.entity.Region;
+import java.util.List;
 
-@Builder
-public record ProductCreateReq(String name, Long price, String description) {
+
+public record ProductCreateReq(String name, Long price, Long quantity, Region region,
+                               String content,
+                               List<String> categoryList) {
 
 }

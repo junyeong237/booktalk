@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+      </ul>
+    </div>
+
+    <div class="text-md-end">
+      <div class="d-flex align-items-center">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+          Login
+        </a>
+      </div>
+    </div>
+  </header>
+</div>
+
+<div class="container mt-2 mb-4 text-center ">
+  <form class="d-inline-flex" onsubmit="handleSearchSubmit();">
+    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+           style="width: 500px;" id="searchInput">
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </form>
+</div>
+
+
+<div class="container">
+  <div id="sorting-options" class="d-flex justify-content-center mt-2 mb-2">
+    <div class="form-check mx-1">
+      <input class="form-check-input" type="radio" name="sortingOption" id="sortByCreatedAt"
+             value="createdAt"
+             checked onchange="showProducts()">
+      <label class="form-check-label" for="sortByCreatedAt">
+        생성순
+      </label>
+    </div>
+    <div class="form-check mx-1">
+      <input class="form-check-input" type="radio" name="sortingOption" id="sortByTitle"
+             value="name" onchange="showProducts()">
+      <label class="form-check-label" for="sortByTitle">
+        상품명
+      </label>
+    </div>
+    <div class="form-check mx-1">
+      <input class="form-check-input" type="radio" name="sortingOption" id="sortByLPrice"
+             value="price" onchange="showProducts()">
+      <label class="form-check-label" for="sortByLPrice">
+        가격
+      </label>
+    </div>
+    <div class="form-check mx-1">
+      <input class="form-check-input" type="radio" name="sortingOption" id="sortByLikes"
+             value="productLikeCnt" onchange="showProducts()">
+      <label class="form-check-label" for="sortByLPrice">
+        좋아요
+      </label>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-1" id="product-container">
+
+  </div>
+</div>
+
+<script>
+
+  const host = 'http://' + window.location.host;
+
+  $(document).ready(function () {
+    showProducts();
+
+  });
+
+  function showProducts() {
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/products`,
+      data: {
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      $('#product-container').empty();
+      res.forEach(function (product) {
+        renderProducts(product);
+      })
+
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+  }
+
+  function renderProducts(product) {
+    var row = document.getElementById("product-container");
+
+    // col 엘리먼트 생성
+    var col = document.createElement("div");
+    col.className = "col mb-4 ";
+
+    // card 엘리먼트 생성
+    var card = document.createElement("div");
+    card.className = "card h-100 shadow d-flex";
+
+    // row 엘리먼트 생성
+    var rowInsideCard = document.createElement("div");
+    rowInsideCard.className = "row";
+
+    // col-md-2 엘리먼트 생성
+    var colImage = document.createElement("div");
+    colImage.className = "col-md-2";
+
+    // 이미지 엘리먼트 생성
+    var image = document.createElement("img");
+    image.src = "https://via.placeholder.com/100";
+    image.className = "card-img-top style=\"max-width: 70%;\"";
+    image.alt = "상품이미지";
+    image.style.maxWidth = "100%";
+
+    // col-md-10 엘리먼트 생성
+    var colText = document.createElement("div");
+    colText.className = "col-md-8 align-self-center";
+
+    // card-body 엘리먼트 생성
+    var cardBody = document.createElement("div");
+    cardBody.className = "card-body mb-3";
+
+    // 제목 엘리먼트 생성
+    var cardTitle = document.createElement("h2");
+    cardTitle.className = "card-title";
+    cardTitle.textContent = product.name;
+    cardTitle.style.cursor = "pointer";
+    cardTitle.addEventListener("click", function () {
+      redirectSpecificProduct(product.id);
+    });
+
+    // 가격 엘리먼트 생성
+    var cardDescription = document.createElement("p");
+    cardDescription.className = "card-text";
+    cardDescription.textContent = "가격: " + product.price + "원";
+
+    const tagsContainer = document.createElement('div');
+    tagsContainer.classList.add('tags-container');
+
+    product.categories.forEach(category => {
+      if (category) {
+        const tagElement = document.createElement('span');
+        tagElement.classList.add('badge', 'bg-secondary', 'text-white'); // 부트스트랩의 badge 스타일을 추가
+        tagElement.textContent = "#" + category;
+        tagElement.style.cursor = "pointer";
+        tagElement.addEventListener('click', function () {
+          showProductsByTag(category);
+        });
+        tagsContainer.appendChild(tagElement);
+      }
+    });
+
+    // 관심갯수 엘리먼트 생성
+    var LikesCol = document.createElement("div");
+    LikesCol.className = "col-md-2 d-flex align-self-end justify-content-center";
+
+    var LikesCount = document.createElement("p");
+    LikesCount.className = "card-text mb-2";
+    LikesCount.textContent = "관심갯수: " + product.productLikes;
+
+    // p 엘리먼트를 col 엘리먼트의 자식으로 추가
+    LikesCol.appendChild(LikesCount);
+
+    // 각 엘리먼트를 계층적으로 추가
+    colImage.appendChild(image);
+    colText.appendChild(cardBody);
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardDescription);
+    cardBody.appendChild(tagsContainer);
+
+    rowInsideCard.appendChild(colImage);
+    rowInsideCard.appendChild(colText);
+    rowInsideCard.appendChild(LikesCol);
+    card.appendChild(rowInsideCard);
+    col.appendChild(card);
+    row.appendChild(col);
+  }
+
+  function redirectSpecificProduct(productId) {
+    window.location.href = host + '/api/v1/products/detail/' + productId;
+  }
+
+  function handleSearchSubmit() {
+    event.preventDefault(); // 기본 동작 막기 새로고침막음
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    console.log(selectedValue);
+    const query = document.getElementById('searchInput').value;
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/products/search`,
+      data: {
+        query: query,
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      $('#product-container').empty();
+      res.forEach(function (product) {
+        renderProducts(product);
+      })
+
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+
+  }
+
+  function showProductsByTag(category) {
+    //event.preventDefault(); // 기본 동작 막기 새로고침막음
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/products/tag`,
+      data: {
+        tag: category,
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      $('#product-container').empty();
+      res.forEach(function (product) {
+        renderProducts(product);
+      })
+
+    })
+    .fail(function (res) {
+      console.log(res);
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+  }
+
+  function sortCheck() {
+
+  }
+
+</script>
+
+</body>
+
+</html>
