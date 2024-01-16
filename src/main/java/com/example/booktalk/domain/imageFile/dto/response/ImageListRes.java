@@ -1,4 +1,4 @@
 package com.example.booktalk.domain.imageFile.dto.response;
 
-public record ImageListRes(Long id,String imagePathUrl) {
+public record ImageListRes(String imagePathUrl) {
 }
