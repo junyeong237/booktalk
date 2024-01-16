@@ -2,166 +2,517 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 
-    <style>
-        .container1 {
-            max-width: 700px;
-            margin: auto;
-        }
+  <style>
+    .container1 {
+      max-width: 700px;
+      margin: auto;
+    }
 
-        .mb-3 {
-            width: 100%;
-        }
+    .mb-3 {
+      width: 100%;
+    }
 
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-        .form-control {
-            width: calc(100% + 10px);
-            padding: 10px;
-            font-size: 14px;
-        }
+    .form-control {
+      width: calc(100% + 10px);
+      padding: 10px;
+      font-size: 14px;
+    }
 
-        .form-check-input {
-            width: 18px;
-            height: 18px;
-        }
+    .form-check-input {
+      width: 18px;
+      height: 18px;
+    }
 
-        .btn-primary {
-            width: calc(100% + 10px);
-            padding: 8px;
-            font-size: 16px;
-        }
-
-        .card-img-top {
-            width: 200px;
-            height: auto;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
+    .btn-secondary {
+      width: calc(100% + 10px);
+      padding: 8px;
+      font-size: 16px;
+    }
 
 
-        #imagePreview {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+    .btn-primary {
+      width: calc(15% + 10px);
+      padding: 8px;
+      font-size: 16px;
+    }
+
+
+    .dropdown-menu {
+      width: calc(100% + 10px);
+    }
+
+    .card-img-top {
+      width: 250px;
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+
+    #imagePreview {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 
 </head>
 
 <body>
 
 <div class="container">
-    <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
-        <div class="col-md-3 mb-2 mb-md-0">
-            <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
-                <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
-                    <span class="fs-4">Book톡방</span>
-                </svg>
-            </a>
-        </div>
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
 
-        <div class="col-md-6 text-center">
-            <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
-            </ul>
-        </div>
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+      </ul>
+    </div>
 
-        <div class="text-md-end">
-            <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-outline-primary">
-                    Login
-                </button>
-            </div>
-        </div>
-    </header>
+    <div class="text-md-end">
+      <div class="d-flex align-items-center">
+        <a href = "/api/v1/users/login" type="button" class="btn btn-outline-primary"">
+          Login
+        </a>
+      </div>
+    </div>
+  </header>
 </div>
 
-<div class="container1">
-    <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top" alt="Product Image">
+<div class="container mb-5" id="product-register-container">
+  <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top"
+       alt="Product Image">
 
-    <form enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="productImage" class="form-label">상품 이미지 업로드</label>
-            <input type="file" class="form-control" id="productImage" accept="image/*" onchange="previewImage()"
-                   required>
-        </div>
-        <div class="mb-3">
-            <label for="productName" class="form-label">상품명</label>
-            <input type="text" class="form-control" id="productName" required>
-        </div>
-        <div class="mb-3">
-            <label for="productPrice" class="form-label">상품 가격</label>
-            <input type="number" class="form-control" id="productPrice" required>
-        </div>
-        <div class="mb-3">
-            <label for="productQuantity" class="form-label">상품 수량</label>
-            <input type="number" class="form-control" id="productQuantity" required>
-        </div>
-        <div class="mb-3">
-            <label for="productRegions" class="form-label">지역</label>
-            <input type="text" class="form-control" id="productRegions" placeholder="예: SEOUL, BUSAN" required>
-        </div>
-        <div class="mb-3">
-            <label for="productCategories" class="form-label">카테고리 리스트</label>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryDropdown"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    선택하세요
-                </button>
-                <div class="dropdown-menu" aria-labelledby="categoryDropdown">
-                    <a class="dropdown-item" href="#">코미디</a>
-                    <a class="dropdown-item" href="#">추리</a>
-                    <a class="dropdown-item" href="#">로맨스</a>
-                    <!-- 다른 카테고리 항목들 추가 -->
-                </div>
-            </div>
-        </div>
 
-        <button type="submit" class="btn btn-primary">상품 등록</button>
-    </form>
+  <form enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="productImage" class="form-label">상품 이미지 업로드</label>
+      <input type="file" class="form-control" id="productImage" accept="image/*" multiple
+             onchange="previewImage()"
+             required>
+    </div>
+    <div class="mb-3">
+      <label for="productName" class="form-label">상품명</label>
+      <input type="text" class="form-control" id="productName" required>
+    </div>
+    <div class="mb-3">
+      <label for="productPrice" class="form-label">상품 가격</label>
+      <input type="number" class="form-control" id="productPrice" required>
+    </div>
+    <div class="mb-3">
+      <label for="productQuantity" class="form-label">상품 수량</label>
+      <input type="number" class="form-control" id="productQuantity" required>
+    </div>
+    <div class="mb-3">
+      <label for="productRegion" class="form-label mb-1">지역 리스트</label>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="productRegion"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          선택하세요
+        </button>
+        <div class="dropdown-menu" aria-labelledby="regionDropdown">
+          <a class="dropdown-item" href="#">SEOUL</a>
+          <a class="dropdown-item" href="#">INCHEON</a>
+          <a class="dropdown-item" href="#">광주</a>
+          <a class="dropdown-item" href="#">울산</a>
+          <a class="dropdown-item" href="#">수원</a>
+          <a class="dropdown-item" href="#">부산</a>
+          <a class="dropdown-item" href="#">대구</a>
+          <a class="dropdown-item" href="#">대전</a>
+          <a class="dropdown-item" href="#">청주</a>
+          <a class="dropdown-item" href="#">제주</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label mb-1" id="categoty-list-container">카테고리 리스트</label>
+      <div id="category-list-label"></div>
+
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary" style="float:right" onclick="RegisterProduct()">
+        상품 등록
+      </button>
+    </div>
+
+  </form>
 </div>
 
-<script>
-    function previewImage() {
-        var input = document.getElementById('productImage');
-        var preview = document.getElementById('imagePreview');
-        var file = input.files[0];
-        var reader = new FileReader();
+<script th:inline="javascript">
+  const host = 'http://' + window.location.host;
+  const productId = /*[[${productId}]]*/
 
-        reader.onloadend = function () {
-            preview.src = reader.result;
-        }
+      $(document).ready(function () {
+        $('#category-list-label').empty();
+        makeCategoryList();
 
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = "";
-        }
+      });
+
+  function redirectToLogin() {
+    window.location.href = host + '/api/v1/users/login';
+  }
+
+  function ProductRegister(product) {
+    var container = document.getElementById("product-register-container");
+
+// 이미지 미리보기
+    var imagePreview = document.createElement("img");
+    imagePreview.id = "imagePreview";
+    imagePreview.src = "https://via.placeholder.com/200";
+    imagePreview.className = "card-img-top";
+    imagePreview.alt = "Product Image";
+    container.appendChild(imagePreview);
+
+// 폼 요소
+    var form = document.createElement("form");
+    form.enctype = "multipart/form-data";
+
+// 상품 이미지 업로드
+    var productImageDiv = document.createElement("div");
+    productImageDiv.className = "mb-3";
+
+    var productImageLabel = document.createElement("label");
+    productImageLabel.htmlFor = "productImage";
+    productImageLabel.className = "form-label";
+    productImageLabel.textContent = "상품 이미지 업로드";
+
+    var productImageInput = document.createElement("input");
+    productImageInput.type = "file";
+    productImageInput.className = "form-control";
+    productImageInput.id = "productImage";
+    productImageInput.accept = "image/*";
+    productImageInput.setAttribute("onchange", "previewImage()");
+    productImageInput.required = false;
+
+    productImageDiv.appendChild(productImageLabel);
+    productImageDiv.appendChild(productImageInput);
+
+    form.appendChild(productImageDiv);
+
+// 상품명 입력
+    var productNameDiv = document.createElement("div");
+    productNameDiv.className = "mb-3";
+
+    var productNameLabel = document.createElement("label");
+    productNameLabel.htmlFor = "productName";
+    productNameLabel.className = "form-label";
+    productNameLabel.textContent = "상품명";
+
+    var productNameInput = document.createElement("input");
+    productNameInput.type = "text";
+    productNameInput.className = "form-control";
+    productNameInput.id = "productName";
+    productNameInput.placeholder = "상품명";
+    productNameInput.required = true;
+
+    productNameDiv.appendChild(productNameLabel);
+    productNameDiv.appendChild(productNameInput);
+
+    form.appendChild(productNameDiv);
+
+// 상품 가격 입력
+    var productPriceDiv = document.createElement("div");
+    productPriceDiv.className = "mb-3";
+
+    var productPriceLabel = document.createElement("label");
+    productPriceLabel.htmlFor = "productPrice";
+    productPriceLabel.className = "form-label";
+    productPriceLabel.textContent = "상품 가격";
+
+    var productPriceInput = document.createElement("input");
+    productPriceInput.type = "number";
+    productPriceInput.className = "form-control";
+    productPriceInput.id = "productPrice";
+    productPriceInput.placeholder = "상품 가격";
+    productPriceInput.required = true;
+
+    productPriceDiv.appendChild(productPriceLabel);
+    productPriceDiv.appendChild(productPriceInput);
+
+    form.appendChild(productPriceDiv);
+
+// 상품 수량 입력
+    var productQuantityDiv = document.createElement("div");
+    productQuantityDiv.className = "mb-3";
+
+    var productQuantityLabel = document.createElement("label");
+    productQuantityLabel.htmlFor = "productQuantity";
+    productQuantityLabel.className = "form-label";
+    productQuantityLabel.textContent = "상품 수량";
+
+    var productQuantityInput = document.createElement("input");
+    productQuantityInput.type = "number";
+    productQuantityInput.className = "form-control";
+    productQuantityInput.id = "productQuantity";
+    productQuantityInput.placeholder = "상품 수량";
+    productQuantityInput.required = true;
+
+    productQuantityDiv.appendChild(productQuantityLabel);
+    productQuantityDiv.appendChild(productQuantityInput);
+
+    form.appendChild(productQuantityDiv);
+
+    // 지역 리스트 선택
+    var productRegionsDiv = document.createElement("div");
+    productRegionsDiv.className = "mb-3";
+
+    var regionDropdown = document.createElement("div");
+    regionDropdown.className = "dropdown";
+
+    var regionButton = document.createElement("button");
+    regionButton.className = "btn btn-secondary dropdown-toggle";
+    regionButton.type = "button";
+    regionButton.id = "categoryDropdown";
+    regionButton.setAttribute("data-bs-toggle", "dropdown");
+    regionButton.setAttribute("aria-haspopup", "true");
+    regionButton.setAttribute("aria-expanded", "false");
+    regionButton.textContent = "선택하세요";
+
+    var regionMenu = document.createElement("div");
+    regionMenu.className = "dropdown-menu";
+    regionMenu.setAttribute("aria-labelledby", "categoryDropdown");
+
+// 지역 항목들
+    var regions = ["서울", "부산", "인천", "울산", "대구", "광주", "대전", "수원", "청주", "제주"]; // 다른 카테고리 항목들 추가
+
+    for (var i = 0; i < regions.length; i++) {
+      var regionItem = document.createElement("a");
+      regionItem.className = "dropdown-item";
+      regionItem.href = "#";
+      regionItem.textContent = regions[i];
+      regionMenu.appendChild(regionItem);
     }
 
+    regionDropdown.appendChild(regionButton);
+    regionDropdown.appendChild(regionMenu);
+
+    productRegionsDiv.appendChild(regionDropdown);
+    form.appendChild(productRegionsDiv);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 카테고리 리스트
+    var productCategoriesDiv = document.createElement("div");
+    productCategoriesDiv.className = "mb-3";
+
+    var categoryDropdown = document.createElement("div");
+    categoryDropdown.className = "dropdown";
+
+    var categoryButton = document.createElement("button");
+    categoryButton.className = "btn btn-secondary dropdown-toggle";
+    categoryButton.type = "button";
+    categoryButton.id = "categoryDropdown";
+    categoryButton.setAttribute("data-bs-toggle", "dropdown");
+    categoryButton.setAttribute("aria-haspopup", "true");
+    categoryButton.setAttribute("aria-expanded", "false");
+    categoryButton.textContent = "선택하세요";
+
+    var categoryMenu = document.createElement("div");
+    categoryMenu.className = "dropdown-menu";
+    categoryMenu.setAttribute("aria-labelledby", "categoryDropdown");
+
+// 카테고리 항목들
+    var categories = ["코미디", "추리", "로맨스"]; // 다른 카테고리 항목들 추가
+
+    for (var i = 0; i < categories.length; i++) {
+      var categoryItem = document.createElement("a");
+      categoryItem.className = "dropdown-item";
+      categoryItem.href = "#";
+      categoryItem.textContent = categories[i];
+      categoryMenu.appendChild(categoryItem);
+    }
+
+    categoryDropdown.appendChild(categoryButton);
+    categoryDropdown.appendChild(categoryMenu);
+
+    productCategoriesDiv.appendChild(categoryDropdown);
+
+    form.appendChild(productCategoriesDiv);
+
+// 등록 버튼
+    var submitButton = document.createElement("button");
+    submitButton.type = "submit";
+    submitButton.className = "btn btn-primary";
+    submitButton.textContent = "상품 등록";
+
+    form.appendChild(submitButton);
+
+// 폼을 부모에 추가
+    container.appendChild(form);
+
+// 문서의 body에 동적으로 생성한 폼을 추가
+  }
+
+  function previewImage() {
+    var input = document.getElementById('productImage');
+    var preview = document.getElementById('imagePreview');
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    var files = input.files;
+
+    console.log(files)
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+  }
+
+  function makeCategoryList() {
+    var categoryContainer = document.getElementById('category-list-label');
+    var checkboxContainer = document.createElement('div');
+    checkboxContainer.classList.add('mb-3');
+    checkboxContainer.style.display = 'flex';
+    checkboxContainer.style.flexDirection = 'row';
+
+    checkboxContainer.appendChild(createCheckbox('추리', 'categoryCheckbox1', '추리'));
+    checkboxContainer.appendChild(createCheckbox('코미디', 'categoryCheckbox2', '코미디'));
+    checkboxContainer.appendChild(createCheckbox('힐링', 'categoryCheckbox3', '힐링'));
+    checkboxContainer.appendChild(createCheckbox('SF', 'categoryCheckbox4', 'SF'));
+    checkboxContainer.appendChild(createCheckbox('정보공학', 'categoryCheckbox5', '정보공학'));
+    // Append the container to the body
+    categoryContainer.appendChild(checkboxContainer);
+  }
+
+  ``
+
+  function createCheckbox(value, id, labelText) {
+    var checkboxDiv = document.createElement('div');
+    checkboxDiv.classList.add('form-check');
+
+    var checkboxInput = document.createElement('input');
+    checkboxInput.classList.add('form-check-input');
+    checkboxInput.setAttribute('type', 'checkbox');
+    checkboxInput.setAttribute('value', value);
+    checkboxInput.setAttribute('id', id);
+    checkboxInput.setAttribute('name', 'category-checkbox');
+
+    var label = document.createElement('label');
+    label.classList.add('form-check-label');
+    label.setAttribute('for', id);
+    label.textContent = labelText;
+
+    checkboxDiv.appendChild(checkboxInput);
+    checkboxDiv.appendChild(label);
+
+    return checkboxDiv;
+  }
+
+  function RegisterProduct() {
+    // 입력된 값 가져오기
+    var input = document.getElementById('productImage');
+
+    alert('대기대기')
+    var productName = document.getElementById("productName").value;
+    var productPrice = document.getElementById("productPrice").value;
+    var productQuantity = document.getElementById("productQuantity").value;
+
+    // 선택된 지역 가져오기
+    var selectedRegion = document.getElementById("productRegion").innerText;
+
+    // 선택된 카테고리 가져오기 (다중 선택 가능)
+    var selectedCategories = [];
+    const query = 'input[name="category-checkbox"]:checked';
+    const selectedEls = document.querySelectorAll(query);
+    console.log(selectedEls);
+    // 선택된 목록에서 value 찾기
+    let result = [];
+    selectedEls.forEach((el) => {
+      result.push(el.value);
+    });
+    console.log(result);
+
+    var formData = new FormData();
+    for (var i = 0; i < input.files.length; i++) {
+      formData.append('upload', input.files[i]);
+    }
+
+    const req = {
+      name: productName,
+      price: productPrice,
+      quantity: productQuantity,
+      content: "멋진상품입니다.",
+      region: selectedRegion,
+      finished: false,
+      categoryList: result
+    }
+    // JSON 데이터 추가
+    const json = JSON.stringify(req);
+    const blob = new Blob([json], {type: "application/json"});
+    formData.append("req", blob);
+
+    $.ajax({
+      type: "POST",
+      url: `/api/v1/products`,
+      data: formData,		// 필수
+      processData: false,	// 필수
+      contentType: false,	// 필수
+    })
+    .done(function (res) {
+      alert('전송완료');
+    })
+    .fail(function (res) {
+      alert('전송실패');
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // 각 드롭다운 아이템에 이벤트 리스너 등록
+    var dropdownItems = document.querySelectorAll('.dropdown-item');
+
+    dropdownItems.forEach(function (item) {
+      item.addEventListener('click', function () {
+        // 선택된 드롭다운 아이템의 텍스트를 가져와 버튼에 설정
+        var selectedText = item.innerText;
+        document.getElementById('productRegion').innerText = selectedText;
+      });
+    });
+  });
 </script>
 </body>
 
