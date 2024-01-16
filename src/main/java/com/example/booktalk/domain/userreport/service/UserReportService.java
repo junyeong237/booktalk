@@ -1,8 +1,6 @@
 package com.example.booktalk.domain.userreport.service;
 
 import com.example.booktalk.domain.user.entity.User;
-import com.example.booktalk.domain.user.exception.NotFoundUserException;
-import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.domain.userreport.dto.request.UserReportCreateReq;
 import com.example.booktalk.domain.userreport.dto.response.UserReportCreateRes;
@@ -35,7 +33,7 @@ public class UserReportService {
                 .reportedUser(reportedUser)
                 .reportUser(user)
                 .build();
-
+        reportedUser.increaseReportCount();
         userReportRepository.save(userReport);
 
         return new UserReportCreateRes("신고가 완료되었습니다.");
