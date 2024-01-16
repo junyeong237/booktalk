@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,17 +43,23 @@ public class ImageFileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ImageCreateRes createImage(Long userId, Long productId, @RequestParam("upload") MultipartFile file) throws IOException {
-        String imagePathUrl = imageUpload(file);
-        User user = userRepository.findUserByIdWithThrow(userId);
-        Product product = productRepository.findProductByIdWithThrow(productId);
-        ImageFile imageFile = ImageFile.builder()
-                .imagePathUrl(imagePathUrl)
-                .user(user)
-                .product(product)
-                .build();
-        imageFileRepository.save(imageFile);
-        return new ImageCreateRes(imageFile.getId(), imageFile.getImagePathUrl());
+    public List<ImageCreateRes> createImage(Long userId, Long productId,List<MultipartFile> files) throws IOException {
+        List<ImageCreateRes> imageResponses = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            String imagePathUrl = imageUpload(file);
+            User user = userRepository.findUserByIdWithThrow(userId);
+            Product product = productRepository.findProductByIdWithThrow(productId);
+            ImageFile imageFile = ImageFile.builder()
+                    .imagePathUrl(imagePathUrl)
+                    .user(user)
+                    .product(product)
+                    .build();
+            imageFileRepository.save(imageFile);
+            ImageCreateRes imageResponse = new ImageCreateRes(imageFile.getId(), imageFile.getImagePathUrl());
+            imageResponses.add(imageResponse);
+        }
+        return imageResponses;
     }
 
     @Transactional(readOnly = true)
