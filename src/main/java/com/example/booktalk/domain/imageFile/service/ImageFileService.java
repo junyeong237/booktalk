@@ -62,6 +62,18 @@ public class ImageFileService {
         return imageCreateResList;
     }
 
+    public ImageCreateRes createProfileImage(Long userId,MultipartFile file) throws IOException {
+        String imagePathUrl = imageUpload(file);
+        User user = userRepository.findUserByIdWithThrow(userId);
+        ImageFile imageFile = ImageFile.builder()
+                .imagePathUrl(imagePathUrl)
+                .user(user)
+                .nickname(user.getNickname())
+                .build();
+        imageFileRepository.save(imageFile);
+        return new ImageCreateRes(imageFile.getImagePathUrl());
+    }
+
     @Transactional(readOnly = true)
     public ImageGetRes getImage(Long productId, Long imageId) {
         ImageFile imageFile = imageFileRepository.findImageFileByProductIdAndIdWithThrow(productId, imageId);

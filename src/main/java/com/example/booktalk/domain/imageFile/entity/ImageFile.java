@@ -18,9 +18,11 @@ public class ImageFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String imagePathUrl;
 
-
+    @Column
+    private String nickname;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,13 +35,10 @@ public class ImageFile {
 
 
     @Builder
-    private ImageFile(String imagePathUrl,User user,Product product){
+    private ImageFile(String imagePathUrl,User user,Product product,String nickname){
         this.imagePathUrl=imagePathUrl;
         this.user=user;
         this.product=product;
+        this.nickname=nickname;
     };
-
-    public void updateImage(String imagePathUrl){
-        this.imagePathUrl=imagePathUrl;
-    }
 }
