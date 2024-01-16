@@ -129,8 +129,9 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
+        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
 
-        return new UserProfileGetRes(nickname, description, location);
+        return new UserProfileGetRes(nickname, description, location,imageGetRes);
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
