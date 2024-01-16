@@ -56,7 +56,7 @@ public class ImageFileService {
                     .product(product)
                     .build();
             imageFileRepository.save(imageFile);
-            ImageCreateRes imageResponse = new ImageCreateRes(imageFile.getId(), imageFile.getImagePathUrl());
+            ImageCreateRes imageResponse = new ImageCreateRes( imageFile.getImagePathUrl());
             imageCreateResList.add(imageResponse);
         }
         return imageCreateResList;
