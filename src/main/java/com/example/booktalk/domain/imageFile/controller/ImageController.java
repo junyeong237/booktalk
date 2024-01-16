@@ -27,11 +27,11 @@ public class ImageController {
 
     @PostMapping
     @ResponseBody
-    public ImageCreateRes createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public List<ImageCreateRes> createImage(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                       @RequestPart("productId") CreateImageReq req,
-                                      @RequestParam("upload") MultipartFile file) throws IOException {
+                                      @RequestParam("upload") List<MultipartFile> files) throws IOException {
 
-        return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),file);
+        return imageFileService.createImage(userDetails.getUser().getId(),req.productId(),files);
     }
     @GetMapping("/{imageId}") //단일 조회
     public ImageGetRes getImage(@RequestBody GetImageReq req,
