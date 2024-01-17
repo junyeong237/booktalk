@@ -96,8 +96,6 @@
   <div class="profile-item row">
     <div class="col-sm-3 fw-bold">프로필 이미지</div>
     <div class="col-sm-8" id="image-container">
-      <!--      <img src="https://via.placeholder.com/150" alt="프로필 이미지" class="profile-img"-->
-      <!--           id="imagePreview">-->
     </div>
     <div class="my-2 row" id="upload-container">
       <!--      <div class="col-sm-3 fw-bold">이미지 업로드</div>-->
@@ -311,7 +309,7 @@
   }
 
   function previewImage() {
-    var imageContainer = document.getElementById('image-container');
+        var imageContainer = document.getElementById('image-container');
     $('#image-container').empty();
     const img = document.createElement('img');
     img.className = 'card-img-top mx-2';
