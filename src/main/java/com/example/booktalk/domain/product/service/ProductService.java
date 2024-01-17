@@ -179,17 +179,18 @@ public class ProductService {
         List<Product> productList = productRepository.getPostListByName(sort, search);
         return productList.stream()
             .map(product -> {
-
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
-
+                ImageListRes imageGetRes =
+                    imageListRes.isEmpty() ? new ImageListRes(null) : imageListRes.get(0);
                 return new ProductSerachListRes(product.getId(), product.getName(),
                     product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(), imageGetRes);
             })
             .toList();
 
@@ -205,16 +206,17 @@ public class ProductService {
         List<Product> productList = productRepository.getProductListByTag(sort, tag);
         return productList.stream()
             .map(product -> {
-
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
-
+                ImageListRes imageGetRes =
+                    imageListRes.isEmpty() ? new ImageListRes(null) : imageListRes.get(0);
                 return new ProductTagListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(), imageGetRes);
             })
             .toList();
 
