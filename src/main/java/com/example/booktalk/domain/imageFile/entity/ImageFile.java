@@ -21,9 +21,6 @@ public class ImageFile {
     @Column
     private String imagePathUrl;
 
-    @Column
-    private String nickname;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -35,10 +32,9 @@ public class ImageFile {
 
 
     @Builder
-    private ImageFile(String imagePathUrl,User user,Product product,String nickname){
+    private ImageFile(String imagePathUrl,User user,Product product){
         this.imagePathUrl=imagePathUrl;
         this.user=user;
         this.product=product;
-        this.nickname=nickname;
     };
 }

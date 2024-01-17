@@ -19,10 +19,73 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script src="/js/basic.js"></script>
+  <style>
+    .banner-container {
+      position: relative;
+      max-width: 1000px;
+      max-height: 220px;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    .banner-slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .banner-slide {
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .active {
+      opacity: 1;
+    }
+
+    button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    #prevSlide {
+      left: 10px;
+    }
+
+    #nextSlide {
+      right: 10px;
+    }
+
+    #indicators {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: row; /* 수정: 수평으로 나열 */
+    }
+
+    #indicators li {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: gray;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    #indicators li.active {
+      background-color: gray; /* 활성화된 인디케이터 스타일 */
+    }
+  </style>
 
 </head>
 
 <body>
+
 
 <div class="container">
   <header
@@ -48,14 +111,32 @@
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
           Login
+        </a>
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
         </a>
       </div>
     </div>
   </header>
 </div>
+<div class="banner-container">
+  <div class="banner-slides">
+    <div class="banner-slide active"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/dbda3de9-c0aa-4ade-a3c8-e3c6ca21e4f4.png"  alt="Banner 1"></div>
+    <div class="banner-slide"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/136b952e-6f2d-41a4-a6f7-a3322c7adc8b.png"></div>
+    <div class="banner-slide"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/f40cc2ee-7473-4566-9bc3-c66b0f425776.png" alt="Banner 3"></div>
+  </div>
 
+
+  <!-- 이전/다음 버튼 -->
+  <button id="prevSlide">‹</button>
+  <button id="nextSlide">›</button>
+
+  <ul id="indicators" class="mt-2 d-flex justify-content-center"></ul>
+</div>
 
 <!-- Used items list -->
 <div class="container mt-2 mb-2">
@@ -178,6 +259,57 @@
     currentElement.appendChild(colDiv);
 
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const prevButton = document.getElementById('prevSlide');
+    const nextButton = document.getElementById('nextSlide');
+    const slidesContainer = document.querySelector('.banner-slides');
+    const slides = document.querySelectorAll('.banner-slide');
+    const indicatorsContainer = document.getElementById('indicators');
+
+    let currentIndex = 0;
+    let intervalId;
+
+    // Create indicators
+    slides.forEach((_, index) => {
+      const indicator = document.createElement('li');
+      indicator.addEventListener('click', () => showSlide(index));
+      indicatorsContainer.appendChild(indicator);
+    });
+
+    const indicators = Array.from(indicatorsContainer.children);
+
+    // Show initial slide
+    showSlide(currentIndex);
+
+    // Event listeners for next and previous buttons
+    nextButton.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    });
+
+    prevButton.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
+    });
+
+    // Function to show a specific slide
+    function showSlide(index) {
+      slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+        indicators[i].classList.toggle('active', i === index);
+      });
+
+      clearInterval(intervalId); // 이전 인터벌 제거
+      // 일정 시간마다 자동으로 다음 슬라이드로 전환
+      intervalId = setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        showSlide(currentIndex);
+      }, 5000); // 5000ms(5초)마다 전환
+    }
+  });
 
 </script>
 </body>
