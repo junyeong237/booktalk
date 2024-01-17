@@ -13,7 +13,7 @@
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-
+  <script src="/js/basic.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -65,7 +65,13 @@
         </li>
         <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-        <li class="nav-item"><a href="/api/v1/chats/room/list" class="nav-link">채팅방</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
+            채팅방
+          </button>
+        </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
     </div>
@@ -74,6 +80,10 @@
       <div class="d-flex align-items-center">
         <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
           Login
+        </a>
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
         </a>
       </div>
     </div>
@@ -85,9 +95,7 @@
   <small id="userId" style="visibility: hidden;"></small>
   <div class="profile-item row">
     <div class="col-sm-3 fw-bold">프로필 이미지</div>
-    <div class="col-sm-8">
-      <img src="https://via.placeholder.com/150" alt="프로필 이미지" class="profile-img"
-           id="imagePreview">
+    <div class="col-sm-8" id="image-container">
     </div>
     <div class="my-2 row" id="upload-container">
       <!--      <div class="col-sm-3 fw-bold">이미지 업로드</div>-->
@@ -170,13 +178,12 @@
       $('#profile-phone').text(res.phone);
       $('#userId').text(res.id);
 
-      var imageContainer = document.getElementById('imagePreview')
+      var imageContainer = document.getElementById('image-container')
       const img = document.createElement('img');
       img.className = 'card-img-top mx-2';
       img.alt = 'Product Image';
-      if (res.imageGetRes) {
-
-        img.src = res.imageGetRes.imagePathUrl;
+      if (res.profileImagePathUrl) {
+        img.src = res.profileImagePathUrl;
 
       } else {
         img.src = 'https://via.placeholder.com/150';
@@ -302,6 +309,13 @@
   }
 
   function previewImage() {
+        var imageContainer = document.getElementById('image-container');
+    $('#image-container').empty();
+    const img = document.createElement('img');
+    img.className = 'card-img-top mx-2';
+    img.id = 'imagePreview'
+    img.alt = 'Product Image';
+    imageContainer.appendChild(img);
     var input = document.getElementById('productImage');
     var preview = document.getElementById('imagePreview');
     var file = input.files[0];
