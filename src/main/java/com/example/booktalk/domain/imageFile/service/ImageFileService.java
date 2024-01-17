@@ -3,6 +3,7 @@ package com.example.booktalk.domain.imageFile.service;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageDeleteRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
@@ -15,6 +16,7 @@ import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.config.S3Config;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -91,10 +93,14 @@ public class ImageFileService {
 
         try (InputStream inputStream = file.getInputStream()) {
             ObjectMetadata metadata = new ObjectMetadata();
+            byte[] bytes = IOUtils.toByteArray(inputStream);
             metadata.setContentType(file.getContentType());
+            metadata.setContentLength(bytes.length);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
             s3Config.amazonS3Client().putObject(
-                new PutObjectRequest(bucket, uuidFileName, inputStream, metadata).withCannedAcl(
+                new PutObjectRequest(bucket, uuidFileName, byteArrayInputStream,
+                    metadata).withCannedAcl(
                     CannedAccessControlList.PublicRead));
         }
 
