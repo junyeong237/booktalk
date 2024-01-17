@@ -78,7 +78,8 @@
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
           Login
         </a>
         <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
@@ -309,7 +310,7 @@
   }
 
   function previewImage() {
-        var imageContainer = document.getElementById('image-container');
+    var imageContainer = document.getElementById('image-container');
     $('#image-container').empty();
     const img = document.createElement('img');
     img.className = 'card-img-top mx-2';

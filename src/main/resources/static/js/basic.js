@@ -13,6 +13,12 @@ $(document).ready(function () {
 
 });
 
+function chatRooms() {
+
+  window.location.href = 'http://' + window.location.host
+      + '/api/v1/chats/room/list';
+}
+
 function getToken() {
   let auth = Cookies.get('AccessToken');
 
