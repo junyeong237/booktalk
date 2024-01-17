@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.admin.service;
 
+import com.example.booktalk.domain.user.dto.response.UserReportRes;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -55,7 +56,7 @@ class AdminUserServiceTest {
         when(userRepository.findAll()).thenReturn(mockUsers);
 
         // When
-        List<UserRes> result = adminUserService.getAllUsers();
+        List<UserReportRes> result = adminUserService.getAllUsers();
 
         // Then
         assertEquals(2, result.size());
