@@ -19,7 +19,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-
+  <script src="/js/basic.js"></script>
 </head>
 
 <body>
@@ -48,8 +48,13 @@
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
           Login
+        </a>
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
         </a>
       </div>
     </div>
