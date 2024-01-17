@@ -44,6 +44,12 @@
       border: 2px solid;
     }
 
+    .card-img-top {
+      width: 300px;
+      height: auto;
+      display: block;
+
+    }
   </style>
 </head>
 <body>
@@ -73,6 +79,7 @@
           </button>
         </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">관리자페이지</a></li>
       </ul>
     </div>
 
@@ -102,6 +109,10 @@
       <!--      <div class="col-sm-3 fw-bold">이미지 업로드</div>-->
       <!--      <div class="col-sm-9" id="profile-image">gd</div>-->
     </div>
+  </div>
+  <div class="profile-item row">
+    <div class="col-sm-3 fw-bold">사용자 평점</div>
+    <div class="col-sm-9" id="profile-scroe"></div>
   </div>
 
   <div class="profile-item row">
@@ -172,6 +183,7 @@
     })
     .done(function (res) {
       console.log(res)
+      $('#profile-scroe').text(res.score);
       $('#profile-email').text(res.email);
       $('#profile-nickname').text(res.nickname);
       $('#profile-description').text(res.description)

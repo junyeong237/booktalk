@@ -49,6 +49,7 @@
           </button>
         </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">관리자페이지</a></li>
       </ul>
     </div>
 
@@ -171,14 +172,15 @@
 
     // col-md-2 엘리먼트 생성
     var colImage = document.createElement("div");
-    colImage.className = "col-md-2";
-
+    colImage.className = "col-md-2 d-flex justify-content-center";
+    console.log(product.imageListRes)
     // 이미지 엘리먼트 생성
     var image = document.createElement("img");
-    image.src = "https://via.placeholder.com/100";
-    image.className = "card-img-top style=\"max-width: 70%;\"";
+    image.src = product.imageListRes.imagePathUrl;
+    image.className = "card-img-top mx-2";
     image.alt = "상품이미지";
     image.style.maxWidth = "100%";
+    image.style.maxHeight = "100%";
 
     // col-md-10 엘리먼트 생성
     var colText = document.createElement("div");
