@@ -18,7 +18,8 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-
+  <script src="/js/basic.js"></script>
+  s
   <style>
 
     .form-label {
@@ -77,14 +78,21 @@
         <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
         <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-        <li class="nav-item"><a href="/api/v1/chats/room/list" class="nav-link">채팅방</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
+            채팅방
+          </button>
+        </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
           Login
         </a>
         <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"

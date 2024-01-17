@@ -72,13 +72,13 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background-color: gray;
+      background-color: rgb(128, 128, 128);
       margin: 0 5px;
       cursor: pointer;
     }
 
     #indicators li.active {
-      background-color: gray; /* 활성화된 인디케이터 스타일 */
+      background-color: rgb(128, 128, 128); /* 활성화된 인디케이터 스타일 */
     }
   </style>
 
@@ -104,7 +104,13 @@
         </li>
         <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-        <li class="nav-item"><a href="/api/v1/chats/room/list" class="nav-link">채팅방</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
+            채팅방
+          </button>
+        </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
     </div>
@@ -125,9 +131,15 @@
 </div>
 <div class="banner-container">
   <div class="banner-slides">
-    <div class="banner-slide active"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/dbda3de9-c0aa-4ade-a3c8-e3c6ca21e4f4.png"  alt="Banner 1"></div>
-    <div class="banner-slide"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/136b952e-6f2d-41a4-a6f7-a3322c7adc8b.png"></div>
-    <div class="banner-slide"><img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/f40cc2ee-7473-4566-9bc3-c66b0f425776.png" alt="Banner 3"></div>
+    <div class="banner-slide active"><img
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/dbda3de9-c0aa-4ade-a3c8-e3c6ca21e4f4.png"
+        alt="Banner 1"></div>
+    <div class="banner-slide"><img
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/136b952e-6f2d-41a4-a6f7-a3322c7adc8b.png">
+    </div>
+    <div class="banner-slide"><img
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/f40cc2ee-7473-4566-9bc3-c66b0f425776.png"
+        alt="Banner 3"></div>
   </div>
 
 
@@ -140,18 +152,7 @@
 
 <!-- Used items list -->
 <div class="container mt-2 mb-2">
-  <section class="py-2 text-center container">
-    <div class="row py-lg-5">
-      <div class="col-lg-6 col-md-8 mx-auto">
-        <h1 class="fw-light">Album example</h1>
-        <p class="lead text-body-secondary">Something short and leading about the collection
-          below—its contents, the creator, etc. Make it short and sweet, but not too short so
-          folks don’t simply skip over it entirely.</p>
-
-      </div>
-    </div>
-  </section>
-
+  
   <h2 class="text-top mb-2">현재 인기 상품!</h2>
 
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="main-product-page">
