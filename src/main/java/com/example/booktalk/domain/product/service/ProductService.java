@@ -6,7 +6,6 @@ import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
-import com.example.booktalk.domain.imageFile.entity.ImageFile;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
@@ -27,7 +26,6 @@ import com.example.booktalk.domain.productcategory.repository.ProductCategoryRep
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
-
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +45,8 @@ public class ProductService {
     private final ProductCategoryRepository productCategoryRepository;
     private final ImageFileService imageFileService;
 
-    public ProductCreateRes createProduct(Long userId, ProductCreateReq req, List<MultipartFile> files) throws IOException {
+    public ProductCreateRes createProduct(Long userId, ProductCreateReq req,
+        List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -64,8 +63,8 @@ public class ProductService {
         addCategory(req.categoryList(), product);
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
-        List<ImageCreateRes> imageCreateResList =imageFileService.createImage(userId, product.getId(), files);
-
+        List<ImageCreateRes> imageCreateResList = imageFileService.createImage(userId,
+            product.getId(), files);
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
@@ -75,13 +74,15 @@ public class ProductService {
 
     }
 
-    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req, List<MultipartFile> files) throws IOException {
+    public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req,
+        List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
 
-        List<ImageCreateRes> imageCreateResList =imageFileService.updateImage(userId, productId,files);
+        List<ImageCreateRes> imageCreateResList = imageFileService.updateImage(userId, productId,
+            files);
 
         product.update(req);
         updateCategory(req.categoryList(), product);
@@ -89,7 +90,7 @@ public class ProductService {
         return new ProductUpdateRes(product.getId(), product.getName(),
             product.getQuantity(), product.getPrice(), product.getRegion(),
             product.getFinished(), userRes, product.getProductLikeCnt(), product.getContent(),
-            req.categoryList(),imageCreateResList);
+            req.categoryList(), imageCreateResList);
 
     }
 
@@ -105,12 +106,12 @@ public class ProductService {
                 return productCategory.getCategory().getName();
             })
             .toList();
-        List<ImageListRes> imageListRes =imageFileService.getImages(productId);
+        List<ImageListRes> imageListRes = imageFileService.getImages(productId);
 
         return new ProductGetRes(product.getId(), product.getName(), product.getPrice()
             , product.getQuantity(), userRes, product.getRegion(), categories,
             product.getProductLikeCnt(), product.getContent(),
-            product.getFinished(),imageListRes);
+            product.getFinished(), imageListRes);
 
     }
 
@@ -122,21 +123,20 @@ public class ProductService {
 
         List<Product> productList = productRepository.findAllByDeletedFalse(sort);
 
-
-
         return productList.stream()
             .map(product -> {
-                List<ImageListRes> imageListRes=imageFileService.getImages(product.getId());
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
 
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
+                ImageListRes imageGetRes = imageListRes.isEmpty() ? null : imageListRes.get(0);
 
                 return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion(),imageListRes.get(0));
+                    product.getRegion(), imageGetRes);
             })
             .toList();
 
@@ -145,21 +145,25 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductTopLikesListRes> getProductListByLikesTopThree() {
 
-        List<Product> productList = productRepository.findTop3ByOrderByProductLikeCntDesc();
+        List<Product> productList = productRepository.findTop3ByDeletedFalseOrderByProductLikeCntDesc();
 
         return productList.stream()
             .map(product -> {
+
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
 
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
+                ImageListRes imageGetRes =
+                    imageListRes.isEmpty() ? new ImageListRes(null) : imageListRes.get(0);
 
                 return new ProductTopLikesListRes(product.getId(), product.getName(),
                     product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(), imageGetRes);
 
             })
             .toList();
@@ -175,17 +179,18 @@ public class ProductService {
         List<Product> productList = productRepository.getPostListByName(sort, search);
         return productList.stream()
             .map(product -> {
-
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
-
+                ImageListRes imageGetRes =
+                    imageListRes.isEmpty() ? new ImageListRes(null) : imageListRes.get(0);
                 return new ProductSerachListRes(product.getId(), product.getName(),
                     product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(), imageGetRes);
             })
             .toList();
 
@@ -201,16 +206,17 @@ public class ProductService {
         List<Product> productList = productRepository.getProductListByTag(sort, tag);
         return productList.stream()
             .map(product -> {
-
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
                     .map(productCategory -> {
                         return productCategory.getCategory().getName();
                     })
                     .toList();
-
+                ImageListRes imageGetRes =
+                    imageListRes.isEmpty() ? new ImageListRes(null) : imageListRes.get(0);
                 return new ProductTagListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
-                    product.getRegion());
+                    product.getRegion(), imageGetRes);
             })
             .toList();
 
@@ -221,7 +227,7 @@ public class ProductService {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
-        imageFileService.deleteImage(userId,productId);
+        imageFileService.deleteImage(userId, productId);
 
         product.deleted();
 

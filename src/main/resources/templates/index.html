@@ -80,6 +80,22 @@
     #indicators li.active {
       background-color: rgb(128, 128, 128); /* 활성화된 인디케이터 스타일 */
     }
+
+
+    .card-img-top {
+      width: auto;
+      height: 250px;
+      display: block;
+
+    }
+
+
+    .main-product-page {
+      width: auto;
+      height: 400px;
+      display: block;
+
+    }
   </style>
 
 </head>
@@ -153,7 +169,7 @@
 
 <!-- Used items list -->
 <div class="container mt-2 mb-2">
-  
+
   <h2 class="text-top mb-2">현재 인기 상품!</h2>
 
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="main-product-page">
@@ -212,7 +228,12 @@
 
     // 이미지 엘리먼트 생성
     var imageElement = document.createElement('img');
-    imageElement.src = 'https://via.placeholder.com/150';
+    if (product.imageListRes.imagePathUrl) {
+      imageElement.src = product.imageListRes.imagePathUrl;
+    } else {
+      imageElement.src = "https://via.placeholder.com/150";
+    }
+
     imageElement.className = 'card-img-top';
     imageElement.alt = 'Item Image';
 
@@ -239,7 +260,7 @@
     btnGroupDiv.className = 'btn-group';
     // 버튼 엘리먼트 생성
     var buttonElement = document.createElement('a');
-    buttonElement.href = '#';
+    buttonElement.href = '/api/v1/products/detail/' + product.id;
     buttonElement.className = 'btn btn-outline-secondary'; // 부트스트랩 버튼 클래스 추가
     buttonElement.textContent = '자세히보기';
 

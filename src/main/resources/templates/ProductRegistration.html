@@ -197,199 +197,6 @@
 
       });
 
-  function redirectToLogin() {
-    window.location.href = host + '/api/v1/users/login';
-  }
-
-  function ProductRegister(product) {
-    var container = document.getElementById("product-register-container");
-
-// 이미지 미리보기
-    var imagePreview = document.createElement("img");
-    imagePreview.id = "imagePreview";
-    imagePreview.src = "https://via.placeholder.com/200";
-    imagePreview.className = "card-img-top";
-    imagePreview.alt = "Product Image";
-    container.appendChild(imagePreview);
-
-// 폼 요소
-    var form = document.createElement("form");
-    form.enctype = "multipart/form-data";
-
-// 상품 이미지 업로드
-    var productImageDiv = document.createElement("div");
-    productImageDiv.className = "mb-3";
-
-    var productImageLabel = document.createElement("label");
-    productImageLabel.htmlFor = "productImage";
-    productImageLabel.className = "form-label";
-    productImageLabel.textContent = "상품 이미지 업로드";
-
-    var productImageInput = document.createElement("input");
-    productImageInput.type = "file";
-    productImageInput.className = "form-control";
-    productImageInput.id = "productImage";
-    productImageInput.accept = "image/*";
-    productImageInput.setAttribute("onchange", "previewImage()");
-    productImageInput.required = false;
-
-    productImageDiv.appendChild(productImageLabel);
-    productImageDiv.appendChild(productImageInput);
-
-    form.appendChild(productImageDiv);
-
-// 상품명 입력
-    var productNameDiv = document.createElement("div");
-    productNameDiv.className = "mb-3";
-
-    var productNameLabel = document.createElement("label");
-    productNameLabel.htmlFor = "productName";
-    productNameLabel.className = "form-label";
-    productNameLabel.textContent = "상품명";
-
-    var productNameInput = document.createElement("input");
-    productNameInput.type = "text";
-    productNameInput.className = "form-control";
-    productNameInput.id = "productName";
-    productNameInput.placeholder = "상품명";
-    productNameInput.required = true;
-
-    productNameDiv.appendChild(productNameLabel);
-    productNameDiv.appendChild(productNameInput);
-
-    form.appendChild(productNameDiv);
-
-// 상품 가격 입력
-    var productPriceDiv = document.createElement("div");
-    productPriceDiv.className = "mb-3";
-
-    var productPriceLabel = document.createElement("label");
-    productPriceLabel.htmlFor = "productPrice";
-    productPriceLabel.className = "form-label";
-    productPriceLabel.textContent = "상품 가격";
-
-    var productPriceInput = document.createElement("input");
-    productPriceInput.type = "number";
-    productPriceInput.className = "form-control";
-    productPriceInput.id = "productPrice";
-    productPriceInput.placeholder = "상품 가격";
-    productPriceInput.required = true;
-
-    productPriceDiv.appendChild(productPriceLabel);
-    productPriceDiv.appendChild(productPriceInput);
-
-    form.appendChild(productPriceDiv);
-
-// 상품 수량 입력
-    var productQuantityDiv = document.createElement("div");
-    productQuantityDiv.className = "mb-3";
-
-    var productQuantityLabel = document.createElement("label");
-    productQuantityLabel.htmlFor = "productQuantity";
-    productQuantityLabel.className = "form-label";
-    productQuantityLabel.textContent = "상품 수량";
-
-    var productQuantityInput = document.createElement("input");
-    productQuantityInput.type = "number";
-    productQuantityInput.className = "form-control";
-    productQuantityInput.id = "productQuantity";
-    productQuantityInput.placeholder = "상품 수량";
-    productQuantityInput.required = true;
-
-    productQuantityDiv.appendChild(productQuantityLabel);
-    productQuantityDiv.appendChild(productQuantityInput);
-
-    form.appendChild(productQuantityDiv);
-
-    // 지역 리스트 선택
-    var productRegionsDiv = document.createElement("div");
-    productRegionsDiv.className = "mb-3";
-
-    var regionDropdown = document.createElement("div");
-    regionDropdown.className = "dropdown";
-
-    var regionButton = document.createElement("button");
-    regionButton.className = "btn btn-secondary dropdown-toggle";
-    regionButton.type = "button";
-    regionButton.id = "categoryDropdown";
-    regionButton.setAttribute("data-bs-toggle", "dropdown");
-    regionButton.setAttribute("aria-haspopup", "true");
-    regionButton.setAttribute("aria-expanded", "false");
-    regionButton.textContent = "선택하세요";
-
-    var regionMenu = document.createElement("div");
-    regionMenu.className = "dropdown-menu";
-    regionMenu.setAttribute("aria-labelledby", "categoryDropdown");
-
-// 지역 항목들
-    var regions = ["서울", "부산", "인천", "울산", "대구", "광주", "대전", "수원", "청주", "제주"]; // 다른 카테고리 항목들 추가
-
-    for (var i = 0; i < regions.length; i++) {
-      var regionItem = document.createElement("a");
-      regionItem.className = "dropdown-item";
-      regionItem.href = "#";
-      regionItem.textContent = regions[i];
-      regionMenu.appendChild(regionItem);
-    }
-
-    regionDropdown.appendChild(regionButton);
-    regionDropdown.appendChild(regionMenu);
-
-    productRegionsDiv.appendChild(regionDropdown);
-    form.appendChild(productRegionsDiv);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 카테고리 리스트
-    var productCategoriesDiv = document.createElement("div");
-    productCategoriesDiv.className = "mb-3";
-
-    var categoryDropdown = document.createElement("div");
-    categoryDropdown.className = "dropdown";
-
-    var categoryButton = document.createElement("button");
-    categoryButton.className = "btn btn-secondary dropdown-toggle";
-    categoryButton.type = "button";
-    categoryButton.id = "categoryDropdown";
-    categoryButton.setAttribute("data-bs-toggle", "dropdown");
-    categoryButton.setAttribute("aria-haspopup", "true");
-    categoryButton.setAttribute("aria-expanded", "false");
-    categoryButton.textContent = "선택하세요";
-
-    var categoryMenu = document.createElement("div");
-    categoryMenu.className = "dropdown-menu";
-    categoryMenu.setAttribute("aria-labelledby", "categoryDropdown");
-
-// 카테고리 항목들
-    var categories = ["코미디", "추리", "로맨스"]; // 다른 카테고리 항목들 추가
-
-    for (var i = 0; i < categories.length; i++) {
-      var categoryItem = document.createElement("a");
-      categoryItem.className = "dropdown-item";
-      categoryItem.href = "#";
-      categoryItem.textContent = categories[i];
-      categoryMenu.appendChild(categoryItem);
-    }
-
-    categoryDropdown.appendChild(categoryButton);
-    categoryDropdown.appendChild(categoryMenu);
-
-    productCategoriesDiv.appendChild(categoryDropdown);
-
-    form.appendChild(productCategoriesDiv);
-
-// 등록 버튼
-    var submitButton = document.createElement("button");
-    submitButton.type = "submit";
-    submitButton.className = "btn btn-primary";
-    submitButton.textContent = "상품 등록";
-
-    form.appendChild(submitButton);
-
-// 폼을 부모에 추가
-    container.appendChild(form);
-
-// 문서의 body에 동적으로 생성한 폼을 추가
-  }
-
   function previewImage() {
     var input = document.getElementById('productImage');
     var preview = document.getElementById('imagePreview');
@@ -477,7 +284,7 @@
     var productName = document.getElementById("productName").value;
     var productPrice = document.getElementById("productPrice").value;
     var productQuantity = document.getElementById("productQuantity").value;
-
+    var productContent = document.getElementById("productQuantity").value;
     // 선택된 지역 가져오기
     var selectedRegion = document.getElementById("productRegion").innerText;
 
@@ -502,7 +309,7 @@
       name: productName,
       price: productPrice,
       quantity: productQuantity,
-      content: "멋진상품입니다.",
+      content: productContent,
       region: selectedRegion,
       finished: false,
       categoryList: result
@@ -520,7 +327,10 @@
       contentType: false,	// 필수
     })
     .done(function (res) {
+      console.log('check');
       alert('등록완료');
+      console.log(res);
+      window.location.href = host + '/api/v1/products/list';
     })
     .fail(function (res) {
       alert('전송실패');

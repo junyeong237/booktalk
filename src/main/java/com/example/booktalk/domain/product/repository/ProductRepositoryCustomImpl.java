@@ -29,7 +29,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         JPAQuery<Product> query = jpaQueryFactory
             .selectFrom(product)
             .where(product.deleted.eq(false))
-            .where(hasProductName(search))
+            .where(product.name.contains(search))
+            //containsIgnoreCase // 대소문자 구별무시
             .distinct();
 
         // 정렬 적용
@@ -82,7 +83,4 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         return a;
     }
 
-    private BooleanExpression hasProductName(String productName) {
-        return product.name.eq(productName);
-    }
 }
