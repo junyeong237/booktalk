@@ -19,7 +19,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-
+  <script src="/js/basic.js"></script>
   <style>
     .container1 {
       max-width: 700px;
@@ -100,16 +100,23 @@
         <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
         <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v1/chats/room/list" class="nav-link">채팅방</a></li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href = "/api/v1/users/login" type="button" class="btn btn-outline-primary">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary">
+
           Login
         </a>
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
+        </a>
       </div>
+      `
     </div>
   </header>
 </div>
@@ -148,14 +155,13 @@
         <div class="dropdown-menu" aria-labelledby="regionDropdown">
           <a class="dropdown-item" href="#">SEOUL</a>
           <a class="dropdown-item" href="#">INCHEON</a>
-          <a class="dropdown-item" href="#">광주</a>
-          <a class="dropdown-item" href="#">울산</a>
-          <a class="dropdown-item" href="#">수원</a>
-          <a class="dropdown-item" href="#">부산</a>
-          <a class="dropdown-item" href="#">대구</a>
-          <a class="dropdown-item" href="#">대전</a>
-          <a class="dropdown-item" href="#">청주</a>
-          <a class="dropdown-item" href="#">제주</a>
+          <a class="dropdown-item" href="#">GWANGJU</a>
+          <a class="dropdown-item" href="#">ULSAN</a>
+          <a class="dropdown-item" href="#">BUSAN</a>
+          <a class="dropdown-item" href="#">DAEGU</a>
+          <a class="dropdown-item" href="#">DAEJEON</a>
+          <a class="dropdown-item" href="#">CHEONGJU</a>
+          <a class="dropdown-item" href="#">JEJU</a>
         </div>
       </div>
     </div>
@@ -489,7 +495,7 @@
       contentType: false,	// 필수
     })
     .done(function (res) {
-      alert('전송완료');
+      alert('등록완료');
     })
     .fail(function (res) {
       alert('전송실패');
