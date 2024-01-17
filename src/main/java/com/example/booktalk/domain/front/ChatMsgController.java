@@ -17,4 +17,11 @@ public class ChatMsgController {
         model.addAttribute("username", userDetails.getUser().getNickname());
         return "chat";
     }
+
+    @GetMapping("/api/v1/chats/room/list")
+    public String chatRoomList(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+        model.addAttribute("userId", userDetails.getUser().getId());
+        return "roomList";
+    }
+
 }

@@ -1,12 +1,15 @@
 package com.example.booktalk.domain.user.dto.response;
 
-import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
-
 public record UserProfileGetRes(
+    Long id,
     String nickname,
     String description,
     String location,
-    ImageGetRes imageGetRes
+
+    String email,
+    Double score,
+
+    String profileImagePathUrl
 ) {
 
 }
