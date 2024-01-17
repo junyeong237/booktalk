@@ -3,27 +3,28 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="ie=edge" http-equiv="X-UA-Compatible">
+  <link href="https://fonts.gstatic.com" rel="preconnect">
 
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
   <title>Review Bulletin Board</title>
 
   <style>
-    /* Styles as per your existing code */
   </style>
 </head>
 
 <body>
 
 <div class="container">
-  <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+  <header
+      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
-        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
+        <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
       </a>
@@ -31,16 +32,16 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+        <li class="nav-item"><a class="nav-link" href="/api/v1/users/profile">마이페이지</a></li>
+        <li class="nav-item"><a class="nav-link" href="/api/v1/products/list">상품</a></li>
+        <li class="nav-item"><a class="nav-link" href="/api/v1/reviews/list">리뷰</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">회원신고</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-outline-primary">
+        <button class="btn btn-outline-primary" type="button">
           Login
         </button>
       </div>
@@ -50,62 +51,59 @@
   <main>
     <div class="container mt-2 mb-4 text-center ">
       <form class="d-inline-flex" onsubmit="handleSearchSubmit();">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 500px;"
-               id="searchInput">
+        <input aria-label="Search" class="form-control me-2" id="searchInput" placeholder="Search"
+               style="width: 500px;"
+               type="search">
         <button class="btn btn-outline-primary" type="submit">Search</button>
       </form>
     </div>
 
-    <div id="sorting-options" class="d-flex justify-content-center mt-2 mb-2">
+    <div class="d-flex justify-content-center mt-2 mb-2" id="sorting-options">
       <div class="form-check mx-1">
-        <input class="form-check-input" type="radio" name="sortingOption" id="sortByCreatedAt" value="createdAt"
-               checked onchange="showProducts()">
+        <input checked class="form-check-input" id="sortByCreatedAt" name="sortingOption"
+               onchange="showProducts()"
+               type="radio" value="createdAt">
         <label class="form-check-label" for="sortByCreatedAt">
           생성순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" type="radio" name="sortingOption" id="sortByLPrice" value="price"
-               onchange="showProducts()">
+        <input class="form-check-input" id="sortByLPrice" name="sortingOption" onchange="showProducts()"
+               type="radio"
+               value="price">
         <label class="form-check-label" for="sortByLPrice">
           ID순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" type="radio" name="sortingOption" id="sortByLikes" value="productLikeCnt"
-               onchange="showProducts()">
+        <input class="form-check-input" id="sortByLikes" name="sortingOption" onchange="showProducts()"
+               type="radio"
+               value="productLikeCnt">
         <label class="form-check-label" for="sortByLPrice">
           좋아요순
         </label>
       </div>
     </div>
 
-    <h2 id="reviewBoardTitle" class="mb-3">리뷰 게시판</h2>
+    <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
 
-    <!-- Container to display reviews -->
-    <div id="reviewsContainer" class="mb-3"></div>
+    <div class="mb-3" id="reviewsContainer"></div>
 
-    <!-- Align the "Create a New Post" button to the right within the container -->
     <div class="text-end">
-      <a href="/api/v1/reviews/post" class="btn btn-primary" id="createPostBtn" role="button">
+      <a class="btn btn-primary" href="/api/v1/reviews/post" id="createPostBtn" role="button">
         Create a New Post
       </a>
     </div>
 
-    <!-- Form for Creating Temporary Posts (Initially Hidden) -->
     <div class="collapse" id="createPostForm">
-      <!-- ... (existing create post form) ... -->
     </div>
   </main>
 </div>
 
-<!-- Bootstrap JS and Popper.js (required for Bootstrap components) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- jQuery (required for AJAX) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Custom JavaScript for Pagination and Sorting -->
 <script>
   const host = 'http://' + window.location.host;
 
@@ -130,7 +128,6 @@
   }
 
   function showProducts() {
-    // Add logic for sorting and displaying products if needed
   }
 
   function displayReviews(reviews) {
@@ -145,9 +142,12 @@
           '<h4 class="mb-0 text-left">' + review.title + '</h4>' +
           '</div>' +
           '<div class="d-flex flex-column text-right ms-auto mb-1">' +
-          '<small class="text-muted" style="text-align: right;">Author: ' + review.name + '</small>' +
-          '<small class="text-muted" style="text-align: right;">ID: ' + review.reviewId + '</small>' +
-          '<small class="text-muted" style="text-align: right;">Like: ' + review.reviewLike + '</small>' +
+          '<small class="text-muted" style="text-align: right;">Author: ' + review.name + '</small>'
+          +
+          '<small class="text-muted" style="text-align: right;">ID: ' + review.reviewId + '</small>'
+          +
+          '<small class="text-muted" style="text-align: right;">Like: ' + review.reviewLike
+          + '</small>' +
           '</div>' +
           '</div>';
 
