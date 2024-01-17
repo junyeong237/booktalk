@@ -50,7 +50,7 @@
 
   <main>
     <div class="container mt-2 mb-4 text-center ">
-      <form class="d-inline-flex" onsubmit="handleSearchSubmit();">
+      <form class="d-inline-flex" onsubmit="handleReviewSearchSubmit(event);">
         <input aria-label="Search" class="form-control me-2" id="searchInput" placeholder="Search"
                style="width: 500px;"
                type="search">
@@ -61,25 +61,25 @@
     <div class="d-flex justify-content-center mt-2 mb-2" id="sorting-options">
       <div class="form-check mx-1">
         <input checked class="form-check-input" id="sortByCreatedAt" name="sortingOption"
-               onchange="showProducts()"
+               onchange="showReviews()"
                type="radio" value="createdAt">
         <label class="form-check-label" for="sortByCreatedAt">
           생성순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" id="sortByLPrice" name="sortingOption" onchange="showProducts()"
+        <input class="form-check-input" id="sortById" name="sortingOption" onchange="showReviews()"
                type="radio"
-               value="price">
-        <label class="form-check-label" for="sortByLPrice">
+               value="id">
+        <label class="form-check-label" for="sortById">
           ID순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" id="sortByLikes" name="sortingOption" onchange="showProducts()"
+        <input class="form-check-input" id="sortByProductLikeCnt" name="sortingOption" onchange="showReviews()"
                type="radio"
                value="productLikeCnt">
-        <label class="form-check-label" for="sortByLPrice">
+        <label class="form-check-label" for="sortByProductLikeCnt">
           좋아요순
         </label>
       </div>
@@ -127,7 +127,29 @@
     });
   }
 
-  function showProducts() {
+  function showReviews() {
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    console.log('Selected Sorting Value:', selectedValue);
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/reviews`,
+      data: {
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      $('#product-container').empty();
+      res.forEach(function (product) {
+        renderProducts(product);
+      })
+
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
   }
 
   function displayReviews(reviews) {
@@ -158,6 +180,34 @@
   function redirectToReviewDetail(element) {
     var reviewId = $(element).data('review-id');
     window.location.href = host + '/api/v1/reviews/detail/' + reviewId;
+  }
+  function handleReviewSearchSubmit() {
+    event.preventDefault(); // 기본 동작 막기 새로고침막음
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    console.log(selectedValue);
+    const query = document.getElementById('searchInput').value;
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/reviews/search`,
+      data: {
+        query: query,
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      $('#product-container').empty();
+      res.forEach(function (product) {
+        renderProducts(product);
+      })
+
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
+
   }
 
 </script>
