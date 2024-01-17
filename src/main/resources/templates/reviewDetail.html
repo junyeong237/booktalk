@@ -82,7 +82,7 @@
       <!-- Edit and Delete Buttons on the left -->
       <div>
         <button type="button" class="btn btn-primary me-2">Edit</button>
-        <button type="button" class="btn btn-primary me-2">Delete</button>
+        <button type="button" class="btn btn-primary" id="deletePostBtn">Delete</button>
       </div>
 
       <!-- Like Button on the right -->
@@ -156,12 +156,11 @@
 
     comments.forEach(function (comment) {
       var commentHtml =
-          '<div class="comment border p-3">' +
+          '<div class="comment border p-3" data-comment-id="' + comment.commentId + '">' +
           '<p><strong>' + comment.nickname + '</strong></p>' +
           '<p>' + comment.content + '</p>' +
           '<div class="d-flex justify-content-end">' +
-          '<button type="button" class="btn btn-primary me-2">Edit</button>' +
-          '<button type="button" class="btn btn-primary me-2">Delete</button>' +
+          '<button type="button" class="btn btn-primary me-2 delete-comment-btn">Delete</button>' +
           '</div>' +
           '</div>';
 
@@ -193,9 +192,10 @@
 
         // Fetch and display updated review details after submitting the comment
         fetchReviewDetails(reviewId);
-
+        alert('댓글 작성 완료');
         // Clear the comment input field
         $('#commentInput').val('');
+
       },
       error: function (error) {
         console.error('Error submitting comment:', error);
@@ -212,6 +212,68 @@
 
   // Fetch review details and comments on page load
   fetchReviewDetails(reviewId);
+
+  function deleteComment(commentId) {
+    $.ajax({
+      url: '/api/v1/comments/' + commentId,
+      method: 'DELETE',
+      success: function (data, status, xhr) {
+        console.log('Comment deleted successfully. Response Status:', xhr.status);
+
+        // Fetch and display updated review details after deleting the comment
+        fetchReviewDetails(reviewId);
+      },
+      error: function (error) {
+        console.error('Error deleting comment:', error);
+        alert('Error deleting comment. Please try again.');
+      }
+    });
+  }
+
+  // Event listener for delete buttons
+  $(document).on('click', '.delete-comment-btn', function() {
+    // Get the commentId by traversing the DOM
+    var commentId = $(this).closest('.comment').data('comment-id');
+
+    // Log the commentId to the console
+    console.log('Clicked Delete Button. Comment ID:', commentId);
+
+    // Ask for confirmation before deleting the comment
+    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      // Call the deleteComment function with the commentId
+      deleteComment(commentId);
+    }
+  });
+
+  // Fetch review details and comments on page load
+  fetchReviewDetails(reviewId);
+
+  function deleteReview(reviewId) {
+    $.ajax({
+      url: '/api/v1/reviews/' + reviewId,
+      method: 'DELETE',
+      success: function (data, status, xhr) {
+        console.log('Review deleted successfully. Response Status:', xhr.status);
+
+        // Redirect to the main page or perform any other desired action after deleting the post
+        window.location.href = '/api/v1'; // Change the URL as needed
+      },
+      error: function (error) {
+        console.error('Error deleting review:', error);
+        alert('Error deleting review. Please try again.');
+      }
+    });
+  }
+  // Event listener for delete post button
+  $(document).on('click', '#deletePostBtn', function() {
+    // Ask for confirmation before deleting the post
+    if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      // Call the deleteReview function with the reviewId
+      deleteReview(reviewId);
+    }
+  });
+
+  // ... (existing code)
 </script>
 
 </body>
