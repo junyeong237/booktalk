@@ -135,9 +135,9 @@
 
         // Update post details with received data
         $('#postTitle').text(data.title);
-        $('#postAuthor').text('Author: ' + data.nickname);
-        $('#postDate').text('Creation Date: ' + data.createdAt);
-        $('#modificationDate').text('Modification Date: ' + data.modifiedAt);
+        $('#postAuthor').text('' + data.nickname);
+        $('#postDate').text('작성일: ' + data.createdAt);
+        $('#modificationDate').text('수정일: ' + data.modifiedAt);
         $('#postLikes').text('Likes: ' + data.reviewLike);
         $('#postContent').html(data.content);
 
