@@ -168,6 +168,50 @@
       commentSection.append(commentHtml);
     });
   }
+
+  function submitComment() {
+    var commentInput = $('#commentInput').val();
+
+    // Simple validation: Check if the comment is not empty
+    if (!commentInput.trim()) {
+      alert('댓글을 입력하세요.');
+      return;
+    }
+
+    var newComment = {
+      reviewId: reviewId, // Include the reviewId in the request
+      content: commentInput
+    };
+
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/comments',
+      method: 'POST',
+      contentType: 'application/json;charset=UTF-8',
+      data: JSON.stringify(newComment),
+      success: function (data, status, xhr) {
+        console.log('Comment submitted successfully. Response Status:', xhr.status);
+
+        // Fetch and display updated review details after submitting the comment
+        fetchReviewDetails(reviewId);
+
+        // Clear the comment input field
+        $('#commentInput').val('');
+      },
+      error: function (error) {
+        console.error('Error submitting comment:', error);
+        alert('Error submitting comment. Please try again.');
+      }
+    });
+  }
+
+  // Add an event listener for the comment submission form
+  $('form').submit(function (event) {
+    event.preventDefault();
+    submitComment();
+  });
+
+  // Fetch review details and comments on page load
+  fetchReviewDetails(reviewId);
 </script>
 
 </body>
