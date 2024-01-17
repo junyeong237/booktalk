@@ -1,8 +1,6 @@
 package com.example.booktalk.domain.user.service;
 
 
-import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
-import com.example.booktalk.domain.imageFile.dto.response.ImageGetRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
@@ -31,7 +29,6 @@ import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -75,11 +72,11 @@ public class UserService {
         String randomNickname = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
 
         User user = User.builder()
-                .email(email)
-                .password(password)
-                .role(role)
-                .randomNickname(randomNickname)
-                .build();
+            .email(email)
+            .password(password)
+            .role(role)
+            .randomNickname(randomNickname)
+            .build();
 
         userRepository.save(user);
 
@@ -96,7 +93,7 @@ public class UserService {
             throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
         }
 
-        if(user.getRole() == UserRoleType.BLOCK){
+        if (user.getRole() == UserRoleType.BLOCK) {
             throw new BlockedUserException(UserErrorCode.FORBIDDEN_BLOCKED_USER);
         }
 
@@ -120,25 +117,29 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-        String profileImagePathUrl= user.getProfileImagePathUrl();
+        String profileImagePathUrl = user.getProfileImagePathUrl();
         return new UserOwnProfileGetRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone(),profileImagePathUrl);
+            location, user.getPhone(), user.getScore(), profileImagePathUrl);
 
     }
 
     public UserProfileGetRes getProfile(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
+        Long id = user.getId();
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-        String profileImagePathUrl= user.getProfileImagePathUrl();
+        String profileImagePathUrl = user.getProfileImagePathUrl();
+        String email = user.getEmail();
+        Double scroe = user.getScore();
 
-        return new UserProfileGetRes(nickname, description, location,profileImagePathUrl);
+        return new UserProfileGetRes(id, nickname, description, location, email, scroe,
+            profileImagePathUrl);
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
-        Long userDetailsId,MultipartFile file) throws IOException {
+        Long userDetailsId, MultipartFile file) throws IOException {
         String password = req.password();
 //        String newPassword = passwordEncoder.encode(req.newPassword());
 //        String newPasswordCheck = req.newPasswordCheck();
@@ -161,15 +162,15 @@ public class UserService {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
 
-        if ( !file.isEmpty()) {
-            String profileImagePathUrl=imageFileService.imageUpload(file);
-            user.updateProfile(description, phone, location, nickname,profileImagePathUrl);
-        }else {
-            user.updateProfile(description, phone, location, nickname,null);
+        if (!file.isEmpty()) {
+            String profileImagePathUrl = imageFileService.imageUpload(file);
+            user.updateProfile(description, phone, location, nickname, profileImagePathUrl);
+        } else {
+            user.updateProfile(description, phone, location, nickname, null);
         }
         userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone(),user.getProfileImagePathUrl());
+            location, user.getPhone(), user.getProfileImagePathUrl());
     }
 
 

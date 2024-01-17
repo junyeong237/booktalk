@@ -35,7 +35,7 @@
     }
 
     .card-img-top {
-      width: 250px;
+      width: 300px;
       height: auto;
       display: block;
 
@@ -500,7 +500,7 @@
       })
       .done(function (res) {
         alert('삭제완료료');
-        location.reload();
+        window.location.href = host + '/api/v1/products/list';
       })
       .fail(function (res) {
         alert('삭제실패');
