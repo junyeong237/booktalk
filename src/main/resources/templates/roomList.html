@@ -152,6 +152,9 @@
 
 
       $(document).ready(function () {
+
+        $('#header-chat-list').empty(); // 알림표시 제거
+
         $.ajax({
           type: 'GET',
           url: `/api/v1/chats/room`,
