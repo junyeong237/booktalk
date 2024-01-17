@@ -49,51 +49,39 @@
     </div>
   </header>
 
-  <!-- Post Details with Top and Bottom Borders -->
+
   <div class="post-details mx-auto" style="padding: 25px 50px; max-width: calc(100% - 100px);">
-    <!-- Top Border for Post Title and Author -->
     <div class="border-top p-4 d-flex justify-content-between align-items-center">
       <div>
         <h1 class="post-title" id="postTitle">Post Title</h1>
         <p class="post-author" id="postAuthor">작성자 : [Author Name]</p>
       </div>
 
-      <!-- Additional Details -->
       <div class="post-meta text-end">
         <p class="small" id="postDate">작성일 : [Post Date]</p>
-        <p class="small" id="modificationDate">수정일 : [Modification Date]</p>
         <p class="small" id="postLikes">Likes: [Likes]</p>
       </div>
     </div>
 
-    <!-- Middle Border for Post Content -->
     <div class="border-middle p-4">
-      <!-- Main Content Box -->
       <div class="post-content-box" id="postContent">
-        <!-- Your post content goes here -->
       </div>
     </div>
 
-    <!-- Line above Edit, Delete, Like Buttons -->
     <hr class="my-4">
 
-    <!-- Bottom Border for Edit, Delete, Like Buttons -->
     <div class="border-bottom p-3 d-flex justify-content-between">
-      <!-- Edit and Delete Buttons on the left -->
       <div>
         <button type="button" class="btn btn-primary me-2">Edit</button>
         <button type="button" class="btn btn-primary" id="deletePostBtn">Delete</button>
       </div>
 
-      <!-- Like Button on the right -->
-      <button type="button" class="btn btn-primary">Like</button>
+      <button type="button" class="btn btn-primary" id="likeReviewBtn">Likes</button>
     </div>
 
-    <!-- Comments Section -->
     <div class="mt-3">
       <h2 class="h4 mb-3 text-left">댓글 작성</h2>
-      <!-- Add your HTML structure for the comment input form here -->
-      <!-- For example, a form with a textarea for adding comments -->
+
       <form class="text-left">
         <div class="mb-3">
           <label for="commentInput" class="form-label">Comment Content</label>
@@ -103,12 +91,9 @@
       </form>
     </div>
 
-    <!-- Comments Display Section -->
     <div class="mt-4" id="commentsSection">
       <h2 class="h4 mb-3">댓글 목록</h2>
-      <!-- Display comments from review data directly -->
       <div class="comment border p-3" id="commentSection">
-        <!-- Comments will be dynamically added here -->
       </div>
     </div>
   </div>
@@ -119,7 +104,6 @@
   const reviewId = /*[[${reviewId}]]*/;
 
   $(document).ready(function () {
-    // Fetch review details and comments on page load
     fetchReviewDetails(reviewId);
   });
 
@@ -133,15 +117,12 @@
       success: function (data) {
         console.log('Received review details:', data);
 
-        // Update post details with received data
         $('#postTitle').text(data.title);
         $('#postAuthor').text('' + data.nickname);
         $('#postDate').text('작성일: ' + data.createdAt);
-        $('#modificationDate').text('수정일: ' + data.modifiedAt);
         $('#postLikes').text('Likes: ' + data.reviewLike);
         $('#postContent').html(data.content);
 
-        // Display comments
         displayComments(data.commentList);
       },
       error: function (error) {
@@ -172,14 +153,13 @@
   function submitComment() {
     var commentInput = $('#commentInput').val();
 
-    // Simple validation: Check if the comment is not empty
     if (!commentInput.trim()) {
       alert('댓글을 입력하세요.');
       return;
     }
 
     var newComment = {
-      reviewId: reviewId, // Include the reviewId in the request
+      reviewId: reviewId,
       content: commentInput
     };
 
@@ -191,10 +171,8 @@
       success: function (data, status, xhr) {
         console.log('Comment submitted successfully. Response Status:', xhr.status);
 
-        // Fetch and display updated review details after submitting the comment
         fetchReviewDetails(reviewId);
         alert('댓글 작성 완료');
-        // Clear the comment input field
         $('#commentInput').val('');
 
       },
@@ -205,13 +183,11 @@
     });
   }
 
-  // Add an event listener for the comment submission form
   $('form').submit(function (event) {
     event.preventDefault();
     submitComment();
   });
 
-  // Fetch review details and comments on page load
   fetchReviewDetails(reviewId);
 
   function deleteComment(commentId) {
@@ -221,7 +197,6 @@
       success: function (data, status, xhr) {
         console.log('Comment deleted successfully. Response Status:', xhr.status);
 
-        // Fetch and display updated review details after deleting the comment
         fetchReviewDetails(reviewId);
       },
       error: function (error) {
@@ -231,22 +206,16 @@
     });
   }
 
-  // Event listener for delete buttons
   $(document).on('click', '.delete-comment-btn', function() {
-    // Get the commentId by traversing the DOM
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    // Log the commentId to the console
     console.log('Clicked Delete Button. Comment ID:', commentId);
 
-    // Ask for confirmation before deleting the comment
     if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-      // Call the deleteComment function with the commentId
       deleteComment(commentId);
     }
   });
 
-  // Fetch review details and comments on page load
   fetchReviewDetails(reviewId);
 
   function deleteReview(reviewId) {
@@ -256,8 +225,7 @@
       success: function (data, status, xhr) {
         console.log('Review deleted successfully. Response Status:', xhr.status);
 
-        // Redirect to the main page or perform any other desired action after deleting the post
-        window.location.href = '/api/v1'; // Change the URL as needed
+        window.location.href = '/api/v1/reviews/list';
       },
       error: function (error) {
         console.error('Error deleting review:', error);
@@ -265,32 +233,37 @@
       }
     });
   }
-  // Event listener for delete post button
+
   $(document).on('click', '#deletePostBtn', function() {
-    // Ask for confirmation before deleting the post
     if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      // Call the deleteReview function with the reviewId
+
       deleteReview(reviewId);
     }
   });
 
-  // Add this function to create and display the edit form
   function displayEditForm(commentId, existingContent) {
-    var editFormHtml =
-        '<div class="edit-form mb-3">' +
-        '<label for="editCommentInput" class="form-label">Edit Comment</label>' +
-        '<textarea class="form-control" id="editCommentInput" rows="3">' + existingContent + '</textarea>' +
-        '<button type="button" class="btn btn-primary mt-2" onclick="submitEditComment(' + commentId + ')">Save Changes</button>' +
-        '</div>';
+    var commentSection = $('#commentSection');
+    var existingEditForm = commentSection.find('[data-comment-id="' + commentId + '"] .edit-form');
 
-    $('#commentSection').find('[data-comment-id="' + commentId + '"]').append(editFormHtml);
+    if (existingEditForm.length === 0) {
+      var editFormHtml =
+          '<div class="edit-form mb-3" data-comment-id="' + commentId + '">' +
+          '<label for="editCommentInput" class="form-label">Edit Comment</label>' +
+          '<textarea class="form-control" id="editCommentInput" rows="3">' + existingContent + '</textarea>' +
+          '<div class="d-flex justify-content-end">' +
+          '<button type="button" class="btn btn-primary mt-2" onclick="submitEditComment(' + commentId + ')">Save Changes</button>' +
+          '</div>' +
+          '</div>';
+
+      commentSection.find('[data-comment-id="' + commentId + '"]').append(editFormHtml);
+    } else {
+      existingEditForm.toggle();
+    }
   }
 
-  // Function to submit edited comment
   function submitEditComment(commentId) {
     var editedContent = $('#editCommentInput').val();
 
-    // Simple validation: Check if the edited content is not empty
     if (!editedContent.trim()) {
       alert('수정된 내용을 입력하세요.');
       return;
@@ -308,7 +281,6 @@
       success: function (data, status, xhr) {
         console.log('Comment edited successfully. Response Status:', xhr.status);
 
-        // Fetch and display updated review details after editing the comment
         fetchReviewDetails(reviewId);
         alert('댓글이 수정되었습니다.');
       },
@@ -318,23 +290,39 @@
       }
     });
 
-    // Remove the edit form after submitting
     $('.edit-form').remove();
   }
 
   $(document).on('click', '.edit-comment-btn', function () {
-    // Get the commentId by traversing the DOM
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    // Log the commentId to the console
     console.log('Clicked Edit Button. Comment ID:', commentId);
 
-    // Fetch the existing content of the comment
     var existingContent = $(this).closest('.comment').find('p:last-child').text().trim();
 
-    // Display the edit form
     displayEditForm(commentId, existingContent);
   });
+
+  $(document).on('click', '#likeReviewBtn', function () {
+    console.log('Like button clicked.');
+
+    likeReview(reviewId);
+  });
+
+  function likeReview(reviewId) {
+    $.ajax({
+      url: '/api/v1/reviews/' + reviewId + '/likes',
+      method: 'POST',
+      success: function (data, status, xhr) {
+        console.log('Review liked successfully. Response Status:', xhr.status);
+        fetchReviewDetails(reviewId);
+      },
+      error: function (error) {
+        console.error('Error liking review:', error);
+        alert('본인의 게시글에 좋아요를 누를 수 없습니다.');
+      }
+    });
+  }
 </script>
 
 </body>
