@@ -58,17 +58,6 @@ public class ImageFileService {
     }
 
     @Transactional(readOnly = true)
-    public ImageGetRes getProfileImage(Long userId) {
-        User user = userRepository.findUserByIdWithThrow(userId);
-
-        ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
-        if (imageFile != null) {
-            return new ImageGetRes(imageFile.getImagePathUrl());
-        }
-        return null;
-    }
-
-    @Transactional(readOnly = true)
     public List<ImageListRes> getImages(Long productId) {
         List<ImageFile> imageList = imageFileRepository.findByProductId(productId);
         return imageList.stream()

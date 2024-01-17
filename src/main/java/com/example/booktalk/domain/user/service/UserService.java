@@ -120,9 +120,9 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
+        String profileImagePathUrl= user.getProfileImagePathUrl();
         return new UserOwnProfileGetRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone(),imageGetRes);
+            location, user.getPhone(),profileImagePathUrl);
 
     }
 
@@ -132,9 +132,9 @@ public class UserService {
         String nickname = user.getNickname();
         String description = user.getDescription();
         String location = user.getLocation();
-        ImageGetRes imageGetRes =imageFileService.getProfileImage(userId);
+        String profileImagePathUrl= user.getProfileImagePathUrl();
 
-        return new UserProfileGetRes(nickname, description, location,imageGetRes);
+        return new UserProfileGetRes(nickname, description, location,profileImagePathUrl);
     }
 
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
