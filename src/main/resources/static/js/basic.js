@@ -1,5 +1,3 @@
-const host = 'http://' + window.location.host;
-
 $(document).ready(function () {
   const auth = getToken();
   if (auth !== undefined && auth !== '') { //토큰이 존재 즉 로그인중
