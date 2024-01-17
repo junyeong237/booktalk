@@ -90,8 +90,10 @@
     .done(function (res, status, xhr) {
       window.location.href = 'http://' + window.location.host + '/api/v1/users/login'
     })
-    .fail(function (jqXHR, textStatus) {
-      alert("signup Fail");
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
       window.location.href = 'http://' + window.location.host + '/api/v1/users/signup';
     });
   }
