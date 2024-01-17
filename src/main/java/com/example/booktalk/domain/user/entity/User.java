@@ -2,14 +2,21 @@ package com.example.booktalk.domain.user.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.trade.entity.Trade;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -59,16 +66,18 @@ public class User extends BaseEntity {
     private Long kakaoId;
 
     @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();;
+    private List<Trade> tradeList = new ArrayList<>();
+    ;
 
     @Builder
-    public User(String email, String password, UserRoleType role, String randomNickname,String profileImagePathUrl) {
+    public User(String email, String password, UserRoleType role, String randomNickname,
+        String profileImagePathUrl) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.nickname = randomNickname;
         this.reportCount = 0;
-        this.profileImagePathUrl=profileImagePathUrl;
+        this.profileImagePathUrl = profileImagePathUrl;
     }
 
     public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
@@ -78,10 +87,11 @@ public class User extends BaseEntity {
         this.email = email;
         this.role = userRoleType;
         this.kakaoId = kakaoId;
+        this.score = 7.0;
     }
 
     public void updateProfile(String description, String phone, String location,
-        String nickname,String profileImagePathUrl) {
+        String nickname, String profileImagePathUrl) {
         this.description = description;
         this.phone = phone;
         this.location = location;
@@ -94,14 +104,14 @@ public class User extends BaseEntity {
     }
 
     public void averageScore() {
-        if(!tradeList.isEmpty()) {
-            Double sum = 0.0;
-            for(Trade trade : tradeList) {
+        if (!tradeList.isEmpty()) {
+            Double sum = 7.0;
+            for (Trade trade : tradeList) {
                 sum += trade.getScore();
             }
             this.score = sum / tradeList.size();
         } else {
-            this.score = 0.0;
+            this.score = 7.0;
         }
     }
 
@@ -119,7 +129,7 @@ public class User extends BaseEntity {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
-  
+
     public void increaseReportCount() {
         this.reportCount++;
     }
