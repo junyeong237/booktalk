@@ -69,9 +69,8 @@
     let email = $('#email').val();
     let password = $('#password').val();
     let passwordCheck = $('#passwordCheck').val();
-    //let admin = document.getElementById("adminCheck").checked
     let admin = $('#adminCheck').prop('checked');
-    let adminToken = $('#adminTokenInput').val();
+    let adminToken = $('#adminToken').val();
     console.log(email);
     console.log(password);
     console.log(admin);
@@ -81,21 +80,20 @@
       type: "POST",
       url: `/api/v1/users/signup`,
       contentType: "application/json",
-
       data: JSON.stringify({
         email: email, password: password, passwordCheck: passwordCheck,
         admin: admin, adminToken: adminToken
       }),
     })
-    .done(function (res, status, xhr) {
-      window.location.href = 'http://' + window.location.host + '/api/v1/users/login'
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-      window.location.href = 'http://' + window.location.host + '/api/v1/users/signup';
-    });
+            .done(function (res, status, xhr) {
+              window.location.href = 'http://' + window.location.host + '/api/v1/users/login';
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+              window.location.href = 'http://' + window.location.host + '/api/v1/users/signup';
+            });
   }
 
 </script>
