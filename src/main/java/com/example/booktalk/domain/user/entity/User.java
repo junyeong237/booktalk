@@ -43,6 +43,9 @@ public class User extends BaseEntity {
     private boolean deleted;
 
     @Column
+    private String profileImagePathUrl;
+
+    @Column
     @Enumerated(value = EnumType.STRING)
     private UserRoleType role;
 
@@ -59,12 +62,13 @@ public class User extends BaseEntity {
     private List<Trade> tradeList = new ArrayList<>();;
 
     @Builder
-    public User(String email, String password, UserRoleType role, String randomNickname) {
+    public User(String email, String password, UserRoleType role, String randomNickname,String profileImagePathUrl) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.nickname = randomNickname;
         this.reportCount = 0;
+        this.profileImagePathUrl=profileImagePathUrl;
     }
 
     public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
@@ -77,11 +81,12 @@ public class User extends BaseEntity {
     }
 
     public void updateProfile(String description, String phone, String location,
-        String nickname) {
+        String nickname,String profileImagePathUrl) {
         this.description = description;
         this.phone = phone;
         this.location = location;
         this.nickname = nickname;
+        this.profileImagePathUrl = profileImagePathUrl;
     }
 
     public void updateRole(UserRoleType role) {

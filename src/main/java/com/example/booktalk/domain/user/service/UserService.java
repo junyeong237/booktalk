@@ -160,18 +160,16 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
-        user.updateProfile(description, phone, location, nickname);
-        userRepository.save(user);
 
-        ImageCreateRes imageCreateRes;
-        if (file != null && !file.isEmpty()) {
-            imageCreateRes = imageFileService.updateProfileImage(userId, file);
+        if ( !file.isEmpty()) {
+            String profileImagePathUrl=imageFileService.imageUpload(file);
+            user.updateProfile(description, phone, location, nickname,profileImagePathUrl);
         }else {
-            imageCreateRes=imageFileService.deleteProfileImage(user);
+            user.updateProfile(description, phone, location, nickname,null);
         }
-
+        userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
-            location, user.getPhone(),imageCreateRes);
+            location, user.getPhone(),user.getProfileImagePathUrl());
     }
 
 
