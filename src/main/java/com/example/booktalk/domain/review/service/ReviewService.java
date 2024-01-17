@@ -81,7 +81,7 @@ public class ReviewService {
 
         return new ReviewGetRes(review.getId(), review.getTitle(),
                 review.getContent(), review.getUser().getNickname(),
-                review.getReviewLikeCount(), commentList);
+                review.getReviewLikeCount(), review.getCreatedAt(), review.getModifiedAt(), commentList);
     }
 
     @Transactional
