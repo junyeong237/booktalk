@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.admin.service;
 
+import com.example.booktalk.domain.user.dto.response.UserReportRes;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -15,11 +16,11 @@ public class AdminUserService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<UserRes> getAllUsers() {
+    public List<UserReportRes> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users
             .stream()
-            .map(user -> new UserRes(user.getId(), user.getNickname())
+            .map(user -> new UserReportRes(user.getId(), user.getNickname(),user.getReportCount(),user.getRole())
             ).toList();
     }
 }
