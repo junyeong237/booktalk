@@ -18,7 +18,8 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-
+  <script src="/js/basic.js"></script>
+  s
   <style>
 
     .form-label {
@@ -34,7 +35,7 @@
     }
 
     .card-img-top {
-      width: 250px;
+      width: 300px;
       height: auto;
       display: block;
 
@@ -65,7 +66,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -75,17 +76,30 @@
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
         <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
+            채팅방
+          </button>
+        </li>
         <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <button type="button" class="btn btn-outline-primary" onclick="redirectToLogin()">
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
           Login
-        </button>
+        </a>
+        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
+        </a>
       </div>
     </div>
   </header>
@@ -486,7 +500,7 @@
       })
       .done(function (res) {
         alert('삭제완료료');
-        location.reload();
+        window.location.href = host + '/api/v1/products/list';
       })
       .fail(function (res) {
         alert('삭제실패');
@@ -514,12 +528,13 @@
       data: JSON.stringify(data),
     })
     .done(function (res) {
-      res.id;
+      console.log(res.id);
       window.location.href = host + '/api/v1/chats/room/' + res.id;
     })
-    .fail(function (jqXHR, textStatus) {
-      alert("chatingReoom Fail");
-      window.location.href = host;
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
     });
 
   }

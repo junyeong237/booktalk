@@ -3,6 +3,7 @@ package com.example.booktalk.domain.chatRoom.service;
 import com.example.booktalk.domain.chatRoom.dto.ChatRoomCreateReq;
 import com.example.booktalk.domain.chatRoom.dto.ChatRoomCreateRes;
 import com.example.booktalk.domain.chatRoom.dto.ChatRoomDeleteRes;
+import com.example.booktalk.domain.chatRoom.dto.ChatRoomListRes;
 import com.example.booktalk.domain.chatRoom.entity.ChatRoom;
 import com.example.booktalk.domain.chatRoom.exception.ChatRoomErrorCode;
 import com.example.booktalk.domain.chatRoom.exception.NotChatRoomUserException;
@@ -10,11 +11,14 @@ import com.example.booktalk.domain.chatRoom.repository.ChatRoomRepository;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatRoomServcie {
 
     private final ChatRoomRepository chatRoomRepository;
@@ -77,5 +81,18 @@ public class ChatRoomServcie {
         chatRoomRepository.delete(chatRoom);
 
         return new ChatRoomDeleteRes("삭제가 완료되었습니다.");
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoomListRes> getChatRoomList(Long userId) {
+        List<ChatRoom> res = chatRoomRepository.findAllByReceiverIdOrSenderId(userId, userId);
+
+        return res.stream().map(
+            chatRoom -> {
+                return new ChatRoomListRes(chatRoom.getId(), chatRoom.getSender().getNickname(),
+                    chatRoom.getReceiver().getNickname());
+            }
+        ).toList();
+
     }
 }
