@@ -57,29 +57,6 @@ public class ImageFileService {
         return imageCreateResList;
     }
 
-    public ImageCreateRes createProfileImage(Long userId, MultipartFile file) throws IOException {
-        String imagePathUrl = imageUpload(file);
-        User user = userRepository.findUserByIdWithThrow(userId);
-        ImageFile imageFile = ImageFile.builder()
-                .imagePathUrl(imagePathUrl)
-                .user(user)
-                .nickname(user.getNickname())
-                .build();
-        imageFileRepository.save(imageFile);
-        return new ImageCreateRes(imageFile.getImagePathUrl());
-    }
-
-    @Transactional(readOnly = true)
-    public ImageGetRes getProfileImage(Long userId) {
-        User user = userRepository.findUserByIdWithThrow(userId);
-
-        ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
-        if (imageFile != null) {
-            return new ImageGetRes(imageFile.getImagePathUrl());
-        }
-        return null;
-    }
-
     @Transactional(readOnly = true)
     public List<ImageListRes> getImages(Long productId) {
         List<ImageFile> imageList = imageFileRepository.findByProductId(productId);
@@ -93,12 +70,6 @@ public class ImageFileService {
         return createImage(userId, productId, files);
     }
 
-    public ImageCreateRes updateProfileImage(Long userId, MultipartFile file) throws IOException {
-        User user = userRepository.findUserByIdWithThrow(userId);
-        deleteProfileImage(user);
-        return createProfileImage(userId, file);
-    }
-
     public ImageDeleteRes deleteImage(Long userId, Long productId) {
         User user = userRepository.findUserByIdWithThrow(userId);
         List<ImageFile> imageFileList = imageFileRepository.findByProductId(productId);
@@ -107,14 +78,6 @@ public class ImageFileService {
             imageFileRepository.delete(imageFile);
         }
         return new ImageDeleteRes("삭제가 완료되었습니다.");
-    }
-
-    public ImageCreateRes deleteProfileImage(User user){
-    ImageFile imageFile = imageFileRepository.findByUserNickname(user.getNickname());
-        if (imageFile != null) {
-            imageFileRepository.delete(imageFile);
-        }
-        return new ImageCreateRes(null);
     }
     public String imageUpload(@RequestParam("upload") MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
