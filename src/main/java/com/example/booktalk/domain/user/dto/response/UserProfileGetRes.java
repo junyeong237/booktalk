@@ -7,7 +7,7 @@ public record UserProfileGetRes(
     String location,
 
     String email,
-    Double scroe,
+    Double score,
 
     String profileImagePathUrl
 ) {
