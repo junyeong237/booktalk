@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - chore/ci-cd
+      - refactor/chats
   pull_request:
     branches:
       - main
