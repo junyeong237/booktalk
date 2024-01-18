@@ -78,6 +78,7 @@ public class User extends BaseEntity {
         this.nickname = randomNickname;
         this.reportCount = 0;
         this.profileImagePathUrl = profileImagePathUrl;
+        this.score = 7.0;
     }
 
     public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
@@ -87,7 +88,6 @@ public class User extends BaseEntity {
         this.email = email;
         this.role = userRoleType;
         this.kakaoId = kakaoId;
-        this.score = 7.0;
     }
 
     public void updateProfile(String description, String phone, String location,
