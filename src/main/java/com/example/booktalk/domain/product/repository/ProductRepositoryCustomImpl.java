@@ -64,7 +64,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .selectFrom(product)
             .leftJoin(product.productCategoryList, productCategory).fetchJoin()
             .where(product.deleted.eq(false))
-            .where(hasTag(productCategory, tag));
+            .where(hasTag(tag));
 
         // 정렬 적용
         if (pageable.getSort().isSorted()) {
@@ -85,10 +85,9 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             () -> query.fetchCount()); // 이게 더 최적화
     }
 
-
-    private BooleanExpression hasTag(QProductCategory productCategory, String tagName) {
-        BooleanExpression a = productCategory.category.name.eq(tagName);
-        return a;
+    private BooleanExpression hasTag(String tagName) {
+        return product.productCategoryList.any()
+            .category.name.eq(tagName);
     }
 
 }
