@@ -91,7 +91,7 @@
     <div class="mb-3" id="reviewsContainer"></div>
 
     <div class="text-end">
-      <a class="btn btn-primary" href="/api/v1/reviews/post" id="createPostBtn" role="button">
+      <a class="btn btn-primary" href="/api/v1/reviews/post" id="createPostBtn" role="button" onclick="setCreateCookie()">
         Create a New Post
       </a>
     </div>
@@ -199,6 +199,10 @@
       const messages = jsonObject.messages;
       alert(messages);
     });
+  }
+
+  function setCreateCookie() {
+    document.cookie = "createBtn=create; path=/";
   }
 
 </script>

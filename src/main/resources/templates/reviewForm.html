@@ -99,11 +99,29 @@
       <label class="form-label" for="postContent">내용</label>
       <textarea class="form-control" id="postContent" required rows="6"></textarea>
     </div>
-    <button class="btn btn-primary" onclick="submitReview()" type="button">게시글 작성</button>
+    <button id="createBtn" class="btn btn-primary" onclick="submitReview()" type="button">게시글 작성</button>
+    <button id="editBtn" class="btn btn-primary" onclick="updateReview()" type="button">게시글 수정</button>
   </form>
 </div>
 
 <script>
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var createBtn = document.getElementById("createBtn");
+    var editBtn = document.getElementById("editBtn");
+
+    const reviewId = getReviewIdFromCookie();
+    const create = getCreateInfo();
+
+    if (create !== undefined && create !== '') {
+      $('#createBtn').show();
+      $('#editBtn').hide();
+      deleteCookie();
+    } else {
+      $('#editBtn').show();
+      $('#createBtn').hide();
+    }
+  });
   function submitReview() {
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
@@ -120,29 +138,72 @@
 
     console.log("Form Data:", formData);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/v1/reviews", true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4) {
-        console.log("Response Status:", xhr.status);
-
-        if (xhr.status == 201) {
-          var responseData = JSON.parse(xhr.responseText);
-          console.log("Response Data:", responseData);
-
-          alert("리뷰 작성 완료!");
-
-          window.location.href = "/api/v1/reviews/list";
-        } else {
-          console.error("예기치 못한 문제 발생! 다시 시도해 주세요.");
-          alert("Error submitting review. Please try again.");
-        }
+    $.ajax({
+      type: "POST",
+      url: "/api/v1/reviews",
+      contentType: "application/json;charset=UTF-8",
+      data: JSON.stringify(formData),
+      success: function (responseData) {
+        console.log("Response Data:", responseData);
+        alert("리뷰 작성 완료!");
+        window.location.href = "/api/v1/reviews/list";
+      },
+      error: function () {
+        console.error("예기치 못한 문제 발생! 다시 시도해 주세요.");
+        alert("Error submitting review. Please try again.");
       }
+    });
+  }
+  function getCreateInfo() {
+    let create = Cookies.get('createBtn');
+    if (create === undefined) {
+      return '';
+    }
+    return create;
+  }
+  function deleteCookie() {
+    document.cookie = "createBtn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    document.cookie = "reviewId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  }
+  function getReviewIdFromCookie() {
+    return Cookies.get('reviewId');
+  }
+
+  function updateReview() {
+    var title = document.getElementById("postTitle").value;
+    var content = document.getElementById("postContent").value;
+
+    var reviewId = getReviewIdFromCookie();
+
+    if (!title || !content || !reviewId) {
+      alert("빈 서식을 채워 주세요.");
+      return;
+    }
+
+    var formData = {
+      title: title,
+      content: content
     };
 
-    xhr.send(JSON.stringify(formData));
+    console.log("Form Data:", formData);
+
+    $.ajax({
+      type: "PATCH",
+      url: "/api/v1/reviews/" + reviewId,
+      contentType: "application/json;charset=UTF-8",
+      data: JSON.stringify(formData),
+      success: function (responseData) {
+        console.log("Response Data:", responseData);
+        alert("리뷰 수정 완료!");
+        window.location.href = "/api/v1/reviews/list";
+        deleteCookie();
+      },
+      error: function () {
+        console.error("예기치 못한 문제 발생! 다시 시도해 주세요.");
+        alert("Error updating review. Please try again.");
+        deleteCookie();
+      }
+    });
   }
 </script>
 
