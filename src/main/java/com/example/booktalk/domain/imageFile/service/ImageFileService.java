@@ -13,6 +13,7 @@ import com.example.booktalk.domain.product.exception.NotPermissionAuthority;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.config.S3Config;
 import java.io.IOException;
@@ -104,7 +105,8 @@ public class ImageFileService {
 
 
     private void validateProductUser(User user, ImageFile imageFile) {
-        if (!user.getId().equals(imageFile.getUser().getId())) {
+        if (!user.getId().equals(imageFile.getUser().getId())
+                && !user.getRole().equals(UserRoleType.ADMIN)) {
             throw new NotPermissionAuthority(ProductErrorCode.NOT_PERMISSION_AUTHORITHY);
         }
     }

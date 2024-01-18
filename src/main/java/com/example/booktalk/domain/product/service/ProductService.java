@@ -25,6 +25,7 @@ import com.example.booktalk.domain.productcategory.entity.ProductCategory;
 import com.example.booktalk.domain.productcategory.repository.ProductCategoryRepository;
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.List;
@@ -236,7 +237,8 @@ public class ProductService {
 
     private void validateProductUser(User user, Product product) {
 
-        if (!user.getId().equals(product.getUser().getId())) {
+        if (!user.getId().equals(product.getUser().getId())
+                && !user.getRole().equals(UserRoleType.ADMIN)) {
             throw new NotPermissionAuthority(ProductErrorCode.NOT_PERMISSION_AUTHORITHY);
         }
     }
