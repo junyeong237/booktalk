@@ -190,6 +190,29 @@
 
   }
 
+  function handleReviewSearchSubmit(event) {
+    event.preventDefault();
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    var searchQuery = document.getElementById('searchInput').value;
+
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/reviews/search`,
+      data: {
+        query: searchQuery,
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      displayReviews(res, searchQuery);
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+    });
+  }
+
 </script>
 
 </body>
