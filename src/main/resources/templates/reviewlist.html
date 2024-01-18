@@ -132,31 +132,6 @@
     });
   }
 
-  function showReviews() {
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    console.log('Selected Sorting Value:', selectedValue);
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/reviews`,
-      data: {
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
-  }
-
   function displayReviews(reviews) {
     var reviewsContainer = $('#reviewsContainer');
     reviewsContainer.empty();
