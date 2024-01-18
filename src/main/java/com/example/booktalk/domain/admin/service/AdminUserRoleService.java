@@ -14,14 +14,18 @@ public class AdminUserRoleService {
     private final UserRepository userRepository;
     @Transactional
     public String userBlock(Long userId){
-        User user=findUser(userId);
+        User user=userRepository.findUserByIdWithThrow(userId);
         UserRoleType role = UserRoleType.BLOCK;
         user.updateRole(role);
 
         return "차단 되었습니다";
     }
-    private User findUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는유저가 없습니다."));
+
+    public String userUnBlock(Long userId) {
+        User user=userRepository.findUserByIdWithThrow(userId);
+        UserRoleType role = UserRoleType.USER;
+        user.updateRole(role);
+
+        return "차단해제 되었습니다";
     }
 }
