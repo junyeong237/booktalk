@@ -108,8 +108,8 @@
 
   function connect(roomId, username) {
 
-    //var socket = new SockJS('/chat');
-    var socket = new SockJS('https://' + window.location.host + '/chat');
+    var socket = new SockJS('/chat');
+    //var socket = new SockJS('http://' + window.location.host + '/chat');
     console.log(socket);
     console.log(roomId);
     console.log(username);
