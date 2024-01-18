@@ -65,25 +65,22 @@
     <div class="d-flex justify-content-center mt-2 mb-2" id="sorting-options">
       <div class="form-check mx-1">
         <input checked class="form-check-input" id="sortByCreatedAt" name="sortingOption"
-               onchange="showReviews()"
-               type="radio" value="createdAt">
+               onchange="handleSortingChange()" type="radio" value="createdAt">
         <label class="form-check-label" for="sortByCreatedAt">
-          생성순
+          최신순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" id="sortById" name="sortingOption" onchange="showReviews()"
-               type="radio"
-               value="id">
+        <input class="form-check-input" id="sortById" name="sortingOption" onchange="handleSortingChange()"
+               type="radio" value="id">
         <label class="form-check-label" for="sortById">
           ID순
         </label>
       </div>
       <div class="form-check mx-1">
-        <input class="form-check-input" id="sortByProductLikeCnt" name="sortingOption" onchange="showReviews()"
-               type="radio"
-               value="productLikeCnt">
-        <label class="form-check-label" for="sortByProductLikeCnt">
+        <input class="form-check-input" id="sortByreviewLikeCnt" name="sortingOption" onchange="handleSortingChange()"
+               type="radio" value="reviewLikeCount">
+        <label class="form-check-label" for="sortByreviewLikeCnt">
           좋아요순
         </label>
       </div>
@@ -161,34 +158,6 @@
     var reviewId = $(element).data('review-id');
     window.location.href = host + '/api/v1/reviews/detail/' + reviewId;
   }
-  function handleReviewSearchSubmit() {
-    event.preventDefault(); // 기본 동작 막기 새로고침막음
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    console.log(selectedValue);
-    const query = document.getElementById('searchInput').value;
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/reviews/search`,
-      data: {
-        query: query,
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
-
-  }
 
   function handleReviewSearchSubmit(event) {
     event.preventDefault();
@@ -205,6 +174,25 @@
     })
     .done(function (res) {
       displayReviews(res, searchQuery);
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+    });
+  }
+  function handleSortingChange() {
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+
+    $.ajax({
+      type: 'GET',
+      url: `/api/v1/reviews`,
+      data: {
+        sortBy: selectedValue
+      },
+    })
+    .done(function (res) {
+      displayReviews(res);
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
