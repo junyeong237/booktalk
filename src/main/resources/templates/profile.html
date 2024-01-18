@@ -140,8 +140,10 @@
     <div class="col-sm-9" id="profile-phone">010-xxxx-xxxx</div>
   </div>
 
-
   <div class="profile-item mt-4">
+    <button class="btn btn-outline-primary" id="passwordEditButton"
+            onclick="openNewPasswordModal()">비밀번호 수정
+    </button>
     <button class="btn btn-outline-primary" id="profileEditButton"
             onclick="inputEdit()">프로필 수정
     </button>
@@ -167,6 +169,33 @@
                   onclick="resetModal()">닫기
           </button>
           <button type="button" class="btn btn-primary" onclick="editUser()">수정완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="newPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">새 비밀번호 입력</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" onclick="resetPWModal()"
+                  type="button"></button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mb-2" id="beforePasswordInput" placeholder="기존 비밀번호"
+                 type="password">
+          <input class="form-control mb-2" id="newPasswordInput" placeholder="새로운 비밀번호"
+                 type="password">
+          <input class="form-control mb-2" id="newPasswordInputCheck" placeholder="새로운 비밀번호 확인"
+                 type="password">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetPWModal()"
+                  type="button">닫기
+          </button>
+          <button class="btn btn-primary" onclick="" type="button">비밀번호 수정 완료
+          </button>
         </div>
       </div>
     </div>
@@ -377,6 +406,16 @@
     // 모달 내의 입력 필드 초기화
     $('#passwordInput').val('');
     $('#passwordInputCheck').val('');
+  }
+
+  function openNewPasswordModal() {
+    $('#newPasswordModal').modal('show');
+  }
+
+  function resetPWModal() {
+    $('#beforePasswordInput').val('');
+    $('#newPasswordInput').val('');
+    $('#newPasswordInputCheck').val('');
   }
 
 </script>
