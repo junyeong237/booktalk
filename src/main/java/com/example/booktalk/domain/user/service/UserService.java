@@ -1,6 +1,7 @@
 package com.example.booktalk.domain.user.service;
 
 
+import com.example.booktalk.domain.imageFile.exception.NotFoundImageFileException;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
@@ -166,7 +167,7 @@ public class UserService {
             String profileImagePathUrl = imageFileService.imageUpload(file);
             user.updateProfile(description, phone, location, nickname, profileImagePathUrl);
         } else {
-            user.updateProfile(description, phone, location, nickname, null);
+            throw new NotFoundImageFileException(UserErrorCode.NOT_IMAGE_FILE);
         }
         userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,

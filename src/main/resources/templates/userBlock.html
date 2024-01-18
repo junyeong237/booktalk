@@ -24,7 +24,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
@@ -66,6 +66,19 @@
         .blockButton:hover {
             background-color: #c82333;
         }
+        .unBlockButton {
+            background-color: #2b49f3;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .unBlockButton:hover {
+            background-color: #1037bb;
+        }
 
         .reportContainer {
             margin-top: 10px;
@@ -88,11 +101,6 @@
 
         .reportItem:last-child {
             margin-bottom: 0;
-        }
-
-        /* 블록된 사용자의 텍스트 색상을 빨간색으로 지정 */
-        .blockedUser {
-            color: red;
         }
     </style>
 </head>
@@ -119,9 +127,14 @@
 
         <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-outline-primary">
+                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                   id="login-button">
                     Login
-                </button>
+                </a>
+                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                   id="logout-button">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
@@ -137,7 +150,7 @@
         function getUsers() {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/api/v1/admin/users',
+                url: '/api/v1/admin/users',
                 success: function (users) {
                     displayUsers(users);
                 },
@@ -161,11 +174,11 @@
                 var userItem = $('<div>').addClass('userItem')
                     .append($('<div>').addClass('userInfo')
                         .text('ID: ' + user.id + ' | Name: ' + user.name + ' | Reports: ' + user.reportCount + ' | Role: ' + user.roleType))
-                    .append($('<button>').addClass('blockButton')
-                        .text('차단')
+                    .append($('<button>').addClass(user.roleType === 'BLOCK' ? 'unBlockButton':'blockButton')
+                        .text(user.roleType === 'BLOCK' ? '차단 해제' : '차단')
                         .click(function (event) {
                             event.stopPropagation();
-                            blockUser(user.id);
+                            toggleBlockUser(user.id, user.roleType);
                         }))
                     .append($('<div>').addClass('reportContainer')
                         .append($('<h3>').text('유저 신고 목록'))
@@ -196,7 +209,7 @@
         function getReportsForUser(userId, userItem) {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/api/v1/admin/' + userId + '/reports',
+                url: '/api/v1/admin/' + userId + '/reports',
                 success: function (reports) {
                     displayReports(reports, userItem);
                 },
@@ -217,16 +230,19 @@
             });
         }
 
-        function blockUser(userId) {
+        function toggleBlockUser(userId, currentRoleType) {
+            var action = currentRoleType === 'BLOCK' ? 'unBlock' : 'block';
+
             $.ajax({
                 type: 'PUT',
-                url: 'http://localhost:8080/api/v1/admin/user/' + userId,
+                url: '/api/v1/admin/user/' + userId + '/' + action,
                 success: function () {
-                    alert('사용자를 차단했습니다. ID: ' + userId);
+                    var message = currentRoleType === 'BLOCK' ? '차단 해제 했습니다.' : '사용자를 차단했습니다.';
+                    alert(message + ' ID: ' + userId);
                     location.reload();
                 },
                 error: function (error) {
-                    console.error('사용자 차단 중 오류 발생:', error);
+                    console.error('사용자 차단/차단해제 중 오류 발생:', error);
                 }
             });
         }
