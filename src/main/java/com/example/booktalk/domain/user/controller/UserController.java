@@ -13,6 +13,8 @@ import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
 import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
+import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.service.UserService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -95,5 +97,10 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.passwordUpdate(req, userDetails.getUser().getId()));
+    }
+
+    @GetMapping("/role")
+    public UserRoleType getUserRole(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails.getUser().getRole();
     }
 }
