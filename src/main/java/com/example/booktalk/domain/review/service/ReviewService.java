@@ -10,6 +10,7 @@ import com.example.booktalk.domain.review.exception.NotPermissionReviewAuthority
 import com.example.booktalk.domain.review.exception.ReviewErrorCode;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -109,7 +110,8 @@ public class ReviewService {
     }
 
     private void validateReviewUser(User user, Review review) {
-        if (!user.getId().equals(review.getUser().getId())) {
+        if (!user.getId().equals(review.getUser().getId())
+                && !user.getRole().equals(UserRoleType.ADMIN) ) {
             throw new NotPermissionReviewAuthorityException(
                     ReviewErrorCode.NOT_PERMISSION_REVIEW_AUTHORITY);
         }
