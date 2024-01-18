@@ -5,21 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-  <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-          crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
   <script src="/js/basic.js"></script>
-  s
   <style>
 
     .form-label {
@@ -32,13 +25,6 @@
       width: calc(100%);
       padding: 10px;
       font-size: 14px;
-    }
-
-    .card-img-top {
-      width: 300px;
-      height: auto;
-      display: block;
-
     }
 
     .main-container {
@@ -56,8 +42,51 @@
       margin: auto;
     }
 
-  </style>
+    #search-results {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
 
+    .result-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+    }
+    #search-results .result-item {
+      display: none; /* 처음에는 검색 결과 숨김 */
+    }
+
+    .result-item:hover {
+      transform: scale(1.05);
+    }
+
+    .result-price {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .result-link {
+      text-decoration: none;
+      color: #333;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    #toggleSimilarProducts {
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: black; /* 클릭 가능한 링크의 색상으로 변경할 수 있습니다. */
+    }
+
+    #toggleSimilarProducts:hover {
+      color: rgba(0, 0, 0, 0.68); /* 마우스 호버 시 색상 변경 */
+    }
+  </style>
 </head>
 <body>
 
@@ -147,6 +176,12 @@
           <div class="mb-3"><label for="product-price" class="form-label">상품가격</label>
             <input type="text" class="form-control" id="product-price" name="regDate" disabled="">
           </div>
+          <div class="mb-3">
+            <label id="toggleSimilarProducts" class="form-label pointer">
+              비슷한 상품들 가격과 바로가기
+            </label>
+            <div id="search-results"></div>
+          </div>
           <div class="mb-3"><label for="product-quantity" class="form-label">상품수</label>
             <input type="text" class="form-control" id="product-quantity" name="regDate2"
                    disabled="">
@@ -172,6 +207,11 @@
         </div>
 
 
+
+
+
+
+
       </div>
     </div>
   </main>
@@ -179,6 +219,7 @@
 
 
 <script th:inline="javascript">
+
   const host = 'http://' + window.location.host;
   const productId = /*[[${productId}]]*/
       $(document).ready(function () {
@@ -242,7 +283,6 @@
     // input 요소의 값 세팅
     var nameInput = document.getElementById('product-name');
     nameInput.value = product.name;
-
     // textarea 요소의 값 세팅
     var contentTextarea = document.getElementById('product-content');
     contentTextarea.value = product.content;
@@ -259,7 +299,18 @@
     var quantityCategories = document.getElementById('product-category');
     quantityCategories.value = product.categories;
 
+    $(document).ready(function () {
+      $('#search-results .result-item').hide();
+
+      // 버튼 클릭 시 "search-results" 섹션의 자식 요소들을 토글
+      $('#toggleSimilarProducts').click(function () {
+        $('#search-results .result-item').toggle();
+      });
+      searchAndDisplay($('#product-name').val());
+    });
+
   }
+
 
   function addProductLikes(productId) { //api/v1/productLikes
 
@@ -563,6 +614,64 @@
       preview.src = "";
     }
   }
+
+  function displaySearchResults(results) {
+    var searchResultsContainer = document.getElementById('search-results');
+    searchResultsContainer.innerHTML = '';
+
+    if (results.length === 0) {
+      var noResultsParagraph = document.createElement('p');
+      noResultsParagraph.textContent = '검색 결과가 없습니다.';
+      searchResultsContainer.appendChild(noResultsParagraph);
+    } else {
+      results.forEach(function (result) {
+        var resultDiv = document.createElement('div');
+        resultDiv.className = 'result-item';
+
+        var priceParagraph = document.createElement('p');
+        priceParagraph.className = 'result-price';
+        priceParagraph.textContent = '가격: ' + result.Price;
+        resultDiv.appendChild(priceParagraph);
+
+        // URL에 대한 링크 생성
+        var urlLink = document.createElement('a');
+        urlLink.className = 'result-link';
+        urlLink.href = result.url;  // result.url은 해당 상품의 URL이라고 가정
+        urlLink.textContent = result.url;
+        urlLink.target = '_blank';  // 새 창에서 열기
+        resultDiv.appendChild(urlLink);
+
+        searchResultsContainer.appendChild(resultDiv);
+      });
+    }
+  }
+
+
+  function searchAndDisplay(query) {
+    searchProducts(query, displaySearchResults);
+  }
+
+
+  function searchProducts(query) {
+    var searchUrl = 'http://localhost:8080/api/v1/products/kakao?query=' + encodeURIComponent(query);
+
+    $.ajax({
+      type: 'GET',
+      url: searchUrl,
+    })
+            .done(function (res) {
+              displaySearchResults(res);
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
+  }
+
+
+
+
 
 </script>
 
