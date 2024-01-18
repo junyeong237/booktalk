@@ -97,6 +97,8 @@
 </div>
 
 <script th:inline="javascript">
+
+  const host = 'http://' + window.location.host;
   const roomId = /*[[${roomId}]]*/
   const username = /*[[${username}]]*/
       $(document).ready(function () {
@@ -192,7 +194,7 @@
 
   function disconnect(username) {
     if (stompClient !== null) {
-      exit();
+      stompClient.send("/app/exit", {}, JSON.stringify({}));
       stompClient.disconnect();
     }
 
@@ -201,12 +203,11 @@
       url: `/api/v1/chats/room/` + roomId,
     })
     .done(function (res) {
-      console.log("채팅방을 종료하였습니다.");
+      console.log("채팅방을 종료하였습니다..");
       window.location.href = host + '/api/v1';
     })
     .fail(function (jqXHR, textStatus) {
       alert("chatingReoom Fail");
-      window.location.href = host;
     });
 
   }
