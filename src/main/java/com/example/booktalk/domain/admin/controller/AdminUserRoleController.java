@@ -15,10 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminUserRoleController {
 
     private final AdminUserRoleService adminUserRoleService;
-    @PutMapping("/user/{userId}")
+    @PutMapping("/user/{userId}/block")
     public String userBlock(
             @PathVariable Long userId
     ) {
         return adminUserRoleService.userBlock(userId);
     }
+
+    @PutMapping("/user/{userId}/unBlock")
+    public String Unblock(
+            @PathVariable Long userId
+    ) {
+        return adminUserRoleService.userUnBlock(userId);
+    }
+
 }

@@ -19,6 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+    <script src="/js/basic.js"></script>
     <title>카테고리 목록</title>
     <style>
         body {
@@ -112,17 +113,20 @@
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
                 <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">카테고리</a></li>
-                <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-                <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
                 <li class="nav-item"><a href="/api/v1/admin/userBlock" class="nav-link">회원차단</a></li>
             </ul>
         </div>
 
         <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-outline-primary">
+                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                   id="login-button">
                     Login
-                </button>
+                </a>
+                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                   id="logout-button">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
