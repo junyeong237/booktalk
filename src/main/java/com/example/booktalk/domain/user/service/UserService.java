@@ -22,6 +22,7 @@ import com.example.booktalk.domain.user.exception.BlockedUserException;
 import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
+import com.example.booktalk.domain.user.exception.NicknameDuplicateExcpetion;
 import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -141,8 +142,6 @@ public class UserService {
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId, MultipartFile file) throws IOException {
         String password = req.password();
-//        String newPassword = passwordEncoder.encode(req.newPassword());
-//        String newPasswordCheck = req.newPasswordCheck();
         String description = req.description();
         String phone = req.phone();
         String location = req.location();
@@ -154,12 +153,11 @@ public class UserService {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
         }
 
-//        if (!passwordEncoder.matches(newPasswordCheck, newPassword)) {
-//            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
-//        }
-
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
+        }
+        if (userRepository.findByNickname(req.nickname()).isPresent()) {
+            throw new NicknameDuplicateExcpetion(UserErrorCode.NICKNAME_DUPLICATE);
         }
 
         if (!file.isEmpty()) {
