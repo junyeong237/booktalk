@@ -5,13 +5,14 @@ import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.NotFoundProductException;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
 import java.util.List;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    List<Product> findAllByDeletedFalse(Sort sort);
+    Page<Product> findAllByDeletedFalse(Pageable pageable);
 
     List<Product> findTop3ByDeletedFalseOrderByProductLikeCntDesc();
 

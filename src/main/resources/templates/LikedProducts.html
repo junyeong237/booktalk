@@ -12,7 +12,7 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
   <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           crossorigin="anonymous"></script>
@@ -26,7 +26,7 @@
 
 <div class="container">
   <header
-      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+          class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
       <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
@@ -66,112 +66,47 @@
       </div>
     </div>
   </header>
-</div>
-
-<div class="container mt-2 mb-4 text-center ">
-  <form class="d-inline-flex" onsubmit="handleSearchSubmit();">
-    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
-           style="width: 500px;" id="searchInput">
-    <button class="btn btn-outline-primary" type="submit">Search</button>
-  </form>
-</div>
-
-
-<div class="container d-flex flex-column">
-  <div id="sorting-options" class="d-flex justify-content-center mt-2 mb-2">
-    <div class="form-check mx-1">
-      <input class="form-check-input" type="radio" name="sortingOption" id="sortByCreatedAt"
-             value="createdAt"
-             checked onchange="showProducts(1)">
-      <label class="form-check-label" for="sortByCreatedAt">
-        생성순
-      </label>
+  <div class="container d-flex flex-column">
+    <div id="sorting-options" class="d-flex justify-content-center mt-2 mb-2">
+      <!-- 정렬 옵션 부분은 삭제 -->
     </div>
-    <div class="form-check mx-1">
-      <input class="form-check-input" type="radio" name="sortingOption" id="sortByTitle"
-             value="name" onchange="showProducts(1)">
-      <label class="form-check-label" for="sortByTitle">
-        상품명
-      </label>
-    </div>
-    <div class="form-check mx-1">
-      <input class="form-check-input" type="radio" name="sortingOption" id="sortByLPrice"
-             value="price" onchange="showProducts(1)">
-      <label class="form-check-label" for="sortByLPrice">
-        가격
-      </label>
-    </div>
-    <div class="form-check mx-1">
-      <input class="form-check-input" type="radio" name="sortingOption" id="sortByLikes"
-             value="productLikeCnt" onchange="showProducts(1)">
-      <label class="form-check-label" for="sortByLPrice">
-        좋아요
-      </label>
-    </div>
-
-  </div>
-
-
-  <div class="mb-2">
-    <a href="/api/v1/products/register" class="btn btn-primary" style="float: right" type="submit">
-      상품 등록하기
-    </a>
   </div>
 
   <div class="row row-cols-1" id="product-container">
-
+    <!-- 상품을 나타낼 컨테이너 -->
   </div>
-
-  <div id="pagination-controls" class="d-flex justify-content-center mt-4 mb-4">
-    <ul class="pagination"></ul>
-  </div>
-
 </div>
+
+
+
+
 
 <script>
 
   const host = 'http://' + window.location.host;
 
   $(document).ready(function () {
-    showProducts(1);
-
+    showProducts();
   });
 
-  function showProducts(page, search, tag) {
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    var addurl;
-    if (search == null && tag == null) {
-      addurl = '';
-    } else if (search == null && tag != null) {
-      addurl = '/tag'
-    } else if (search != null && tag == null) {
-      addurl = '/search'
-    }
+  function showProducts() {
     $.ajax({
       type: 'GET',
-      url: `/api/v1/products` + addurl,
-      data: {
-        sortBy: selectedValue,
-        tag: tag,
-        query: search,
-        page: page,
-        size: 5
-      },
+      url: `/api/v1/productLikes`,
     })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.content.forEach(function (product) {
-        renderProducts(product);
-      });
-      renderPagination(res.totalPages, page, tag, search);
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
+            .done(function (res) {
+              $('#product-container').empty();
+              res.forEach(function (product) {
+                renderProducts(product);
+              })
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
   }
+
 
   function renderProducts(product) {
     var row = document.getElementById("product-container");
@@ -268,44 +203,8 @@
     window.location.href = host + '/api/v1/products/detail/' + productId;
   }
 
-  function handleSearchSubmit() {
-    alert("검색");
-    event.preventDefault(); // 기본 동작 막기 새로고침막음
-    const query = document.getElementById('searchInput').value;
-    showProducts(1, query, null);
-  }
 
-  function showProductsByTag(category) {
-    alert(category)
-    console.log(category);
-    //event.preventDefault(); // 기본 동작 막기 새로고침막음
-    showProducts(1, null, category);
-  }
 
-  function renderPagination(totalPages, currentPage, tag, search) {
-    const paginationControls = $('#pagination-controls ul');
-    paginationControls.empty();
-
-    const createPageItem = (pageNum, text, isActive = false) => {
-      const pageItem = $(`<li class="page-item ${isActive ? 'active'
-          : ''}"><a class="page-link" href="#" onclick="showProducts(${pageNum},${search
-          ? `'${search}'` : 'null'},${tag ? `'${tag}'` : 'null'})">${text}</a>
-</li>`); //search , tag는 문자라 ${tag}이렇게바로 못줌
-      return pageItem;
-    };
-
-    // 이전 버튼
-    paginationControls.append(createPageItem(currentPage - 1, '이전', false));
-
-    // 페이지 숫자
-    for (let i = Math.max(1, currentPage - 2); i <= Math.min(currentPage + 2, totalPages); i++) {
-      paginationControls.append(createPageItem(i, i, i === currentPage));
-    }
-
-    // 다음 버튼
-    paginationControls.append(createPageItem(currentPage + 1, '다음', false));
-
-  }
 
 
 </script>
