@@ -45,7 +45,7 @@ public class ChatRoomController {
     }
 
     @DeleteMapping("/room/{roomId}")
-    public ChatRoomDeleteRes createChatRoom
+    public ChatRoomDeleteRes deleteChatRoom
         (@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return chatRoomServcie.deleteChatRoom(roomId, userDetails.getUser().getId());
