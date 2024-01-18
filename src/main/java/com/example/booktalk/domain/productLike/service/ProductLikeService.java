@@ -7,7 +7,11 @@ import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
 import com.example.booktalk.domain.productLike.entity.ProductLike;
+import com.example.booktalk.domain.productLike.exception.NotPermissionMineException;
+import com.example.booktalk.domain.productLike.exception.ProductLikeErrorCode;
 import com.example.booktalk.domain.productLike.repository.ProductLikeRepository;
+import com.example.booktalk.domain.reviewlike.exception.NotPermissionToggleException;
+import com.example.booktalk.domain.reviewlike.exception.ReviewLikeErrorCode;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +48,9 @@ public class ProductLikeService {
 
     @Transactional
     public ProductLike saveProductLike(Product product, User user) {
+        if(user.getId().equals(product.getUser().getId())) {
+            throw new NotPermissionMineException(ProductLikeErrorCode.NOT_PERMISSION_MINE);
+        }
 
         ProductLike productLike = ProductLike.builder()
                 .product(product)
