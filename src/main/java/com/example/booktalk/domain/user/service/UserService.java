@@ -156,8 +156,10 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
-        if (userRepository.findByNickname(req.nickname()).isPresent()) {
-            throw new NicknameDuplicateExcpetion(UserErrorCode.NICKNAME_DUPLICATE);
+        if(!Objects.equals(user.getNickname(), req.nickname())){
+            if (userRepository.findByNickname(req.nickname()).isPresent()) {
+                throw new NicknameDuplicateExcpetion(UserErrorCode.NICKNAME_DUPLICATE);
+            }
         }
 
         if (!file.isEmpty()) {
