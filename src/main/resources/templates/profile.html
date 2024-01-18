@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         rel="stylesheet">
   <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script crossorigin="anonymous"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -56,7 +56,7 @@
 
 <div class="container">
   <header
-      class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+          class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
       <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
@@ -142,31 +142,67 @@
 
 
   <div class="profile-item mt-4">
+    <button class="btn btn-outline-primary" id="passwordEditButton"
+            onclick="openNewPasswordModal()">비밀번호 수정
+    </button>
     <button class="btn btn-outline-primary" id="profileEditButton"
             onclick="inputEdit()">프로필 수정
     </button>
+
     <a href="/api/v1" class="btn btn-primary">메인 페이지로 돌아가기</a>
+
+    <a href="/api/v1/LikedProducts" class="btn btn-primary">관심 상품 목록</a>
+
     <button class="btn btn-danger" style="float: right" onclick="quitMember()">회원 탈퇴하기</button>
+
   </div>
 
-  <div id="passwordModal" class="modal" tabindex="-1">
+  <div class="modal" id="passwordModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">비밀번호 입력</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetModal()"
-                  aria-label="Close"></button>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" onclick="resetModal()"
+                  type="button"></button>
         </div>
         <div class="modal-body">
-          <input type="password" class="form-control mb-2" placeholder="비밀번호" id="passwordInput">
-          <input type="password" class="form-control mb-2" placeholder="비밀번호확인"
-                 id="passwordInputCheck">
+          <input class="form-control mb-2" id="passwordInput" placeholder="비밀번호" type="password">
+          <input class="form-control mb-2" id="passwordInputCheck" placeholder="비밀번호확인"
+                 type="password">
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                  onclick="resetModal()">닫기
+          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetModal()"
+                  type="button">닫기
           </button>
-          <button type="button" class="btn btn-primary" onclick="editUser()">수정완료</button>
+          <button class="btn btn-primary" onclick="editUser()" type="button">수정완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="newPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">새 비밀번호 입력</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                  onclick="resetPWModal()"
+                  type="button"></button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mb-2" id="beforePasswordInput" placeholder="기존 비밀번호"
+                 type="password">
+          <input class="form-control mb-2" id="newPasswordInput" placeholder="새로운 비밀번호"
+                 type="password">
+          <input class="form-control mb-2" id="newPasswordInputCheck" placeholder="새로운 비밀번호 확인"
+                 type="password">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetPWModal()"
+                  type="button">닫기
+          </button>
+          <button class="btn btn-primary" onclick="editPW()" type="button">비밀번호 수정 완료
+          </button>
         </div>
       </div>
     </div>
@@ -181,35 +217,35 @@
       type: 'GET',
       url: `/api/v1/users`,
     })
-    .done(function (res) {
-      console.log(res)
-      $('#profile-scroe').text(res.score);
-      $('#profile-email').text(res.email);
-      $('#profile-nickname').text(res.nickname);
-      $('#profile-description').text(res.description)
-      $('#profile-address').text(res.location);
-      $('#profile-phone').text(res.phone);
-      $('#userId').text(res.id);
+            .done(function (res) {
+              console.log(res)
+              $('#profile-scroe').text(res.score);
+              $('#profile-email').text(res.email);
+              $('#profile-nickname').text(res.nickname);
+              $('#profile-description').text(res.description)
+              $('#profile-address').text(res.location);
+              $('#profile-phone').text(res.phone);
+              $('#userId').text(res.id);
 
-      var imageContainer = document.getElementById('image-container')
-      const img = document.createElement('img');
-      img.className = 'card-img-top mx-2';
-      img.alt = 'Product Image';
-      if (res.profileImagePathUrl) {
-        img.src = res.profileImagePathUrl;
+              var imageContainer = document.getElementById('image-container')
+              const img = document.createElement('img');
+              img.className = 'card-img-top mx-2';
+              img.alt = 'Product Image';
+              if (res.profileImagePathUrl) {
+                img.src = res.profileImagePathUrl;
 
-      } else {
-        img.src = 'https://via.placeholder.com/150';
-      }
+              } else {
+                img.src = 'https://via.placeholder.com/150';
+              }
 
-      imageContainer.appendChild(img);
+              imageContainer.appendChild(img);
 
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-    });
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
 
   });
 
@@ -307,19 +343,18 @@
         processData: false,	// 필수
         contentType: false,	// 필수
       })
-      .done(function (res) {
-        alert('프로필 수정완료');
-        location.reload();
-        alert('모달체크' + $('#passwordInput').val())
+              .done(function (res) {
+                alert('프로필 수정완료');
+                location.reload();
 
-      })
-      .fail(function (res) {
-        resetModal();
-        const jsonObject = JSON.parse(res.responseText);
-        const messages = jsonObject.messages;
-        alert(messages);
+              })
+              .fail(function (res) {
+                resetModal();
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
 
-      });
+              });
     } else {
       alert('비밀번호를 입력하세요');
     }
@@ -367,21 +402,61 @@
       contentType: "application/json",
       data: JSON.stringify(data)
     })
-    .done(function (res) {
-      window.location.href = 'http://' + window.location.host + '/api/v1/users/profile'
-    })
-    .fail(function (res) {
-      resetModal();
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-    });
+            .done(function (res) {
+              window.location.href = 'http://' + window.location.host + '/api/v1/users/profile'
+            })
+            .fail(function (res) {
+              resetModal();
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
   }
 
   function resetModal() { //모달창 초기화
     // 모달 내의 입력 필드 초기화
     $('#passwordInput').val('');
     $('#passwordInputCheck').val('');
+  }
+
+  function openNewPasswordModal() {
+    $('#newPasswordModal').modal('show');
+  }
+
+  function resetPWModal() {
+    $('#beforePasswordInput').val('');
+    $('#newPasswordInput').val('');
+    $('#newPasswordInputCheck').val('');
+  }
+
+  function editPW() {
+    const userId = $('#userId').text();
+    const data = {
+      "password": $('#beforePasswordInput').val(),
+      "newPassword": $('#newPasswordInput').val(),
+      "newPasswordCheck": $('#newPasswordInputCheck').val()
+    }
+    const beforePassword = $('#beforePasswordInput').val();
+    if (beforePassword) {
+      $.ajax({
+        type: 'PUT',
+        url: `/api/v1/users/password/` + userId,
+        contentType: "application/json",
+        data: JSON.stringify(data)
+      })
+              .done(function (res) {
+                window.location.href = 'http://' + window.location.host + '/api/v1/users/profile'
+                alert('비밀번호 수정완료!')
+              })
+              .fail(function (res) {
+                resetPWModal();
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
+    } else {
+      alert('비밀번호를 입력하세요');
+    }
   }
 
 </script>
