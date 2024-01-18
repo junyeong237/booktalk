@@ -91,7 +91,7 @@
 
     <div class="border-bottom p-3 d-flex justify-content-between">
       <div>
-        <button class="btn btn-primary me-2" type="button">Edit</button>
+        <button class="btn btn-primary me-2" type="button" onclick="redirectToEditPage()">Edit</button>
         <button class="btn btn-primary" id="deletePostBtn" type="button">Delete</button>
       </div>
 
@@ -195,9 +195,10 @@
         $('#commentInput').val('');
 
       },
-      error: function (error) {
-        console.error('Error submitting comment:', error);
-        alert('Error submitting comment. Please try again.');
+      error: function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
       }
     });
   }
@@ -218,9 +219,10 @@
 
         fetchReviewDetails(reviewId);
       },
-      error: function (error) {
-        console.error('Error deleting comment:', error);
-        alert('Error deleting comment. Please try again.');
+      error: function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
       }
     });
   }
@@ -246,9 +248,10 @@
 
         window.location.href = '/api/v1/reviews/list';
       },
-      error: function (error) {
-        console.error('Error deleting review:', error);
-        alert('Error deleting review. Please try again.');
+      error: function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
       }
     });
   }
@@ -305,9 +308,10 @@
         fetchReviewDetails(reviewId);
         alert('댓글이 수정되었습니다.');
       },
-      error: function (error) {
-        console.error('Error editing comment:', error);
-        alert('Error editing comment. Please try again.');
+      error: function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
       }
     });
 
@@ -338,11 +342,20 @@
         console.log('Review liked successfully. Response Status:', xhr.status);
         fetchReviewDetails(reviewId);
       },
-      error: function (error) {
-        console.error('Error liking review:', error);
-        alert('본인의 게시글에 좋아요를 누를 수 없습니다.');
+      error: function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
       }
     });
+  }
+  function redirectToEditPage() {
+    setReviewIdCookie(reviewId);
+    window.location.href = "/api/v1/reviews/post";
+  }
+
+  function setReviewIdCookie(reviewId) {
+    document.cookie = "reviewId=" + reviewId + "; path=/";
   }
 </script>
 

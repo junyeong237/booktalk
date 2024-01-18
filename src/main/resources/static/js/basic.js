@@ -19,8 +19,11 @@ $(document).ready(function () {
     return; //지워도 될듯하다 //이거 지우면 밑에 .ajax가 실행되는듯
   }
 
+  let protocol = window.location.protocol === 'https:' ? 'https://' : 'http://';
   let eventSource = new EventSource(
-      'http://localhost:8080/api/notification/subscribe');
+      protocol + window.location.host + '/api/notification/subscribe');
+  // let eventSource = new EventSource(
+  //     'http://' + window.location.host + '/api/notification/subscribe');
   console.log('확인');
   eventSource.addEventListener("createChatRoom", function (event) {
     console.log(event);

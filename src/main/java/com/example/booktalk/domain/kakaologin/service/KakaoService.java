@@ -5,6 +5,8 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
+import com.example.booktalk.global.redis.RefreshTokenRepository;
+import com.example.booktalk.global.redis.RefreshTokenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +34,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
     public void kakaoLogin(String code, HttpServletResponse res) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -49,7 +52,7 @@ public class KakaoService {
 
         jwtUtil.addAccessJwtToCookie(createAccessToken, res);
         jwtUtil.addRefreshJwtToCookie(createRefreshToken, res);
-
+        refreshTokenService.saveRefreshToken(createRefreshToken,kakaoUser.getId());
     }
 
     private String getToken(String code) throws JsonProcessingException {
@@ -147,8 +150,9 @@ public class KakaoService {
 
                 // email: kakao email
                 String email = kakaoUserInfo.email();
+                String kakaoUserNickname = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
 
-                kakaoUser = new User(kakaoUserInfo.nickname(), encodedPassword, email, UserRoleType.USER, kakaoId);
+                kakaoUser = new User(kakaoUserNickname, encodedPassword, email, UserRoleType.USER, kakaoId);
             }
 
             userRepository.save(kakaoUser);

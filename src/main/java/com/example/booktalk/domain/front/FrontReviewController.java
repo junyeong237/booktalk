@@ -14,7 +14,7 @@ public class FrontReviewController {
 
     @GetMapping("/api/v1/reviews/post")
     public String postReviewPage() {
-        return "createReview";
+        return "reviewForm";
     }
 
     @GetMapping("api/v1/reviews/detail/{reviewId}")

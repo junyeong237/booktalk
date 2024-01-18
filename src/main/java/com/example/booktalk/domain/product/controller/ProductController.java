@@ -16,6 +16,7 @@ import com.example.booktalk.global.security.UserDetailsImpl;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,11 +73,13 @@ public class ProductController {
 
 
     @GetMapping //상품 리스트 조회
-    public List<ProductListRes> getProductList(
+    public Page<ProductListRes> getProductList(
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc
     ) {
-        return productService.getProductList(sortBy, isAsc);
+        return productService.getProductList(page - 1, size, sortBy, isAsc);
     }
 
     @GetMapping("/main") //메인화면에 관심상품 Top3 인 product 출력
@@ -86,21 +89,25 @@ public class ProductController {
     }
 
     @GetMapping("/search") //상품 검색 리스트 조회
-    public List<ProductSerachListRes> getProductSearchList(
+    public Page<ProductSerachListRes> getProductSearchList(
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
         @RequestParam(value = "query") String search
     ) {
-        return productService.getProductSearchList(sortBy, isAsc, search);
+        return productService.getProductSearchList(page - 1, size, sortBy, isAsc, search);
     }
 
     @GetMapping("/tag") //상품 검색 리스트 조회
-    public List<ProductTagListRes> getProductListByTag(
+    public Page<ProductTagListRes> getProductListByTag(
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
         @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc,
         @RequestParam(value = "tag") String search
     ) {
-        return productService.getProductSearchTagList(sortBy, isAsc, search);
+        return productService.getProductSearchTagList(page - 1, size, sortBy, isAsc, search);
     }
 
 }
