@@ -158,6 +158,7 @@
             <div class="mb-2">
               <button class="btn btn-outline-primary mb-2" id="chat-user"></button>
               <h5 id="product-author"></h5>
+
             </div>
           </div>
 
@@ -214,6 +215,7 @@
 
       </div>
     </div>
+
   </main>
 </div>
 
@@ -254,6 +256,11 @@
 
     var productAuthor = document.getElementById('product-author');
     productAuthor.innerText = "작성자: " + product.user.name;
+    productAuthor.style.cursor = "pointer";
+
+    productAuthor.addEventListener('click', function () {
+      getOtherProfile(product.user.id)
+    });
 
     var chatTrybutton = document.getElementById('chat-user');
     chatTrybutton.innerText = "채팅걸기";
@@ -563,8 +570,8 @@
 
   }
 
-  function redirectToLogin() {
-    window.location.href = host + '/api/v1/users/login';
+  function getOtherProfile(userId) {
+    window.location.href = host + '/api/v1/users/' + userId + '/profile';
   }
 
   function chatTry(userId) {

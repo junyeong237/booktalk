@@ -30,6 +30,9 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,14 +120,15 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductListRes> getProductList(String sortBy, boolean isAsc) {
+    public Page<ProductListRes> getProductList(int page, int size, String sortBy, boolean isAsc) {
 
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<Product> productList = productRepository.findAllByDeletedFalse(sort);
+        Page<Product> productList = productRepository.findAllByDeletedFalse(pageable);
 
-        return productList.stream()
+        return productList
             .map(product -> {
                 List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
 
@@ -138,8 +142,7 @@ public class ProductService {
                 return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
                     product.getRegion(), imageGetRes);
-            })
-            .toList();
+            });
 
     }
 
@@ -171,14 +174,15 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductSerachListRes> getProductSearchList(String sortBy, Boolean isAsc,
+    public Page<ProductSerachListRes> getProductSearchList(int page, int size, String sortBy,
+        Boolean isAsc,
         String search) {
 
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
-
-        List<Product> productList = productRepository.getPostListByName(sort, search);
-        return productList.stream()
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Product> productList = productRepository.getPostListByName(pageable, search);
+        return productList
             .map(product -> {
                 List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
@@ -192,20 +196,21 @@ public class ProductService {
                     product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
                     product.getRegion(), imageGetRes);
-            })
-            .toList();
+            });
 
     }
 
     @Transactional(readOnly = true)
-    public List<ProductTagListRes> getProductSearchTagList(String sortBy, Boolean isAsc,
+    public Page<ProductTagListRes> getProductSearchTagList(int page, int size, String sortBy,
+        Boolean isAsc,
         String tag) {
 
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<Product> productList = productRepository.getProductListByTag(sort, tag);
-        return productList.stream()
+        Page<Product> productList = productRepository.getProductListByTag(pageable, tag);
+        return productList
             .map(product -> {
                 List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
                 List<String> categories = product.getProductCategoryList().stream()
@@ -218,8 +223,7 @@ public class ProductService {
                 return new ProductTagListRes(product.getId(), product.getName(), product.getPrice(),
                     product.getQuantity(), product.getProductLikeCnt(), categories,
                     product.getRegion(), imageGetRes);
-            })
-            .toList();
+            });
 
     }
 

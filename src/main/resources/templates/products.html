@@ -82,34 +82,35 @@
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByCreatedAt"
              value="createdAt"
-             checked onchange="showProducts()">
+             checked onchange="showProducts(1)">
       <label class="form-check-label" for="sortByCreatedAt">
         생성순
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByTitle"
-             value="name" onchange="showProducts()">
+             value="name" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByTitle">
         상품명
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByLPrice"
-             value="price" onchange="showProducts()">
+             value="price" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByLPrice">
         가격
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByLikes"
-             value="productLikeCnt" onchange="showProducts()">
+             value="productLikeCnt" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByLPrice">
         좋아요
       </label>
     </div>
 
   </div>
+
 
   <div class="mb-2">
     <a href="/api/v1/products/register" class="btn btn-primary" style="float: right" type="submit">
@@ -121,6 +122,10 @@
 
   </div>
 
+  <div id="pagination-controls" class="d-flex justify-content-center mt-4 mb-4">
+    <ul class="pagination"></ul>
+  </div>
+
 </div>
 
 <script>
@@ -128,25 +133,37 @@
   const host = 'http://' + window.location.host;
 
   $(document).ready(function () {
-    showProducts();
+    showProducts(1);
 
   });
 
-  function showProducts() {
+  function showProducts(page, search, tag) {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    var addurl;
+    if (search == null && tag == null) {
+      addurl = '';
+    } else if (search == null && tag != null) {
+      addurl = '/tag'
+    } else if (search != null && tag == null) {
+      addurl = '/search'
+    }
     $.ajax({
       type: 'GET',
-      url: `/api/v1/products`,
+      url: `/api/v1/products` + addurl,
       data: {
-        sortBy: selectedValue
+        sortBy: selectedValue,
+        tag: tag,
+        query: search,
+        page: page,
+        size: 5
       },
     })
     .done(function (res) {
       $('#product-container').empty();
-      res.forEach(function (product) {
+      res.content.forEach(function (product) {
         renderProducts(product);
-      })
-
+      });
+      renderPagination(res.totalPages, page, tag, search);
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -252,64 +269,44 @@
   }
 
   function handleSearchSubmit() {
+    alert("검색");
     event.preventDefault(); // 기본 동작 막기 새로고침막음
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    console.log(selectedValue);
     const query = document.getElementById('searchInput').value;
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/products/search`,
-      data: {
-        query: query,
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
-
+    showProducts(1, query, null);
   }
 
   function showProductsByTag(category) {
+    alert(category)
+    console.log(category);
     //event.preventDefault(); // 기본 동작 막기 새로고침막음
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/products/tag`,
-      data: {
-        tag: category,
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      console.log(res);
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
+    showProducts(1, null, category);
   }
 
-  function sortCheck() {
+  function renderPagination(totalPages, currentPage, tag, search) {
+    const paginationControls = $('#pagination-controls ul');
+    paginationControls.empty();
+
+    const createPageItem = (pageNum, text, isActive = false) => {
+      const pageItem = $(`<li class="page-item ${isActive ? 'active'
+          : ''}"><a class="page-link" href="#" onclick="showProducts(${pageNum},${search
+          ? `'${search}'` : 'null'},${tag ? `'${tag}'` : 'null'})">${text}</a>
+</li>`); //search , tag는 문자라 ${tag}이렇게바로 못줌
+      return pageItem;
+    };
+
+    // 이전 버튼
+    paginationControls.append(createPageItem(currentPage - 1, '이전', false));
+
+    // 페이지 숫자
+    for (let i = Math.max(1, currentPage - 2); i <= Math.min(currentPage + 2, totalPages); i++) {
+      paginationControls.append(createPageItem(i, i, i === currentPage));
+    }
+
+    // 다음 버튼
+    paginationControls.append(createPageItem(currentPage + 1, '다음', false));
 
   }
+
 
 </script>
 
