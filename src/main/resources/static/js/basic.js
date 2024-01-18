@@ -1,10 +1,18 @@
 $(document).ready(function () {
   const auth = getToken();
+  const role = getUserRole();
   if (auth !== undefined && auth !== '') { //토큰이 존재 즉 로그인중
     console.log('auth:', auth);
     $('#logout-button').show();
     $('#login-button').hide();
 
+    if(role !== null ) {
+      if(role === 'ADMIN') {
+        $('#admin-page').show();
+      }else {
+        $('#admin-page').hide();
+      }
+    }
   } else {
     $('#logout-button').hide();
     $('#login-button').show();
@@ -58,4 +66,21 @@ function getToken() {
   }
 
   return auth;
+}
+
+function getUserRole() {
+  let role;
+  $.ajax({
+    url: '/api/v1/users/role',
+    method: 'GET',
+    dataType: 'json',
+    async: false, // 동기적으로 설정
+    success: function (data) {
+      role = data;
+    },
+    error: function (error) {
+      alert('알 수 없는 오류 발생');
+    }
+  });
+  return role;
 }

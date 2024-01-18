@@ -78,8 +78,8 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a class="nav-link" href="/api/v1/report">회원신고</a></li>
-        <li class="nav-item"><a class="nav-link" href="/api/v1/admin/categories">관리자페이지</a></li>
+        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+                                id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
@@ -140,68 +140,33 @@
     <div class="col-sm-9" id="profile-phone">010-xxxx-xxxx</div>
   </div>
 
+
   <div class="profile-item mt-4">
-    <button class="btn btn-outline-primary" id="passwordEditButton"
-            onclick="openNewPasswordModal()">비밀번호 수정
-    </button>
     <button class="btn btn-outline-primary" id="profileEditButton"
             onclick="inputEdit()">프로필 수정
     </button>
-
     <a href="/api/v1" class="btn btn-primary">메인 페이지로 돌아가기</a>
-
-    <a href="/api/v1/LikedProducts" class="btn btn-primary">관심 상품 목록</a>
-
     <button class="btn btn-danger" style="float: right" onclick="quitMember()">회원 탈퇴하기</button>
-
   </div>
 
-  <div class="modal" id="passwordModal" tabindex="-1">
+  <div id="passwordModal" class="modal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">비밀번호 입력</h5>
-          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" onclick="resetModal()"
-                  type="button"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetModal()"
+                  aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input class="form-control mb-2" id="passwordInput" placeholder="비밀번호" type="password">
-          <input class="form-control mb-2" id="passwordInputCheck" placeholder="비밀번호확인"
-                 type="password">
+          <input type="password" class="form-control mb-2" placeholder="비밀번호" id="passwordInput">
+          <input type="password" class="form-control mb-2" placeholder="비밀번호확인"
+                 id="passwordInputCheck">
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetModal()"
-                  type="button">닫기
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                  onclick="resetModal()">닫기
           </button>
-          <button class="btn btn-primary" onclick="editUser()" type="button">수정완료</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="newPasswordModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">새 비밀번호 입력</h5>
-          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                  onclick="resetPWModal()"
-                  type="button"></button>
-        </div>
-        <div class="modal-body">
-          <input class="form-control mb-2" id="beforePasswordInput" placeholder="기존 비밀번호"
-                 type="password">
-          <input class="form-control mb-2" id="newPasswordInput" placeholder="새로운 비밀번호"
-                 type="password">
-          <input class="form-control mb-2" id="newPasswordInputCheck" placeholder="새로운 비밀번호 확인"
-                 type="password">
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetPWModal()"
-                  type="button">닫기
-          </button>
-          <button class="btn btn-primary" onclick="editPW()" type="button">비밀번호 수정 완료
-          </button>
+          <button type="button" class="btn btn-primary" onclick="editUser()">수정완료</button>
         </div>
       </div>
     </div>
@@ -417,46 +382,6 @@
     // 모달 내의 입력 필드 초기화
     $('#passwordInput').val('');
     $('#passwordInputCheck').val('');
-  }
-
-  function openNewPasswordModal() {
-    $('#newPasswordModal').modal('show');
-  }
-
-  function resetPWModal() {
-    $('#beforePasswordInput').val('');
-    $('#newPasswordInput').val('');
-    $('#newPasswordInputCheck').val('');
-  }
-
-  function editPW() {
-    const userId = $('#userId').text();
-    const data = {
-      "password": $('#beforePasswordInput').val(),
-      "newPassword": $('#newPasswordInput').val(),
-      "newPasswordCheck": $('#newPasswordInputCheck').val()
-    }
-    const beforePassword = $('#beforePasswordInput').val();
-    if (beforePassword) {
-      $.ajax({
-        type: 'PUT',
-        url: `/api/v1/users/password/` + userId,
-        contentType: "application/json",
-        data: JSON.stringify(data)
-      })
-      .done(function (res) {
-        window.location.href = 'http://' + window.location.host + '/api/v1/users/profile'
-        alert('비밀번호 수정완료!')
-      })
-      .fail(function (res) {
-        resetPWModal();
-        const jsonObject = JSON.parse(res.responseText);
-        const messages = jsonObject.messages;
-        alert(messages);
-      });
-    } else {
-      alert('비밀번호를 입력하세요');
-    }
   }
 
 </script>
