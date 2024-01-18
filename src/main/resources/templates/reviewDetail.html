@@ -83,7 +83,7 @@
 
     <div class="border-bottom p-3 d-flex justify-content-between">
       <div>
-        <button class="btn btn-primary me-2" type="button">Edit</button>
+        <button class="btn btn-primary me-2" type="button" onclick="redirectToEditPage()">Edit</button>
         <button class="btn btn-primary" id="deletePostBtn" type="button">Delete</button>
       </div>
 
@@ -335,6 +335,14 @@
         alert('본인의 게시글에 좋아요를 누를 수 없습니다.');
       }
     });
+  }
+  function redirectToEditPage() {
+    setReviewIdCookie(reviewId);
+    window.location.href = "/api/v1/reviews/post";
+  }
+
+  function setReviewIdCookie(reviewId) {
+    document.cookie = "reviewId=" + reviewId + "; path=/";
   }
 </script>
 
