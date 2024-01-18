@@ -147,8 +147,9 @@ public class KakaoService {
 
                 // email: kakao email
                 String email = kakaoUserInfo.email();
+                String kakaoUserNickname = kakaoUserInfo.nickname()+UUID.randomUUID().toString().replaceAll("-", "").substring(0, 3);
 
-                kakaoUser = new User(kakaoUserInfo.nickname(), encodedPassword, email, UserRoleType.USER, kakaoId);
+                kakaoUser = new User(kakaoUserNickname, encodedPassword, email, UserRoleType.USER, kakaoId);
             }
 
             userRepository.save(kakaoUser);
