@@ -4,11 +4,10 @@ on:
   push:
     branches:
       - main
-      - chore/ci-cd
-      - refactor/chats
   pull_request:
     branches:
       - main
+      - dev
 
 
 permissions:
