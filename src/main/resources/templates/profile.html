@@ -310,10 +310,6 @@
     const userId = $('#userId').text();
 
     var input = document.getElementById('productImage');
-    if (input.files.length === 0) {
-      alert('프로필 이미지를 선택 하세요.');
-      return;
-    }
 
     var formData = new FormData();
     for (var i = 0; i < input.files.length; i++) {
