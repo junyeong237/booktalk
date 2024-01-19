@@ -1,11 +1,11 @@
 $(document).ready(function () {
   const auth = getToken();
-  const role = getUserRole();
+
   if (auth !== undefined && auth !== '') { //토큰이 존재 즉 로그인중
     console.log('auth:', auth);
     $('#logout-button').show();
     $('#login-button').hide();
-
+    const role = getUserRole();
     if(role !== null ) {
       if(role === 'ADMIN') {
         $('#admin-page').show();
