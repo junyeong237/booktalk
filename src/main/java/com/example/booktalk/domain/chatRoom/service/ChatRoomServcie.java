@@ -75,9 +75,10 @@ public class ChatRoomServcie {
         ChatRoom chatRoom = chatRoomRepository.findChatRoomByIdWithThrow(roomId);
         if (!(chatRoom.getReceiver().getId().equals(userId) || chatRoom.getSender().getId()
             .equals(userId))) {
-            //작성자일경우만 채팅방 나가기 가능
+            //채팅방 참여자일경우만 채팅방 나가기 가능
             throw new NotChatRoomUserException(ChatRoomErrorCode.NOT_CHATROOM_USER);
         }
+
         chatRoomRepository.delete(chatRoom);
 
         return new ChatRoomDeleteRes("삭제가 완료되었습니다.");
