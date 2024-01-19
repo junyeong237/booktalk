@@ -138,8 +138,10 @@
             success: function (data) {
                 showTradeList(data);
             },
-            error: function (error) {
-                alert('알수없는 오류가 발생했습니다.');
+            error: function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
             }
         });
     }

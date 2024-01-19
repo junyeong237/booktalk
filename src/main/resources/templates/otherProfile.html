@@ -209,8 +209,10 @@
               alert("신고 완료");
               $('#reportModal').modal('hide');
             })
-            .fail(function (jqXHR) {
-              alert("신고 제출 실패");
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
             });
   }
 
