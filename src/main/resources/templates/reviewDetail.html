@@ -83,7 +83,7 @@
     </div>
 
     <div class="border-middle p-4">
-      <div class="post-content-box" id="postContent">
+      <div class="post-content-box">
 
         <div class="d-flex justify-content-center">
           <div id="image-container" class="d-flex flex-wrap mx-1">
@@ -101,6 +101,10 @@
           <a href="#" id="productLink">상품바로이동</a>
           <input type="text" class="form-control" id="productName" name="productName" required
                  readonly>
+        </div>
+
+        <div id="postContent">
+
         </div>
       </div>
     </div>
@@ -146,7 +150,10 @@
 
   function fetchReviewDetails(reviewId) {
     console.log('Fetching review details for reviewId:', reviewId);
+    var preview = document.getElementById('imagePreview');
 
+    var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
+    var productLink = document.getElementById("productLink");
     $.ajax({
       url: '/api/v1/reviews/' + reviewId,
       method: 'GET',
@@ -157,18 +164,17 @@
         console.log('reviewImagePathUrl:',data.reviewImagePathUrl);
 
         if(data.reviewImagePathUrl != null){
-          var preview = document.getElementById('imagePreview');
+          console.log(preview);
           preview.src = data.reviewImagePathUrl;
         }
 
 
-        var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
-        var productLink = document.getElementById("productLink");
+
         productNameInput.value = data.productId;
 
         productLink.href = "/api/v1/products/detail/" + data.productId;
 
-        $('#postTitle').text(data.title);
+        var b = $('#postTitle').text(data.title);
         $('#postAuthor').text('' + data.nickname);
         $('#postDate').text('작성일: ' + data.createdAt);
         $('#postLikes').text('Likes: ' + data.reviewLike);
