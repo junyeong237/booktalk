@@ -16,6 +16,7 @@ $(document).ready(function () {
   } else {
     $('#logout-button').hide();
     $('#login-button').show();
+    $('#admin-page').hide();
     return; //지워도 될듯하다 //이거 지우면 밑에 .ajax가 실행되는듯
   }
 
