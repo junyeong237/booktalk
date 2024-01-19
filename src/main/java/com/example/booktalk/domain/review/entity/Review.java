@@ -43,6 +43,13 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
+    @Column
+    private String reviewImagePathUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     @Builder
     private Review(String title, String content, User user) {
         this.title = title;
@@ -50,9 +57,10 @@ public class Review extends BaseEntity {
         this.user = user;
     }
 
-    public void update(ReviewUpdateReq req) {
+    public void update(ReviewUpdateReq req,String reviewImagePathUrl) {
         this.title = req.title();
         this.content = req.content();
+        this.reviewImagePathUrl=reviewImagePathUrl;
     }
 
     public void setReviewLikeCount(Integer reviewLikeCount) {

@@ -321,13 +321,13 @@
   $(document).on('click', '.edit-comment-btn', function () {
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    console.log('Clicked Edit Button. Comment ID:', commentId);
+    console.log('Clicked  Button. Comment ID:', commentId);
 
     var existingContent = $(this).closest('.comment').find('p:last-child').text().trim();
 
     displayEditForm(commentId, existingContent);
   });
-
+  Edit
   $(document).on('click', '#likeReviewBtn', function () {
     console.log('Like button clicked.');
 

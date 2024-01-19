@@ -30,7 +30,7 @@ public class FrontReviewController {
     public String editReviewPage(
         @PathVariable Long reviewId, Model model) {
         model.addAttribute("productId", reviewId);
-        return "aa";
+        return "reviewEdit";
     }
 
 }

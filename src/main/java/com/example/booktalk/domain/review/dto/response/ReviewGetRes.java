@@ -13,6 +13,7 @@ public record ReviewGetRes(
     Integer reviewLike,
     LocalDateTime createdAt,
     LocalDateTime modifiedAt,
+    String reviewImagePathUrl,
     List<CommentGetListRes> commentList
 ) {
 }
