@@ -1,7 +1,6 @@
 package com.example.booktalk.domain.product.repository;
 
 
-import com.example.booktalk.domain.category.entity.QCategory;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.entity.QProduct;
 import com.example.booktalk.domain.productcategory.entity.QProductCategory;
@@ -58,7 +57,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     public Page<Product> getProductListByTag(Pageable pageable, String tag) {
 
         QProductCategory productCategory = QProductCategory.productCategory;
-        QCategory category = QCategory.category;
 
         JPAQuery<Product> query = jpaQueryFactory
             .selectFrom(product)
