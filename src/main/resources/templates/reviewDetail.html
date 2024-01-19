@@ -350,13 +350,9 @@
     });
   }
   function redirectToEditPage() {
-    setReviewIdCookie(reviewId);
-    window.location.href = "/api/v1/reviews/post";
+    window.location.href = "/api/v1/reviews/edit/" + reviewId;
   }
 
-  function setReviewIdCookie(reviewId) {
-    document.cookie = "reviewId=" + reviewId + "; path=/";
-  }
 </script>
 
 </body>

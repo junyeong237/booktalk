@@ -102,33 +102,60 @@
       <label class="form-label" for="postTitle">제목</label>
       <input class="form-control" id="postTitle" required type="text">
     </div>
+
+    <div id="trade-form">
+      <div class="mb-3">
+        <label for="productName" class="form-label">상품 번호:</label>
+        <a href="#" id="productLink">상품바로이동</a>
+        <input type="text" class="form-control" id="productName" name="productName" required
+               readonly>
+      </div>
+      <div class="mb-3">
+        <label for="score" class="form-label">평가 점수:</label>
+        <input type="number" class="form-control" id="score" name="score" required min="1" max="10">
+      </div>
+    </div>
+
     <div class="mb-3">
       <label class="form-label" for="postContent">내용</label>
       <textarea class="form-control" id="postContent" required rows="6"></textarea>
     </div>
-    <button id="createBtn" class="btn btn-primary" onclick="submitReview()" type="button">게시글 작성</button>
-    <button id="editBtn" class="btn btn-primary" onclick="updateReview()" type="button">게시글 수정</button>
+    <button id="createBtn" class="btn btn-primary" onclick="submitReview()" type="button">게시글 작성
+    </button>
+    <button id="editBtn" class="btn btn-primary" onclick="updateReview()" type="button">게시글 수정
+    </button>
   </form>
 </div>
 
-<script>
+<script th:inline="javascript">
+  const productId = /*[[${productId}]]*/
+  const reviewId =  /*[[${reviewId}]]*/
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var createBtn = document.getElementById("createBtn");
-    var editBtn = document.getElementById("editBtn");
+      $(document).ready(function () {
+        var createBtn = document.getElementById("createBtn");
+        var editBtn = document.getElementById("editBtn");
 
-    const reviewId = getReviewIdFromCookie();
-    const create = getCreateInfo();
+        // const reviewId = getReviewIdFromCookie();
+        // const create = getCreateInfo();
+        console.log(reviewId);
 
-    if (create !== undefined && create !== '') {
-      $('#createBtn').show();
-      $('#editBtn').hide();
-      deleteCookie();
-    } else {
-      $('#editBtn').show();
-      $('#createBtn').hide();
-    }
-  });
+        var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
+        var productLink = document.getElementById("productLink");
+        productNameInput.value = productId;
+
+        productLink.href = "/api/v1/products/detail/" + productId;
+
+        if (reviewId == null || reviewId === '') {
+          $('#createBtn').show();
+          $('#editBtn').hide();
+          //deleteCookie();
+        }
+        else {
+          $('#editBtn').show();
+          $('#createBtn').show();
+        }
+      });
+
   function submitReview() {
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
@@ -144,74 +171,53 @@
     };
 
     console.log("Form Data:", formData);
+    var inputScroe = $('#score').val()
+    var intScroe = parseInt(inputScroe);
+
+
+    var tradeData = {
+      productId: productId,
+      score: inputScroe
+    }
+    $.ajax({
+      url: '/api/v1/trades',
+      method: 'POST',
+      contentType: "application/json;charset=UTF-8",
+      data: JSON.stringify(tradeData)
+    })
+    .done(function (res) {
+
+      alert('거래 등록완료');
+
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
 
     $.ajax({
       type: "POST",
       url: "/api/v1/reviews",
       contentType: "application/json;charset=UTF-8",
       data: JSON.stringify(formData),
-      success: function (responseData) {
-        console.log("Response Data:", responseData);
-        alert("리뷰 작성 완료!");
-        window.location.href = "/api/v1/reviews/list";
-      },
-      error: function () {
-        console.error("예기치 못한 문제 발생! 다시 시도해 주세요.");
-        alert("Error submitting review. Please try again.");
-      }
+    })
+    .done(function (res) {
+      console.log("Response Data:", res);
+      alert("리뷰 작성 완료!");
+      window.location.href = "/api/v1/reviews/list";
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
     });
   }
-  function getCreateInfo() {
-    let create = Cookies.get('createBtn');
-    if (create === undefined) {
-      return '';
-    }
-    return create;
-  }
-  function deleteCookie() {
-    document.cookie = "createBtn=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "reviewId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-  }
-  function getReviewIdFromCookie() {
-    return Cookies.get('reviewId');
-  }
 
-  function updateReview() {
-    var title = document.getElementById("postTitle").value;
-    var content = document.getElementById("postContent").value;
 
-    var reviewId = getReviewIdFromCookie();
 
-    if (!title || !content || !reviewId) {
-      alert("빈 서식을 채워 주세요.");
-      return;
-    }
-
-    var formData = {
-      title: title,
-      content: content
-    };
-
-    console.log("Form Data:", formData);
-
-    $.ajax({
-      type: "PATCH",
-      url: "/api/v1/reviews/" + reviewId,
-      contentType: "application/json;charset=UTF-8",
-      data: JSON.stringify(formData),
-      success: function (responseData) {
-        console.log("Response Data:", responseData);
-        alert("리뷰 수정 완료!");
-        window.location.href = "/api/v1/reviews/list";
-        deleteCookie();
-      },
-      error: function () {
-        console.error("예기치 못한 문제 발생! 다시 시도해 주세요.");
-        alert("Error updating review. Please try again.");
-        deleteCookie();
-      }
-    });
-  }
 </script>
 
 </body>
