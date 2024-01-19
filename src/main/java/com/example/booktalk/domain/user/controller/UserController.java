@@ -77,7 +77,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
-        @RequestPart("req") UserProfileReq req,
+        @Valid @RequestPart("req") UserProfileReq req,
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestParam("upload") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
