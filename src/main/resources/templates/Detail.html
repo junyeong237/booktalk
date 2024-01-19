@@ -6,13 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-          crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
@@ -648,18 +644,31 @@
         var resultDiv = document.createElement('div');
         resultDiv.className = 'result-item';
 
+        // 상품 이름 추가
+        var nameParagraph = document.createElement('p');
+        nameParagraph.className = 'result-name';
+        nameParagraph.textContent = '상품명: ' + result.name;
+        resultDiv.appendChild(nameParagraph);
+
+        // 상품 가격 추가
         var priceParagraph = document.createElement('p');
         priceParagraph.className = 'result-price';
-        priceParagraph.textContent = '가격: ' + result.Price;
+        priceParagraph.textContent = '가격: ' + result.Price + ' 원';
         resultDiv.appendChild(priceParagraph);
 
-        // URL에 대한 링크 생성
-        var urlLink = document.createElement('a');
-        urlLink.className = 'result-link';
-        urlLink.href = result.url;  // result.url은 해당 상품의 URL이라고 가정
-        urlLink.textContent = result.url;
-        urlLink.target = '_blank';  // 새 창에서 열기
-        resultDiv.appendChild(urlLink);
+        // 상품 이미지 추가
+        if (result.imageUrl) {
+          var imageElement = document.createElement('img');
+          imageElement.className = 'result-image';
+          imageElement.src = result.imageUrl;
+          resultDiv.appendChild(imageElement);
+        }
+
+        // 클릭 이벤트 추가
+        resultDiv.addEventListener('click', function() {
+          // 해당 URL로 이동
+          window.location.href = result.url;  // result.url은 해당 상품의 URL이라고 가정
+        });
 
         searchResultsContainer.appendChild(resultDiv);
       });
@@ -671,8 +680,7 @@
   }
 
   function searchProducts(query) {
-    var searchUrl = 'http://localhost:8080/api/v1/products/kakao?query=' + encodeURIComponent(
-        query);
+    var searchUrl = '/api/v1/products/kakao?query=' + encodeURIComponent(query);
 
     $.ajax({
       type: 'GET',
