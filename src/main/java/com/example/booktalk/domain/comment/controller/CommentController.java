@@ -39,7 +39,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body((commentService.getCommentList(req.reviewId())));
     }
 
-    @PatchMapping("/{commentId}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateRes> updateComment(
             @PathVariable(name = "commentId") Long commentId,
             @RequestBody CommentUpdateReq req,
