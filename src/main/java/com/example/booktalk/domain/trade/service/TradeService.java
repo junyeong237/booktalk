@@ -80,7 +80,7 @@ public class TradeService {
                 //기능테스트
                 return new TradeListRes(trade.getId(), buyer.getNickname(),
                     trade.getProduct().getName(), trade.getSeller().getNickname(),
-                    trade.getScore());
+                    trade.getScore(), trade.getProduct().getId());
             }
 
         ).toList();
