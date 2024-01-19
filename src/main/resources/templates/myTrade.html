@@ -61,6 +61,10 @@
             border-top: 1px solid #e7e7e7;
             text-align: center;
         }
+        #my-trade-list a {
+            color: inherit; /* 링크의 색을 상위 엘리먼트의 색으로 상속 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
     </style>
 </head>
 
@@ -150,8 +154,10 @@
             success: function (data) {
                 showTradeList(data);
             },
-            error: function (error) {
-                alert('알수없는 오류가 발생했습니다.');
+            error: function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
             }
         });
     }
@@ -167,7 +173,13 @@
 
             newRow.append('<td>' + trade.id + '</td>');
             newRow.append('<td>' + trade.sellerName + '</td>');
-            newRow.append('<td>' + trade.productName + '</td>');
+
+            var productNameCell = $('<td>').append($('<a>', {
+                text: trade.productName,
+                href: '/api/v1/products/detail/' + trade.productId,
+            }));
+            newRow.append(productNameCell);
+
             newRow.append('<td>' + trade.buyerName + '</td>');
             newRow.append('<td>' + trade.score + '</td>');
 
