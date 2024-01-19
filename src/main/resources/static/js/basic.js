@@ -13,6 +13,12 @@ $(document).ready(function () {
         $('#admin-page').hide();
       }
     }
+
+    if(role === 'BLOCK') {
+      clearCookie();
+      alert('신고누적으로 차단되엇습니다.');
+      window.location.href = "/api/v1";
+    }
   } else {
     $('#logout-button').hide();
     $('#login-button').show();
@@ -83,4 +89,9 @@ function getUserRole() {
     }
   });
   return role;
+}
+
+function clearCookie() {
+  document.cookie = "AccessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  document.cookie = "RefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 }
