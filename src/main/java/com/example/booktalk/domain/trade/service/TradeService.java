@@ -110,7 +110,7 @@ public class TradeService {
         }
     }
 
-    private void validateScore(Double score) {
+    private void validateScore(Long score) {
         if (score > 10 || score < 1) {
             throw new InvalidScroeInputException(TradeErrorCode.INVALIE_SCORE_INPUT);
         }
