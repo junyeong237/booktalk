@@ -177,7 +177,7 @@
 
     var tradeData = {
       productId: productId,
-      score: inputScroe
+      score: intScroe
     }
     $.ajax({
       url: '/api/v1/trades',
@@ -189,6 +189,26 @@
 
       alert('거래 등록완료');
 
+      // 첫 번째 Ajax 요청이 완료된 후에 두 번째 Ajax 요청 시작
+
+      $.ajax({
+        type: "POST",
+        url: "/api/v1/reviews",
+        contentType: "application/json;charset=UTF-8",
+        data: JSON.stringify(formData),
+      })
+      .done(function (res) {
+        console.log("Response Data:", res);
+        alert("리뷰 작성 완료!");
+        window.location.href = "/api/v1/reviews/list";
+      })
+      .fail(function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
+
+      });
+
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -197,23 +217,6 @@
 
     });
 
-    $.ajax({
-      type: "POST",
-      url: "/api/v1/reviews",
-      contentType: "application/json;charset=UTF-8",
-      data: JSON.stringify(formData),
-    })
-    .done(function (res) {
-      console.log("Response Data:", res);
-      alert("리뷰 작성 완료!");
-      window.location.href = "/api/v1/reviews/list";
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
   }
 
 

@@ -7,6 +7,9 @@ import com.example.booktalk.domain.trade.dto.response.TradeCreateRes;
 import com.example.booktalk.domain.trade.dto.response.TradeGetRes;
 import com.example.booktalk.domain.trade.dto.response.TradeListRes;
 import com.example.booktalk.domain.trade.entity.Trade;
+import com.example.booktalk.domain.trade.exception.ForbiddenReadTradeListException;
+import com.example.booktalk.domain.trade.exception.NotPermissionRegisterTrade;
+import com.example.booktalk.domain.trade.exception.TradeErrorCode;
 import com.example.booktalk.domain.trade.repository.TradeRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -93,14 +96,14 @@ public class TradeService {
     private void validateBuyerAndSeller(Long buyerId, Product product) {
 
         if (buyerId.equals(product.getUser().getId())) {
-            throw new IllegalArgumentException("판매자는 본인의 상품을 구매할 수 없습니다.");
+            throw new NotPermissionRegisterTrade(TradeErrorCode.NOT_PERMISSION_REGITSTER_TRADE);
         }
 
     }
 
     private void validateOwnTrade(Long userId, Trade trade) {
         if (!trade.getBuyer().getId().equals(userId)) { // 성능확인
-            throw new IllegalArgumentException("자신의 거래내역이 아니라 확인 할 수 없습니다.");
+            throw new ForbiddenReadTradeListException(TradeErrorCode.FORBIDDEN_READ_TRADE_LIST);
         }
     }
 
