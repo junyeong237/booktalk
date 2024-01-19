@@ -278,6 +278,7 @@
   }
 
   function RegisterProduct() {
+    event.preventDefault(); // 기본 동작 막기 새로고침막음
     // 입력된 값 가져오기
     var input = document.getElementById('productImage');
 
@@ -318,13 +319,13 @@
     const json = JSON.stringify(req);
     const blob = new Blob([json], {type: "application/json"});
     formData.append("req", blob);
-
+    console.log(host + '/api/v1/products/list');
     $.ajax({
       type: "POST",
       url: `/api/v1/products`,
       data: formData,		// 필수
       processData: false,	// 필수
-      contentType: false,	// 필수
+      contentType: false	// 필수
     })
     .done(function (res) {
       console.log('check');

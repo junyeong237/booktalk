@@ -42,6 +42,13 @@
       margin: auto;
     }
 
+    .card-img-top {
+      width: auto;
+      height: 300px;
+      display: block;
+
+    }
+
     #search-results {
       display: grid;
       gap: 20px;
@@ -54,6 +61,7 @@
       text-align: center;
       transition: transform 0.3s ease-in-out;
     }
+
     #search-results .result-item {
       display: none; /* 처음에는 검색 결과 숨김 */
     }
@@ -197,20 +205,22 @@
             <input type="text" class="form-control" id="product-category" name="category"
                    disabled="">
           </div>
-          <div class="d-flex justify-content-end" id="button-group">
-            <a id="productListButoon" href="/api/v1/products/list"
-               class="btn btn-outline-primary mx-1">상품목록</a>
-            <a id="productEditButton" href="#" class="btn btn-outline-primary mx-1"
-               onclick="updateProduct()">수정하기</a>
-            <a id="productDeleteButton" href="#" class="btn btn-outline-danger mx-1"
-               onclick="deleteProduct()">삭제하기</a>
+
+          <div class="d-flex" id="button-group">
+            <a id="registerReview" href="#" onclick="registerTradeForm()"
+               class="btn btn-outline-primary mx-1">리뷰작성하기</a>
+            <div style="margin-left: auto;">
+              <!--              class="ml-auto" 적용이 왜 안될까-->
+              <a id="productListButoon" href="/api/v1/products/list"
+                 class="btn btn-outline-primary mx-1">상품목록</a>
+              <a id="productEditButton" href="#" class="btn btn-outline-primary mx-1"
+                 onclick="updateProduct()">수정하기</a>
+              <a id="productDeleteButton" href="#" class="btn btn-outline-danger mx-1"
+                 onclick="deleteProduct()">삭제하기</a>
+            </div>
+
           </div>
         </div>
-
-
-
-
-
 
 
       </div>
@@ -317,7 +327,6 @@
     });
 
   }
-
 
   function addProductLikes(productId) { //api/v1/productLikes
 
@@ -665,10 +674,10 @@
       });
     }
   }
+
   function searchAndDisplay(query) {
     searchProducts(query, displaySearchResults);
   }
-
 
   function searchProducts(query) {
     var searchUrl = '/api/v1/products/kakao?query=' + encodeURIComponent(query);
@@ -677,15 +686,21 @@
       type: 'GET',
       url: searchUrl,
     })
-            .done(function (res) {
-              displaySearchResults(res);
-            })
-            .fail(function (res) {
-              const jsonObject = JSON.parse(res.responseText);
-              const messages = jsonObject.messages;
-              alert(messages);
-            });
+    .done(function (res) {
+      displaySearchResults(res);
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+    });
   }
+
+  function registerTradeForm() {
+    window.location.href = '/api/v1/reviews/post/' + productId;
+
+  }
+
 
 </script>
 
