@@ -109,7 +109,7 @@ public class User extends BaseEntity {
             for (Trade trade : tradeList) {
                 sum += trade.getScore();
             }
-            this.score = sum / tradeList.size();
+            this.score = Math.round((sum / tradeList.size()) * 10.0) / 10.0;
         } else {
             this.score = 7.0;
         }

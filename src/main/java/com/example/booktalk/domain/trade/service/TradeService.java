@@ -8,6 +8,7 @@ import com.example.booktalk.domain.trade.dto.response.TradeGetRes;
 import com.example.booktalk.domain.trade.dto.response.TradeListRes;
 import com.example.booktalk.domain.trade.entity.Trade;
 import com.example.booktalk.domain.trade.exception.ForbiddenReadTradeListException;
+import com.example.booktalk.domain.trade.exception.InvalidScroeInputException;
 import com.example.booktalk.domain.trade.exception.NotPermissionRegisterTrade;
 import com.example.booktalk.domain.trade.exception.TradeErrorCode;
 import com.example.booktalk.domain.trade.repository.TradeRepository;
@@ -35,6 +36,8 @@ public class TradeService {
         validateBuyerAndSeller(userId, product);
 
         User seller = product.getUser();
+
+        validateScore(req.score());
 
         Trade trade = Trade.builder()
             .buyer(buyer)
@@ -104,6 +107,12 @@ public class TradeService {
     private void validateOwnTrade(Long userId, Trade trade) {
         if (!trade.getBuyer().getId().equals(userId)) { // 성능확인
             throw new ForbiddenReadTradeListException(TradeErrorCode.FORBIDDEN_READ_TRADE_LIST);
+        }
+    }
+
+    private void validateScore(Long score) {
+        if (score > 10 || score < 1) {
+            throw new InvalidScroeInputException(TradeErrorCode.INVALIE_SCORE_INPUT);
         }
     }
 
