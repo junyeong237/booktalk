@@ -7,6 +7,7 @@ import java.util.List;
 
 public record ReviewGetRes(
     Long reviewId,
+    Long productId,
     String title,
     String content,
     String nickname,

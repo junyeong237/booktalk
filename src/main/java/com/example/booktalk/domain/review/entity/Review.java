@@ -3,6 +3,7 @@ package com.example.booktalk.domain.review.entity;
 
 import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.common.BaseEntity;
+import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
 import com.example.booktalk.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -51,10 +52,12 @@ public class Review extends BaseEntity {
     private Product product;
 
     @Builder
-    private Review(String title, String content, User user) {
+    private Review(String title, String content, User user,Product product,String reviewImagePathUrl) {
         this.title = title;
         this.content = content;
         this.user = user;
+        this.product = product;
+        this.reviewImagePathUrl=reviewImagePathUrl;
     }
 
     public void update(ReviewUpdateReq req,String reviewImagePathUrl) {

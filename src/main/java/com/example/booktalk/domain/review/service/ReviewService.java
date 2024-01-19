@@ -98,7 +98,7 @@ public class ReviewService {
                         comment.getContent(),comment.getUser().getNickname()))
                 .toList();
 
-        return new ReviewGetRes(review.getId(), review.getTitle(),
+        return new ReviewGetRes(review.getId(), review.getProduct().getId(),review.getTitle(),
                 review.getContent(), review.getUser().getNickname(),
                 review.getReviewLikeCount(), review.getCreatedAt(), review.getModifiedAt(),review.getReviewImagePathUrl(), commentList);
     }

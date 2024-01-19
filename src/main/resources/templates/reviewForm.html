@@ -47,6 +47,13 @@
       padding: 8px;
       font-size: 16px;
     }
+
+    .card-img-top {
+      width: 300px;
+      height: auto;
+      display: block;
+
+    }
   </style>
 
 </head>
@@ -98,9 +105,15 @@
 
 <div class="container1">
   <form id="reviewForm">
+
+    <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top"
+         alt="Product Image">
+
     <div class="mb-3">
-      <label class="form-label" for="postTitle">제목</label>
-      <input class="form-control" id="postTitle" required type="text">
+      <label for="productImage" class="form-label">상품 이미지 업로드</label>
+      <input type="file" class="form-control" id="productImage" accept="image/*" multiple
+             onchange="previewImage()"
+             required>
     </div>
 
     <div id="trade-form">
@@ -114,6 +127,12 @@
         <label for="score" class="form-label">평가 점수:</label>
         <input type="number" class="form-control" id="score" name="score" required min="1" max="10">
       </div>
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label" for="postTitle">제목</label>
+      <input class="form-control" id="postTitle" required type="text">
     </div>
 
     <div class="mb-3">
@@ -135,28 +154,40 @@
         var createBtn = document.getElementById("createBtn");
         var editBtn = document.getElementById("editBtn");
 
-        // const reviewId = getReviewIdFromCookie();
-        // const create = getCreateInfo();
         console.log(reviewId);
 
-        var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
+// 파일 입력 요소 생성
+        var input = document.createElement("input");
+        input.type = "file";
+        input.className = "form-control";
+        input.id = "productImage";
+        input.accept = "image/*";
+        input.addEventListener("change", previewImage);
+
+// 부모 요소에 자식 요소 추가
+
+
+        var productNameInput = document.getElementById("productName");
         var productLink = document.getElementById("productLink");
         productNameInput.value = productId;
 
         productLink.href = "/api/v1/products/detail/" + productId;
 
         if (reviewId == null || reviewId === '') {
+          console.log('reviewId:',reviewId);
           $('#createBtn').show();
           $('#editBtn').hide();
           //deleteCookie();
         }
         else {
+          console.log('reviewId:',reviewId);
           $('#editBtn').show();
-          $('#createBtn').show();
+          $('#createBtn').hide();
         }
       });
 
   function submitReview() {
+    var input = document.getElementById('productImage');
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
 
@@ -167,7 +198,8 @@
 
     var formData = {
       title: title,
-      content: content
+      content: content,
+      productId: productId
     };
 
     console.log("Form Data:", formData);
@@ -179,6 +211,18 @@
       productId: productId,
       score: intScroe
     }
+
+
+    var formDataa = new FormData();
+    for (var i = 0; i < input.files.length; i++) {
+      formDataa.append('upload', input.files[i]);
+    }
+
+    const json = JSON.stringify(formData);
+    const blob = new Blob([json], {type: "application/json"});
+    formDataa.append("req", blob);
+
+
     $.ajax({
       url: '/api/v1/trades',
       method: 'POST',
@@ -195,7 +239,9 @@
         type: "POST",
         url: "/api/v1/reviews",
         contentType: "application/json;charset=UTF-8",
-        data: JSON.stringify(formData),
+        data: formDataa,		// 필수
+        processData: false,	// 필수
+        contentType: false	// 필수
       })
       .done(function (res) {
         console.log("Response Data:", res);
@@ -217,6 +263,28 @@
 
     });
 
+
+  }
+
+  function previewImage() {
+    var input = document.getElementById('productImage');
+    var preview = document.getElementById('imagePreview');
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    var files = input.files;
+
+    console.log(files)
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
   }
 
 
