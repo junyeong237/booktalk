@@ -2,10 +2,15 @@ package com.example.booktalk.domain.admin.service;
 
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
+import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
+import com.example.booktalk.domain.user.exception.NotBlockSelfException;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -13,8 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminUserRoleService {
     private final UserRepository userRepository;
     @Transactional
-    public String userBlock(Long userId){
+    public String userBlock(Long myUserId,Long userId){
         User user=userRepository.findUserByIdWithThrow(userId);
+        if(Objects.equals(myUserId, userId)){
+            throw new NotBlockSelfException(UserErrorCode.FORBIDDEN_NOT_BLOCK);
+        }
         UserRoleType role = UserRoleType.BLOCK;
         user.updateRole(role);
 

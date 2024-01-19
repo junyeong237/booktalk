@@ -244,6 +244,11 @@
                 error: function (error) {
                     console.error('사용자 차단/차단해제 중 오류 발생:', error);
                 }
+            }).fail(function (res) {
+                alert('차단 실패');
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
             });
         }
 

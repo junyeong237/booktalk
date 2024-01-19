@@ -18,7 +18,8 @@ public enum UserErrorCode implements ErrorCode {
     BAD_LOGIN(HttpStatus.BAD_REQUEST, "패스워드를 확인해주세요."),
     NOT_MATCH_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     INVALID_PASSWORD_CHECK(HttpStatus.BAD_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
-    NOT_IMAGE_FILE(HttpStatus.NOT_FOUND, "프로필 이미지를 선택 하세요.");
+    NOT_IMAGE_FILE(HttpStatus.NOT_FOUND, "프로필 이미지를 선택 하세요."),
+    FORBIDDEN_NOT_BLOCK(HttpStatus.FORBIDDEN, "스스로를 차단할 순 없습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 }
