@@ -43,7 +43,7 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(reviewId));
     }
 
-    @PatchMapping("/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewUpdateRes> updateReview(
             @PathVariable(name = "reviewId") Long reviewId,
             @RequestBody ReviewUpdateReq req,
