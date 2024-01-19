@@ -440,20 +440,27 @@
     var parentDiv = document.createElement("div");
     parentDiv.id = "category-list-label";
 
-// 자식 요소 생성 및 추가
-    var checkboxContainer = document.createElement("div");
-    checkboxContainer.className = "mb-3";
-    checkboxContainer.style.display = "flex";
-    checkboxContainer.style.flexDirection = "row";
-    checkboxContainer.appendChild(createCheckbox('추리', 'categoryCheckbox1', '추리'));
-    checkboxContainer.appendChild(createCheckbox('코미디', 'categoryCheckbox2', '코미디'));
-    checkboxContainer.appendChild(createCheckbox('힐링', 'categoryCheckbox3', '힐링'));
-    checkboxContainer.appendChild(createCheckbox('SF', 'categoryCheckbox4', 'SF'));
-    checkboxContainer.appendChild(createCheckbox('정보공학', 'categoryCheckbox5', '정보공학'));
-    console.log(checkboxContainer);
-    // Append the container to the body
-    parentDiv.appendChild(checkboxContainer);
-    productCategorylabel.appendChild(parentDiv);
+    $.ajax({
+      type: 'GET',
+      url: '/api/v1/categories',
+    })
+            .done(function (categories) {
+              var checkboxContainer = document.createElement('div');
+              checkboxContainer.className = 'mb-3';
+              checkboxContainer.style.display = 'flex';
+              checkboxContainer.style.flexDirection = 'row';
+
+              categories.forEach(function (category) {
+                checkboxContainer.appendChild(
+                        createCheckbox(category.name, 'categoryCheckbox' + category.id, category.name)
+                );
+              });
+
+              productCategorylabel.appendChild(checkboxContainer);
+            })
+            .fail(function (res) {
+              alert('카테고리 목록을 가져오는 데 실패했습니다.');
+            });
 
     $('#button-group').empty();
     var buttonGroup = document.getElementById('button-group');
