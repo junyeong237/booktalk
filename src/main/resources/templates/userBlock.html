@@ -61,6 +61,7 @@
             border-radius: 3px;
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
+            margin: 5px;
         }
 
         .blockButton:hover {
@@ -180,6 +181,12 @@
                             event.stopPropagation();
                             toggleBlockUser(user.id, user.roleType);
                         }))
+                    .append($('<button>').addClass("blockButton")
+                        .text('프로필 조회')
+                        .click(function (event) {
+                            event.stopPropagation();
+                            getOtherProfile(user.id);
+                        }))
                     .append($('<div>').addClass('reportContainer')
                         .append($('<h3>').text('유저 신고 목록'))
                         .append($('<ul>').addClass('reportList'))
@@ -194,6 +201,9 @@
 
                 userList.append(userItem);
             });
+        }
+        function getOtherProfile(userId) {
+            window.location.href = '/api/v1/users/' + userId + '/profile';
         }
 
         function toggleReportList(userItem) {
