@@ -99,20 +99,15 @@
                 </a>
             </div>
         </div>
-    </header>
 </div>
-
 <div class="container1">
     <form id="reviewForm">
 
-        <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top"
-             alt="Product Image">
+        <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top" alt="Product Image">
 
         <div class="mb-3">
             <label for="productImage" class="form-label">상품 이미지 업로드</label>
-            <input type="file" class="form-control" id="productImage" accept="image/*" multiple
-                   onchange="previewImage()"
-                   required>
+            <input type="file" class="form-control" id="productImage" accept="image/*" multiple onchange="previewImage()" required>
         </div>
 
         <div id="trade-form">
@@ -122,10 +117,7 @@
                 <input type="text" class="form-control" id="productName" name="productName" required
                        readonly>
             </div>
-            <div class="mb-3">
-                <label for="score" class="form-label">평가 점수:</label>
-                <input type="number" class="form-control" id="score" name="score" required min="1" max="10">
-            </div>
+
         </div>
 
         <div class="mb-3">
@@ -137,27 +129,55 @@
             <label class="form-label" for="postContent">내용</label>
             <textarea class="form-control" id="postContent" required rows="6"></textarea>
         </div>
-        <button id="updateBtn" class="btn btn-primary" onclick="updateReview()" type="button">리뷰 수정
+
+        <!-- 수정: 버튼의 id를 updateBtn로 변경 -->
+        <button id="updateBtn" class="btn btn-primary" onclick="updateReview()" type="button">게시글 수정
         </button>
     </form>
 </div>
 
-<script>
-    function previewImage() {
-        // 이미지 업로드 시 미리보기 기능 구현
-        const input = document.getElementById('productImage');
-        const imagePreview = document.getElementById('imagePreview');
+<script th:inline="javascript">
+    const reviewId = /*[[${reviewId}]]*/
 
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imagePreview.src = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
+        $(document).ready(function () {
+            var updateBtn = document.getElementById("updateBtn");
+
+            var input = document.createElement("input");
+            input.type = "file";
+            input.className = "form-control";
+            input.id = "productImage";
+            input.accept = "image/*";
+            input.addEventListener("change", previewImage);
+
+            var productNameInput = document.getElementById("productName");
+            var productLink = document.getElementById("productLink");
+
+            if (reviewId != null && reviewId !== '') {
+                $('#updateBtn').show();
+                loadReviewData();
+            } else {
+                $('#updateBtn').hide();
+            }
+        });
+
+    function loadReviewData() {
+        $.ajax({
+            type: "GET",
+            url: "/api/v1/reviews/" + reviewId,
+            contentType: "application/json;charset=UTF-8",
+            success: function (data) {
+                $('#productName').val(data.productId);
+                $('#postTitle').val(data.title);
+                $('#postContent').val(data.content);
+                previewImage();
+            },
+            error: function (error) {
+                console.error('Error loading review data:', error);
+            }
+        });
     }
 
-    function submitReview() {
+    function updateReview() {
         var input = document.getElementById('productImage');
         var title = document.getElementById("postTitle").value;
         var content = document.getElementById("postContent").value;
@@ -170,18 +190,7 @@
         var formData = {
             title: title,
             content: content,
-            productId: productId
         };
-
-        console.log("Form Data:", formData);
-        var inputScroe = $('#score').val()
-        var intScroe = parseInt(inputScroe);
-
-
-        var tradeData = {
-            productId: productId,
-            score: intScroe
-        }
 
 
         var formDataa = new FormData();
@@ -190,51 +199,44 @@
         }
 
         const json = JSON.stringify(formData);
-        const blob = new Blob([json], {type: "application/json"});
+        const blob = new Blob([json], { type: "application/json" });
         formDataa.append("req", blob);
 
-
         $.ajax({
-            url: '/api/v1/trades',
-            method: 'POST',
-            contentType: "application/json;charset=UTF-8",
-            data: JSON.stringify(tradeData)
-        })
-            .done(function (res) {
+            type: "PUT",
+            url: "/api/v1/reviews/" + reviewId,
+            contentType: false,
+            processData: false,
+            data: formDataa,
+            success: function (data) {
+                console.log('Review updated successfully:', data);
+                alert("리뷰 수정 완료!");
+                window.location.href = "/api/v1/reviews/list";
+            },
+            error: function (error) {
+                console.error('Error updating review:', error);
+                alert("리뷰 수정 실패!");
+            }
+        });
+    }
 
-                alert('거래 등록완료');
+    function previewImage() {
+        var input = document.getElementById('productImage');
+        var preview = document.getElementById('imagePreview');
+        var file = input.files[0];
+        var reader = new FileReader();
 
-                // 첫 번째 Ajax 요청이 완료된 후에 두 번째 Ajax 요청 시작
+        var files = input.files;
 
-                $.ajax({
-                    type: "POST",
-                    url: "/api/v1/reviews",
-                    contentType: "application/json;charset=UTF-8",
-                    data: formDataa,		// 필수
-                    processData: false,	// 필수
-                    contentType: false	// 필수
-                })
-                    .done(function (res) {
-                        console.log("Response Data:", res);
-                        alert("리뷰 작성 완료!");
-                        window.location.href = "/api/v1/reviews/list";
-                    })
-                    .fail(function (res) {
-                        const jsonObject = JSON.parse(res.responseText);
-                        const messages = jsonObject.messages;
-                        alert(messages);
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        }
 
-                    });
-
-            })
-            .fail(function (res) {
-                const jsonObject = JSON.parse(res.responseText);
-                const messages = jsonObject.messages;
-                alert(messages);
-
-            });
-
-
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
     }
 </script>
 
