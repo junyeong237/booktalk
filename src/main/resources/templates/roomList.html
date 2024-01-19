@@ -121,27 +121,11 @@
         <h5 class="card-title">채팅방 1</h5>
         <a href="/api/v1/chats/room/1" class="btn btn-primary">
           <i class="fas fa-comments"></i> 채팅방 입장
+          <i class="fasout fa-comments"></i> 채팅방 종료
         </a>
       </div>
     </div>
 
-    <div class="card chat-room-card">
-      <div class="card-body">
-        <h5 class="card-title">채팅방 2</h5>
-        <a href="/api/v1/chats/room/2" class="btn btn-primary">
-          <i class="fas fa-comments"></i> 채팅방 입장
-        </a>
-      </div>
-    </div>
-
-    <div class="card chat-room-card">
-      <div class="card-body">
-        <h5 class="card-title">채팅방 3</h5>
-        <a href="/api/v1/chats/room/3" class="btn btn-primary">
-          <i class="fas fa-comments"></i> 채팅방 입장
-        </a>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -162,6 +146,7 @@
         })
         .done(function (res) {
           $('#chatRoomList').empty();
+          console.log(res);
           renderChatRoomList(res);
 
         })
@@ -189,6 +174,7 @@
 // 채팅방 제목 생성
       const cardTitle = document.createElement('h5');
       cardTitle.className = 'card-title';
+      cardTitle.textContent = chatRoom.id + '번 채팅방';
       cardTitle.textContent = chatRoom.sender + '와' + chatRoom.receiver + '의 채팅방';
 
 // 채팅방 입장 버튼 생성
@@ -197,17 +183,47 @@
       enterButton.className = 'btn btn-primary';
       enterButton.innerHTML = '<i class="fas fa-comments"></i> 채팅방 입장';
 
+      const outButton = document.createElement('button');
+      outButton.textContent = '채팅방 종료'
+      outButton.className = 'btn btn-danger';
+      outButton.style.float = 'right';
+      outButton.addEventListener("click", function () {
+        // 클로저 내에서 buttonClickHandler 함수를 호출하면서 인자를 전달합니다.
+        removeRoom(chatRoom.id);
+      });
+
 // 버튼을 카드의 내용에 추가
       cardBody.appendChild(cardTitle);
       cardBody.appendChild(enterButton);
+      cardBody.appendChild(outButton);
 
 // 내용을 카드에 추가
       chatRoomCard.appendChild(cardBody);
-
+      console.log(chatRoomCard);
 // 카드를 부모 요소에 추가
       roomListContainer.appendChild(chatRoomCard);
 
     })
+
+  }
+
+  function removeRoom(id) {
+
+    $.ajax({
+      type: "DELETE",
+      url: `/api/v1/chats/room/` + id,
+    })
+    .done(function (res) {
+      console.log("채팅방을 종료하였습니다..");
+      window.location.href = host + '/api/v1';
+    })
+    .fail(function (res) {
+      alert('전송실패');
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
 
   }
 
