@@ -99,7 +99,6 @@
 
 
     <div class="mt-3">
-      <button class="btn btn-trade" onclick="registerTrade()">거래 신청완료</button>
       <button class="btn btn-out" onclick="disconnect()">채팅방 나가기</button>
     </div>
 
@@ -204,27 +203,14 @@
 
   function disconnect() {
     if (stompClient !== null) {
-      stompClient.send("/app/exit", {}, JSON.stringify({}));
+      stompClient.send("/app/" + roomId + "/exit", {}, JSON.stringify({}));
+      console.log("채팅방을 종료하였습니다..");
       stompClient.disconnect();
+      window.location.href = host + "/api/v1";
     }
 
-    $.ajax({
-      type: "DELETE",
-      url: `/api/v1/chats/room/` + roomId,
-    })
-    .done(function (res) {
-      console.log("채팅방을 종료하였습니다..");
-      window.location.href = host + '/api/v1';
-    })
-    .fail(function (jqXHR, textStatus) {
-      alert("chatingReoom Fail");
-    });
-
   }
 
-  function registerTrade(){
-
-  }
 
 
 </script>
