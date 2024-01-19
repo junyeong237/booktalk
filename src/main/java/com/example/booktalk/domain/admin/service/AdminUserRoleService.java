@@ -21,7 +21,10 @@ public class AdminUserRoleService {
     public String userBlock(Long myUserId,Long userId){
         User user=userRepository.findUserByIdWithThrow(userId);
         if(Objects.equals(myUserId, userId)){
-            throw new NotBlockSelfException(UserErrorCode.FORBIDDEN_NOT_BLOCK);
+            throw new NotBlockSelfException(UserErrorCode.FORBIDDEN_NOT_BLOCK_SELF);
+        }
+        if(Objects.equals(user.getRole(),UserRoleType.ADMIN)){
+            throw new NotBlockSelfException(UserErrorCode.FORBIDDEN_NOT_BLOCK_ADMIN);
         }
         UserRoleType role = UserRoleType.BLOCK;
         user.updateRole(role);
