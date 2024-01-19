@@ -188,6 +188,12 @@
 
   function submitReview() {
     var input = document.getElementById('productImage');
+
+    if(input.files.length === 0){
+      alert('사진을 입력해주세요')
+      window.location.reload();
+    }
+
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
 
@@ -212,10 +218,12 @@
       score: intScroe
     }
 
-
     var formDataa = new FormData();
-    for (var i = 0; i < input.files.length; i++) {
-      formDataa.append('upload', input.files[i]);
+
+
+      for (var i = 0; i < input.files.length; i++) {
+        formDataa.append('upload', input.files[i]);
+
     }
 
     const json = JSON.stringify(formData);
@@ -283,7 +291,7 @@
     if (file) {
       reader.readAsDataURL(file);
     } else {
-      preview.src = "";
+      preview.src = "https://via.placeholder.com/200";
     }
   }
 
