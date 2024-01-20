@@ -191,7 +191,46 @@
     }
 
     function updateReview() {
-        // ... (remaining code remains the same)
+        var input = document.getElementById('productImage');
+        var title = document.getElementById("postTitle").value;
+        var content = document.getElementById("postContent").value;
+
+        if (!title || !content) {
+            alert("빈 서식을 채워 주세요.");
+            return;
+        }
+
+        var formData = {
+            title: title,
+            content: content,
+        };
+
+
+        var formDataa = new FormData();
+        for (var i = 0; i < input.files.length; i++) {
+            formDataa.append('upload', input.files[i]);
+        }
+
+        const json = JSON.stringify(formData);
+        const blob = new Blob([json], { type: "application/json" });
+        formDataa.append("req", blob);
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/v1/reviews/" + reviewId,
+            contentType: false,
+            processData: false,
+            data: formDataa,
+            success: function (data) {
+                console.log('Review updated successfully:', data);
+                alert("리뷰 수정 완료!");
+                window.location.href = "/api/v1/reviews/list";
+            },
+            error: function (error) {
+                console.error('Error updating review:', error);
+                alert("리뷰 수정 실패!");
+            }
+        });
     }
 
     function previewImage() {
