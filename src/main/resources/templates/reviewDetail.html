@@ -148,6 +148,18 @@
   $(document).ready(function () {
     fetchReviewDetails(reviewId);
 
+    $('#my-page').click(function (event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능합니다.');
+      } else {
+        // If authentication is valid, navigate to the link
+        window.location.href = $(this).attr('href');
+      }
+    });
+
     function handleButtonClick(elementId, event) {
       event.preventDefault();
       const auth = getToken();
@@ -163,17 +175,7 @@
       handleButtonClick('editPostBtn', event);
     });
 
-    $('#my-page').click(function (event) {
-      handleButtonClick('header-chat-list', event);
-    });
 
-    $('#likeReviewBtn').click(function (event) {
-      handleButtonClick('editPostBtn', event);
-    });
-
-    $('#commentBtn').click(function (event) {
-      handleButtonClick('editPostBtn', event);
-    });
   });
 
   function fetchReviewDetails(reviewId) {
@@ -371,7 +373,7 @@
 
     $.ajax({
       url: '/api/v1/comments/' + commentId,
-      method: 'PATCH',
+      method: 'PUT',
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(editedComment),
       success: function (data, status, xhr) {
@@ -399,7 +401,7 @@
 
     displayEditForm(commentId, existingContent);
   });
-  Edit
+
   $(document).on('click', '#likeReviewBtn', function () {
     console.log('Like button clicked.');
 
