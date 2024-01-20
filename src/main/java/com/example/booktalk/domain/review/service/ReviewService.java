@@ -132,7 +132,7 @@ public class ReviewService {
 
     }
 
-    private void validateReviewUser(User user, Review review) {
+    public void validateReviewUser(User user, Review review) {
         if (!user.getId().equals(review.getUser().getId())
                 && !user.getRole().equals(UserRoleType.ADMIN) ) {
             throw new NotPermissionReviewAuthorityException(

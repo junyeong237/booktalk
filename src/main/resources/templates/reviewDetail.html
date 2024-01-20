@@ -390,8 +390,23 @@
     });
   }
   function redirectToEditPage() {
-    window.location.href = "/api/v1/reviews/edit/" + reviewId;
+    $.ajax({
+      url: '/api/v1/reviews/edit/' + reviewId,
+      method: 'GET',
+    }).done(function (data) {
+      // 성공적으로 요청이 완료되었을 때의 처리
+      // 리다이렉트를 여기에서 수행
+      window.location.href = "/api/v1/reviews/edit/" + reviewId;
+    }).fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+
+    });
   }
+
+
+
 
 </script>
 
