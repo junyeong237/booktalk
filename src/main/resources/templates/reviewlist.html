@@ -37,7 +37,8 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
+        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        </li>
         <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
         <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
@@ -98,12 +99,6 @@
 
     <div class="mb-3" id="reviewsContainer"></div>
 
-    <div class="text-end">
-      <a class="btn btn-primary" href="/api/v1/reviews/post" id="createPostBtn" role="button" onclick="setCreateCookie()">
-        Create a New Post
-      </a>
-    </div>
-
     <div class="collapse" id="createPostForm">
     </div>
   </main>
@@ -119,6 +114,18 @@
 
   $(document).ready(function () {
     handleSearchSubmit();
+
+    $('#my-page').click(function (event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능합니다.');
+      } else {
+        // If authentication is valid, navigate to the link
+        window.location.href = $(this).attr('href');
+      }
+    });
   });
 
   function handleSearchSubmit() {

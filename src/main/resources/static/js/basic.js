@@ -61,9 +61,13 @@ $(document).ready(function () {
 });
 
 function chatRooms() {
-
-  window.location.href = 'http://' + window.location.host
-      + '/api/v1/chats/room/list';
+  const auth = getToken();
+  if (auth === undefined || auth === '') {
+    alert('로그인 후 이용 가능합니다.');
+  } else {
+    window.location.href = 'http://' + window.location.host
+        + '/api/v1/chats/room/list';
+  }
 }
 
 function alertBadge() {
