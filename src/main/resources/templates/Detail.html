@@ -568,7 +568,7 @@
     console.log(formData);
 
     $.ajax({
-      type: "PATCH",
+      type: "PUT",
       url: `/api/v1/products/` + productId,
       data: formData,		// 필수
       processData: false,	// 필수
