@@ -44,6 +44,20 @@ $(document).ready(function () {
     eventSource.close()
   })
 
+  $('#logout-button').click(function () {
+    $.ajax({
+      type: 'POST', // or 'GET', depending on your server implementation
+      url: '/api/v1/users/logout',
+      success: function () {
+        // Handle successful logout, e.g., redirect to login page
+      },
+      error: function (error) {
+        console.error('Logout error:', error);
+        // Handle error, if needed
+      }
+    });
+  });
+
 });
 
 function chatRooms() {
