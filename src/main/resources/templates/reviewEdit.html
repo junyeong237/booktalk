@@ -158,6 +158,9 @@
             } else {
                 $('#updateBtn').hide();
             }
+
+            // Call previewImage on document ready to handle initial preview
+            previewImage();
         });
 
     function loadReviewData() {
@@ -169,11 +172,21 @@
                 $('#productName').val(data.productId);
                 $('#postTitle').val(data.title);
                 $('#postContent').val(data.content);
-                previewImage();
+
+                productLink.href = "/api/v1/products/detail/" + data.productId;
+
+                // Set the initial preview based on the existing review image
+                if (data.reviewImagePathUrl) {
+                    $('#imagePreview').attr('src', data.reviewImagePathUrl);
+                }
             },
             error: function (error) {
                 console.error('Error loading review data:', error);
             }
+        }).fail(function (res) {
+            const jsonObject = JSON.parse(res.responseText);
+            const messages = jsonObject.messages;
+            alert(messages);
         });
     }
 
@@ -226,16 +239,14 @@
         var file = input.files[0];
         var reader = new FileReader();
 
-        var files = input.files;
-
-        reader.onloadend = function () {
-            preview.src = reader.result;
-        }
-
+        // Display the review image initially if it exists
         if (file) {
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            };
             reader.readAsDataURL(file);
         } else {
-            preview.src = "";
+            preview.src = "https://via.placeholder.com/200"; // Set the default placeholder image
         }
     }
 </script>
