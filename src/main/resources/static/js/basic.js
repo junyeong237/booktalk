@@ -44,6 +44,20 @@ $(document).ready(function () {
     eventSource.close()
   })
 
+  $('#logout-button').click(function () {
+    $.ajax({
+      type: 'POST', // or 'GET', depending on your server implementation
+      url: '/api/v1/users/logout',
+      success: function () {
+        alert('로그아웃 되었습니다.');
+      },
+      error: function (error) {
+        console.error('Logout error:', error);
+        // Handle error, if needed
+      }
+    });
+  });
+
 });
 
 function chatRooms() {
@@ -96,3 +110,4 @@ function clearCookie() {
   document.cookie = "AccessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   document.cookie = "RefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 }
+
