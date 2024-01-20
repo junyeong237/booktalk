@@ -49,7 +49,7 @@ $(document).ready(function () {
       type: 'POST', // or 'GET', depending on your server implementation
       url: '/api/v1/users/logout',
       success: function () {
-        // Handle successful logout, e.g., redirect to login page
+        alert('로그아웃 되었습니다.');
       },
       error: function (error) {
         console.error('Logout error:', error);
@@ -111,9 +111,3 @@ function clearCookie() {
   document.cookie = "RefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 }
 
-function checkAuth() {
-  let auth = Cookies.get('AccessToken');
-  if (auth === null) {
-    alert('로그인 후 이용가능합니다.')
-  }
-}
