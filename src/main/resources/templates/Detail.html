@@ -215,7 +215,7 @@
               <a id="productListButoon" href="/api/v1/products/list"
                  class="btn btn-outline-primary mx-1">상품목록</a>
               <a id="productEditButton" href="#" class="btn btn-outline-primary mx-1"
-                 onclick="updateProduct()">수정하기</a>
+                 onclick="">수정하기</a>
               <a id="productDeleteButton" href="#" class="btn btn-outline-danger mx-1"
                  onclick="deleteProduct()">삭제하기</a>
             </div>
@@ -262,6 +262,18 @@
           } else {
             // If authentication is valid, navigate to the link
             window.location.href = $(this).attr('href');
+          }
+        });
+
+        $('#productEditButton').click(function (event) {
+          event.preventDefault(); // Prevents the default behavior of the link
+
+          const auth = getToken();
+          if (auth === undefined || auth === '') {
+            alert('로그인 후 이용 가능합니다.');
+          } else {
+            // If authentication is valid, navigate to the link
+            updateProduct();
           }
         });
 
@@ -717,10 +729,14 @@
   }
 
   function registerTradeForm() {
-    window.location.href = '/api/v1/reviews/post/' + productId;
-
+    const auth = getToken();
+    if (auth === undefined || auth === '') {
+      alert('로그인 후 이용 가능합니다.');
+    } else {
+      // If authentication is valid, navigate to the link
+      window.location.href = '/api/v1/reviews/post/' + productId;
+    }
   }
-
 
 </script>
 
