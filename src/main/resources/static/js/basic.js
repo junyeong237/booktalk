@@ -110,3 +110,10 @@ function clearCookie() {
   document.cookie = "AccessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
   document.cookie = "RefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 }
+
+function checkAuth() {
+  let auth = Cookies.get('AccessToken');
+  if (auth === null) {
+    alert('로그인 후 이용가능합니다.')
+  }
+}
