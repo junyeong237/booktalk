@@ -114,7 +114,7 @@
 
     <div class="border-bottom p-3 d-flex justify-content-between">
       <div>
-        <button class="btn btn-primary me-2" type="button" onclick="redirectToEditPage()">Edit</button>
+        <button class="btn btn-primary me-2" id="editPostBtn" type="button" onclick="redirectToEditPage()">Edit</button>
         <button class="btn btn-primary" id="deletePostBtn" type="button">Delete</button>
       </div>
 
@@ -129,7 +129,7 @@
           <label class="form-label" for="commentInput">Comment Content</label>
           <textarea class="form-control" id="commentInput" rows="3"></textarea>
         </div>
-        <button class="btn btn-primary float-end" type="submit">작성하기</button>
+        <button class="btn btn-primary float-end" id="commentBtn" type="submit">작성하기</button>
       </form>
     </div>
 
@@ -159,6 +159,23 @@
         window.location.href = $(this).attr('href');
       }
     });
+
+    function handleButtonClick(elementId, event) {
+      event.preventDefault();
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능 합니다.');
+      } else {
+        // Your logic for the button goes here
+        console.log(`${elementId} button clicked`);
+      }
+    }
+
+    $('#editPostBtn').click(function (event) {
+      handleButtonClick('editPostBtn', event);
+    });
+
+
   });
 
   function fetchReviewDetails(reviewId) {
@@ -310,9 +327,13 @@
   }
 
   $(document).on('click', '#deletePostBtn', function () {
-    if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-
-      deleteReview(reviewId);
+    const auth = getToken();
+    if (auth === undefined || auth === '') {
+      alert('로그인 후 이용 가능 합니다.');
+    } else { // <-- Corrected placement of else
+      if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+        deleteReview(reviewId);
+      }
     }
   });
 
@@ -352,7 +373,7 @@
 
     $.ajax({
       url: '/api/v1/comments/' + commentId,
-      method: 'PATCH',
+      method: 'PUT',
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(editedComment),
       success: function (data, status, xhr) {
@@ -380,7 +401,7 @@
 
     displayEditForm(commentId, existingContent);
   });
-  Edit
+
   $(document).on('click', '#likeReviewBtn', function () {
     console.log('Like button clicked.');
 
