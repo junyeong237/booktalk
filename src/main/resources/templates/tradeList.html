@@ -71,7 +71,7 @@
 <div class="container">
     <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
-            <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+            <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
                 <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
                     <span class="fs-4">Book톡방</span>
                 </svg>
@@ -80,19 +80,19 @@
 
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">카테고리</a></li>
-                <li class="nav-item"><a href="/api/v1/admin/trades/list" class="nav-link">거래내역</a></li>
-                <li class="nav-item"><a href="/api/v1/admin/userBlock" class="nav-link">회원차단</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link">카테고리</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/trades/list" class="nav-link">거래내역</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/userBlock" class="nav-link">회원차단</a></li>
             </ul>
         </div>
 
         <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
                    id="login-button">
                     Login
                 </a>
-                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                <a href="/api/v2" type="button" class="btn btn-outline-primary"
                    id="logout-button">
                     Logout
                 </a>
@@ -132,14 +132,16 @@
 
     function renderTradeList() {
         $.ajax({
-            url: '/api/v1/admin/trades',
+            url: '/api/v2/admin/trades',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
                 showTradeList(data);
             },
-            error: function (error) {
-                alert('알수없는 오류가 발생했습니다.');
+            error: function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
             }
         });
     }

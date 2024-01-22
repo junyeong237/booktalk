@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/comments")
+@RequestMapping("/api/v2/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -39,9 +39,9 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body((commentService.getCommentList(req.reviewId())));
     }
 
-    @PatchMapping("/{commentId}")
+    @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateRes> updateComment(
-            @PathVariable(name = "commentId") Long commentId,
+            @PathVariable Long commentId,
             @RequestBody CommentUpdateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -50,7 +50,7 @@ public class CommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<CommentDeleteRes> deleteComment(
-            @PathVariable(name = "commentId") Long commentId,
+            @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.deleteComment(commentId, userDetails.getUser().getId()));

@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/admin/reviews")
 @RequiredArgsConstructor
 public class AdminReviewController {
     private final AdminReviewService adminReviewService;
-    @DeleteMapping("/review/{reviewId}")
+    @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewDeleteRes> deleteReview(
-            @PathVariable(name = "reviewId") Long reviewId
+            @PathVariable Long reviewId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(adminReviewService.adminDeleteReview(reviewId));
     }

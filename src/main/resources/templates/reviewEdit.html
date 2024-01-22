@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+    <script src="/js/basic.js"></script>
+    <style>
+        .container1 {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .mb-3 {
+            width: 100%;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: calc(100% + 10px);
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            width: calc(100% + 10px);
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        .card-img-top {
+            width: 300px;
+            height: auto;
+            display: block;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <header
+            class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+        <div class="col-md-3 mb-2 mb-md-0">
+            <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
+                <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
+                    <span class="fs-4">Book톡방</span>
+                </svg>
+            </a>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <ul class="nav justify-content-center">
+                <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+                </li>
+                <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+                <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-outline-primary position-relative"
+                            id="header-chat-list"
+                            onclick="chatRooms()">
+                        채팅방
+                    </button>
+                </li>
+                <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+                                        id="admin-page">관리자페이지</a></li>
+            </ul>
+        </div>
+
+        <div class="text-md-end">
+            <div class="d-flex align-items-center">
+                <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
+                   id="login-button">
+                    Login
+                </a>
+                <a href="/api/v2" type="button" class="btn btn-outline-primary"
+                   id="logout-button">
+                    Logout
+                </a>
+            </div>
+        </div>
+</div>
+<div class="container1">
+    <form id="reviewForm">
+
+        <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top" alt="Product Image">
+
+        <div class="mb-3">
+            <label for="productImage" class="form-label">상품 이미지 업로드</label>
+            <input type="file" class="form-control" id="productImage" accept="image/*" multiple onchange="previewImage()" required>
+        </div>
+
+        <div id="trade-form">
+            <div class="mb-3">
+                <label for="productName" class="form-label">상품 번호:</label>
+                <a href="#" id="productLink">상품바로이동</a>
+                <input type="text" class="form-control" id="productName" name="productName" required
+                       readonly>
+            </div>
+
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="postTitle">제목</label>
+            <input class="form-control" id="postTitle" required type="text">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="postContent">내용</label>
+            <textarea class="form-control" id="postContent" required rows="6"></textarea>
+        </div>
+
+        <!-- 수정: 버튼의 id를 updateBtn로 변경 -->
+        <button id="updateBtn" class="btn btn-primary" onclick="updateReview()" type="button">게시글 수정
+        </button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    const reviewId = /*[[${reviewId}]]*/
+
+        $(document).ready(function () {
+            var updateBtn = document.getElementById("updateBtn");
+
+            var input = document.createElement("input");
+            input.type = "file";
+            input.className = "form-control";
+            input.id = "productImage";
+            input.accept = "image/*";
+            input.addEventListener("change", previewImage);
+
+            var productNameInput = document.getElementById("productName");
+            var productLink = document.getElementById("productLink");
+
+            if (reviewId != null && reviewId !== '') {
+                $('#updateBtn').show();
+                loadReviewData();
+            } else {
+                $('#updateBtn').hide();
+            }
+
+            // Call previewImage on document ready to handle initial preview
+            previewImage();
+
+            $('#my-page').click(function (event) {
+                event.preventDefault(); // Prevents the default behavior of the link
+
+                const auth = getToken();
+                if (auth === undefined || auth === '') {
+                    alert('로그인 후 이용 가능합니다.');
+                } else {
+                    // If authentication is valid, navigate to the link
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        });
+
+    function loadReviewData() {
+        $.ajax({
+            type: "GET",
+            url: "/api/v2/reviews/" + reviewId,
+            contentType: "application/json;charset=UTF-8",
+            success: function (data) {
+                $('#productName').val(data.productId);
+                $('#postTitle').val(data.title);
+                $('#postContent').val(data.content);
+
+                productLink.href = "/api/v2/products/detail/" + data.productId;
+
+                // Set the initial preview based on the existing review image
+                if (data.reviewImagePathUrl) {
+                    $('#imagePreview').attr('src', data.reviewImagePathUrl);
+                }
+            },
+            error: function (error) {
+                console.error('Error loading review data:', error);
+            }
+        }).fail(function (res) {
+            const jsonObject = JSON.parse(res.responseText);
+            const messages = jsonObject.messages;
+            alert(messages);
+        });
+    }
+
+    function updateReview() {
+        var input = document.getElementById('productImage');
+        var title = document.getElementById("postTitle").value;
+        var content = document.getElementById("postContent").value;
+
+        if (!title || !content) {
+            alert("빈 서식을 채워 주세요.");
+            return;
+        }
+
+        var formData = {
+            title: title,
+            content: content,
+        };
+
+
+        var formDataa = new FormData();
+        for (var i = 0; i < input.files.length; i++) {
+            formDataa.append('upload', input.files[i]);
+        }
+
+        const json = JSON.stringify(formData);
+        const blob = new Blob([json], { type: "application/json" });
+        formDataa.append("req", blob);
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/v2/reviews/" + reviewId,
+            contentType: false,
+            processData: false,
+            data: formDataa,
+            success: function (data) {
+                console.log('Review updated successfully:', data);
+                alert("리뷰 수정 완료!");
+                window.location.href = "/api/v2/reviews/list";
+            },
+            error: function (error) {
+                console.error('Error updating review:', error);
+                alert("리뷰 수정 실패!");
+            }
+        });
+    }
+
+    function previewImage() {
+        var input = document.getElementById('productImage');
+        var preview = document.getElementById('imagePreview');
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        // Display the review image initially if it exists
+        if (file) {
+            reader.onloadend = function () {
+                preview.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "https://via.placeholder.com/200"; // Set the default placeholder image
+        }
+    }
+</script>
+
+</body>
+
+</html>

@@ -1,25 +1,35 @@
-package com.example.booktalk.domain.kakaologin.service;
+package com.example.booktalk.domain.kakaoapi.service;
 
-import com.example.booktalk.domain.kakaologin.dto.KakaoUserInfoDto;
+
+import com.example.booktalk.domain.kakaoapi.dto.KakaoUserInfoDto;
+import com.example.booktalk.domain.product.dto.response.ProductApiListRes;
+import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
-import com.example.booktalk.global.redis.RefreshTokenRepository;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +38,58 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j(topic = "KAKAO Login")
 @Service
 @RequiredArgsConstructor
-public class KakaoService {
+@Transactional
+public class KakaoApiService {
 
+
+    private final ProductRepository productRepository;
+    private final RestTemplate restTemplate;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+
+    @Value("${kakao.key}")
+    private String key;
+
+    @Value("${kakao-login.key}")
+    private String loginKey;
+
+    String url = "https://dapi.kakao.com/v3/search/book";
+
+    public List<ProductApiListRes> getProductWithKakaoApi(String query) {
+        URI uri = UriComponentsBuilder
+            .fromUriString(url)
+            .queryParam("query", query)
+            .encode()
+            .build()
+            .toUri();
+        Map<String, String> hashMap = new HashMap<>();
+
+        // HTTP Header 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "KakaoAK " + key);
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers); //엔티티로 만들기
+        ResponseEntity<HashMap> result = restTemplate.exchange(uri, HttpMethod.GET, httpEntity,
+            HashMap.class);
+        List<LinkedHashMap> bookList = (List<LinkedHashMap>) result.getBody().get("documents");
+
+        List<ProductApiListRes> res = bookList.stream()
+            .filter(map -> !((Integer) map.get("sale_price")).equals(-1)) // price가 -1일 경우 절판
+            .map(map -> {
+                Integer salePrice = (Integer) map.get("sale_price");
+                String url = (String) map.get("url");
+                String name = (String) map.get("title"); // 수정된 부분
+                String imageUrl = (String) map.get("thumbnail");
+                System.out.println(
+                    "sale_price: " + salePrice + ", url: " + url + ", name: " + name + ", imageUrl"
+                        + imageUrl);
+                return new ProductApiListRes(salePrice.longValue(), url, name, imageUrl);
+            })
+            .toList();
+
+        return res;
+    }
 
     public void kakaoLogin(String code, HttpServletResponse res) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
@@ -47,16 +102,17 @@ public class KakaoService {
         User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createAccessToken = jwtUtil.createAccessToken(kakaoUser.getEmail(),kakaoUser.getRole());
+        String createAccessToken = jwtUtil.createAccessToken(kakaoUser.getEmail(),
+            kakaoUser.getRole());
         String createRefreshToken = jwtUtil.createRefreshToken(kakaoUser.getEmail());
 
         jwtUtil.addAccessJwtToCookie(createAccessToken, res);
         jwtUtil.addRefreshJwtToCookie(createRefreshToken, res);
-        refreshTokenService.saveRefreshToken(createRefreshToken,kakaoUser.getId());
+        refreshTokenService.saveRefreshToken(createRefreshToken, kakaoUser.getId());
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        log.info("인가코드 : "+code);
+        log.info("인가코드 : " + code);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
             .fromUriString("https://kauth.kakao.com")
@@ -72,8 +128,8 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "72548d65398245d85bdedb836da29d17");//restapi인증키
-        body.add("redirect_uri", "http://localhost:8080/api/v1/users/kakao/callback");
+        body.add("client_id", loginKey);//restapi인증키
+        body.add("redirect_uri", "https://woogin.shop/api/v2/users/kakao/callback");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
@@ -88,12 +144,13 @@ public class KakaoService {
         );
 
         // HTTP 응답 (JSON) -> 액세스 토큰 파싱
+
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
     }
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
-        log.info("accessToken : "+accessToken);
+        log.info("accessToken : " + accessToken);
         // 요청 URL 만들기
         URI uri = UriComponentsBuilder
             .fromUriString("https://kapi.kakao.com")
@@ -150,14 +207,17 @@ public class KakaoService {
 
                 // email: kakao email
                 String email = kakaoUserInfo.email();
-                String kakaoUserNickname = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+                String kakaoUserNickname = UUID.randomUUID().toString().replaceAll("-", "")
+                    .substring(0, 10);
 
-                kakaoUser = new User(kakaoUserNickname, encodedPassword, email, UserRoleType.USER, kakaoId);
+                kakaoUser = new User(kakaoUserNickname, encodedPassword, email, UserRoleType.USER,
+                    kakaoId);
             }
 
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
     }
+
 
 }

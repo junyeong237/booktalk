@@ -47,6 +47,13 @@
       padding: 8px;
       font-size: 16px;
     }
+
+    .card-img-top {
+      width: 300px;
+      height: auto;
+      display: block;
+
+    }
   </style>
 
 </head>
@@ -57,7 +64,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -66,9 +73,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -76,18 +84,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -98,9 +106,15 @@
 
 <div class="container1">
   <form id="reviewForm">
+
+    <img id="imagePreview" src="https://via.placeholder.com/200" class="card-img-top"
+         alt="Product Image">
+
     <div class="mb-3">
-      <label class="form-label" for="postTitle">제목</label>
-      <input class="form-control" id="postTitle" required type="text">
+      <label for="productImage" class="form-label">상품 이미지 업로드</label>
+      <input type="file" class="form-control" id="productImage" accept="image/*" multiple
+             onchange="previewImage()"
+             required>
     </div>
 
     <div id="trade-form">
@@ -114,6 +128,12 @@
         <label for="score" class="form-label">평가 점수:</label>
         <input type="number" class="form-control" id="score" name="score" required min="1" max="10">
       </div>
+    </div>
+
+
+    <div class="mb-3">
+      <label class="form-label" for="postTitle">제목</label>
+      <input class="form-control" id="postTitle" required type="text">
     </div>
 
     <div class="mb-3">
@@ -135,28 +155,58 @@
         var createBtn = document.getElementById("createBtn");
         var editBtn = document.getElementById("editBtn");
 
-        // const reviewId = getReviewIdFromCookie();
-        // const create = getCreateInfo();
         console.log(reviewId);
 
-        var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
+// 파일 입력 요소 생성
+        var input = document.createElement("input");
+        input.type = "file";
+        input.className = "form-control";
+        input.id = "productImage";
+        input.accept = "image/*";
+        input.addEventListener("change", previewImage);
+
+// 부모 요소에 자식 요소 추가
+
+
+        var productNameInput = document.getElementById("productName");
         var productLink = document.getElementById("productLink");
         productNameInput.value = productId;
 
-        productLink.href = "/api/v1/products/detail/" + productId;
+        productLink.href = "/api/v2/products/detail/" + productId;
 
         if (reviewId == null || reviewId === '') {
+          console.log('reviewId:',reviewId);
           $('#createBtn').show();
           $('#editBtn').hide();
           //deleteCookie();
         }
         else {
+          console.log('reviewId:',reviewId);
           $('#editBtn').show();
-          $('#createBtn').show();
+          $('#createBtn').hide();
         }
+
+        $('#my-page').click(function (event) {
+          event.preventDefault(); // Prevents the default behavior of the link
+
+          const auth = getToken();
+          if (auth === undefined || auth === '') {
+            alert('로그인 후 이용 가능합니다.');
+          } else {
+            // If authentication is valid, navigate to the link
+            window.location.href = $(this).attr('href');
+          }
+        });
       });
 
   function submitReview() {
+    var input = document.getElementById('productImage');
+
+    if(input.files.length === 0){
+      alert('사진을 입력해주세요')
+      window.location.reload();
+    }
+
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
 
@@ -167,7 +217,8 @@
 
     var formData = {
       title: title,
-      content: content
+      content: content,
+      productId: productId
     };
 
     console.log("Form Data:", formData);
@@ -177,10 +228,24 @@
 
     var tradeData = {
       productId: productId,
-      score: inputScroe
+      score: intScroe
     }
+
+    var formDataa = new FormData();
+
+
+      for (var i = 0; i < input.files.length; i++) {
+        formDataa.append('upload', input.files[i]);
+
+    }
+
+    const json = JSON.stringify(formData);
+    const blob = new Blob([json], {type: "application/json"});
+    formDataa.append("req", blob);
+
+
     $.ajax({
-      url: '/api/v1/trades',
+      url: '/api/v2/trades',
       method: 'POST',
       contentType: "application/json;charset=UTF-8",
       data: JSON.stringify(tradeData)
@@ -189,6 +254,28 @@
 
       alert('거래 등록완료');
 
+      // 첫 번째 Ajax 요청이 완료된 후에 두 번째 Ajax 요청 시작
+
+      $.ajax({
+        type: "POST",
+        url: "/api/v2/reviews",
+        contentType: "application/json;charset=UTF-8",
+        data: formDataa,		// 필수
+        processData: false,	// 필수
+        contentType: false	// 필수
+      })
+      .done(function (res) {
+        console.log("Response Data:", res);
+        alert("리뷰 작성 완료!");
+        window.location.href = "/api/v2/reviews/list";
+      })
+      .fail(function (res) {
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
+
+      });
+
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -197,23 +284,28 @@
 
     });
 
-    $.ajax({
-      type: "POST",
-      url: "/api/v1/reviews",
-      contentType: "application/json;charset=UTF-8",
-      data: JSON.stringify(formData),
-    })
-    .done(function (res) {
-      console.log("Response Data:", res);
-      alert("리뷰 작성 완료!");
-      window.location.href = "/api/v1/reviews/list";
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
 
-    });
+  }
+
+  function previewImage() {
+    var input = document.getElementById('productImage');
+    var preview = document.getElementById('imagePreview');
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    var files = input.files;
+
+    console.log(files)
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "https://via.placeholder.com/200";
+    }
   }
 
 

@@ -7,6 +7,7 @@ import com.example.booktalk.global.redis.RefreshTokenRepository;
 import com.example.booktalk.global.security.UserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -65,41 +67,37 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
-                .requestMatchers("/api/v1/users/kakao/**").permitAll()
-                .requestMatchers("/api/v1/image/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1").permitAll() //메인페이지
-                .requestMatchers(HttpMethod.GET, "/api/v1/products/main").permitAll() //메인페이지
-                .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll() //상품목록페이지
-                .requestMatchers(HttpMethod.GET, "/api/v1/products/detail/**")
+                .requestMatchers("api/v2").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v2/users/**").permitAll()
+                .requestMatchers("/api/v2/users/kakao/**").permitAll()
+                .requestMatchers("/api/v2/images/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v2").permitAll() //메인페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products/main").permitAll() //메인페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products").permitAll() //상품목록페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products/detail/**")
                 .permitAll() //상품단건조회페이지
-                //.requestMatchers(HttpMethod.GET, "/api/v1/products/register").permitAll() //상품등록페이지
-                //.requestMatchers(HttpMethod.GET, "/api/v1/users/profile").permitAll() //마이페이지
-                //.requestMatchers(HttpMethod.GET, "/api/v1/chats/room").permitAll()//채팅페이지
-                .requestMatchers("/api/v1/users/signup").permitAll() //회원가입
-                .requestMatchers("/api/v1/users/login").permitAll() //로그인
-                .requestMatchers("/save").permitAll()
-                .requestMatchers("/api/v1/products/**").permitAll()
-                .requestMatchers("/api/v1/products/{productId}/productLikes/**").permitAll()
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                //hasRole 자체가 "ROLE_"을 포함하고 있어서 UserRoleType.ADMIN을 사용하려면 String타입의 "ROLE_ADMIN"에서 "ADMIN"만 사용필요
-                .requestMatchers("/api/v1/reports").permitAll()
+                .requestMatchers(HttpMethod.GET, "api/v2/reviews/**").permitAll()
+                //.requestMatchers("/api/v2/products/**").permitAll()
+                .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/v2/users/signup").permitAll() //회원가입
+                .requestMatchers("/api/v2/users/login").permitAll() //로그인
 
                 .anyRequest().authenticated()
         );
         http.logout(logout -> logout
-            .logoutUrl("/api/v1/users/logout")
+            .logoutUrl("/api/v2/users/logout")
+            .logoutSuccessUrl("/api/v2")  // Add a leading slash here
             .logoutSuccessHandler((request, response, authentication) -> {
-                // 로그아웃 성공 시 권한을 비움
+                // Clear privileges upon successful logout
                 SecurityContextHolder.clearContext();
 
-                // 여기에 추가적인 로그아웃 처리 로직을 넣을 수 있음
-
-                // 응답을 보냄
+                // Additional logout processing logic can be added here
+                log.info("Logout successful. Redirecting to /api/v1");
+                // send response
                 response.setStatus(HttpStatus.OK.value());
                 response.setContentType("application/json; charset=UTF-8");
                 response.getWriter()
-                    .write(objectMapper.writeValueAsString(new UserLogoutRes("로그아웃 완료")));
+                    .write(objectMapper.writeValueAsString(new UserLogoutRes("Logout complete")));
             })
             .deleteCookies("AccessToken", "RefreshToken"));
 

@@ -13,9 +13,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ChatService {
 
     private final UserRepository userRepository;
@@ -42,7 +44,7 @@ public class ChatService {
 
     }
 
-
+    @Transactional(readOnly = true)
     public List<ChatListRes> getChatList(Long roomId) {
 
         List<Chat> chatList = chatRepository.findAllByChatRoomId(roomId);

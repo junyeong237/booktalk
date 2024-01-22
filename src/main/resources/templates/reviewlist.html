@@ -28,7 +28,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -37,9 +37,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a></li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -47,18 +48,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -84,15 +85,11 @@
           최신순
         </label>
       </div>
+
       <div class="form-check mx-1">
         <input class="form-check-input" id="sortByreviewLikeCnt" name="sortingOption" onchange="handleSortingChange()"
                type="radio" value="reviewLikeCount">
         <label class="form-check-label" for="sortByreviewLikeCnt">
-        <input class="form-check-input" id="sortByProductLikeCnt" name="sortingOption"
-               onchange="showReviews()"
-               type="radio"
-               value="productLikeCnt">
-        <label class="form-check-label" for="sortByProductLikeCnt">
           좋아요순
         </label>
       </div>
@@ -101,12 +98,6 @@
     <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
 
     <div class="mb-3" id="reviewsContainer"></div>
-
-    <div class="text-end">
-      <a class="btn btn-primary" href="/api/v1/reviews/post" id="createPostBtn" role="button" onclick="setCreateCookie()">
-        Create a New Post
-      </a>
-    </div>
 
     <div class="collapse" id="createPostForm">
     </div>
@@ -123,12 +114,24 @@
 
   $(document).ready(function () {
     handleSearchSubmit();
+
+    $('#my-page').click(function (event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능합니다.');
+      } else {
+        // If authentication is valid, navigate to the link
+        window.location.href = $(this).attr('href');
+      }
+    });
   });
 
   function handleSearchSubmit() {
     // AJAX 요청 수행
     $.ajax({
-      url: '/api/v1/reviews',
+      url: '/api/v2/reviews',
       method: 'GET',
       dataType: 'json',
       success: function (data) {
@@ -168,7 +171,7 @@
 
   function redirectToReviewDetail(element) {
     var reviewId = $(element).data('review-id');
-    window.location.href = host + '/api/v1/reviews/detail/' + reviewId;
+    window.location.href = host + '/api/v2/reviews/detail/' + reviewId;
   }
 
   function handleReviewSearchSubmit(event) {
@@ -178,7 +181,7 @@
 
     $.ajax({
       type: 'GET',
-      url: `/api/v1/reviews/search`,
+      url: `/api/v2/reviews/search`,
       data: {
         query: searchQuery,
         sortBy: selectedValue
@@ -198,7 +201,7 @@
 
     $.ajax({
       type: 'GET',
-      url: `/api/v1/reviews`,
+      url: `/api/v2/reviews`,
       data: {
         sortBy: selectedValue
       },

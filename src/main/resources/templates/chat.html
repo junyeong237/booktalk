@@ -163,7 +163,7 @@
 
   function loadChat(roomId) {
     $.ajax({
-      url: `/api/v1/chats/rooms/` + roomId,
+      url: `/api/v2/chats/rooms/` + roomId,
       type: 'GET',
       success: function (chatList) {
         console.log(chatList)
@@ -206,7 +206,7 @@
       stompClient.send("/app/" + roomId + "/exit", {}, JSON.stringify({}));
       console.log("채팅방을 종료하였습니다..");
       stompClient.disconnect();
-      window.location.href = host + "/api/v1";
+      window.location.href = host + "/api/v2";
     }
 
   }

@@ -9,6 +9,8 @@ import com.example.booktalk.domain.notify.NotificationService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,36 +21,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/chats")
+@RequestMapping("/api/v2/chatRooms")
 @RequiredArgsConstructor
 public class ChatRoomController {
 
     private final ChatRoomServcie chatRoomServcie;
     private final NotificationService notificationService;
 
-    @GetMapping("/room")
-    public List<ChatRoomListRes> getChatRoomList
+    @GetMapping
+    public ResponseEntity<List<ChatRoomListRes>> getChatRoomList
         (@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        return chatRoomServcie.getChatRoomList(userDetails.getUser().getId());
+        List<ChatRoomListRes> res = chatRoomServcie.getChatRoomList(userDetails.getUser().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 
-    @PostMapping("/room")
-    public ChatRoomCreateRes createChatRoom
+    @PostMapping
+    public ResponseEntity<ChatRoomCreateRes> createChatRoom
         (@RequestBody ChatRoomCreateReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        var b = chatRoomServcie.createChatRoom(userDetails.getUser().getId(), req);
+        ChatRoomCreateRes res = chatRoomServcie.createChatRoom(userDetails.getUser().getId(), req);
         notificationService.notifyMessage(req.receiverId());
-        return b;
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
 
     }
 
-    @DeleteMapping("/room/{roomId}")
-    public ChatRoomDeleteRes deleteChatRoom
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<ChatRoomDeleteRes> deleteChatRoom
         (@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return chatRoomServcie.deleteChatRoom(roomId, userDetails.getUser().getId());
+        ChatRoomDeleteRes res = chatRoomServcie.deleteChatRoom(roomId,
+            userDetails.getUser().getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 

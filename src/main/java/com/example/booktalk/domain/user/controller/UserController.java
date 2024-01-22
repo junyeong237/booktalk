@@ -37,7 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v2/users")
 public class UserController {
 
     private final UserService userService;
@@ -77,7 +77,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
-        @RequestPart("req") UserProfileReq req,
+        @Valid @RequestPart("req") UserProfileReq req,
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestParam("upload") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)

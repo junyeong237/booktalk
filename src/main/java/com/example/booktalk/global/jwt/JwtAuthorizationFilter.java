@@ -40,7 +40,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(token)) {
                 setContext(token);
             } else {
-                //TODO 리프레시토큰 유효성 검사
                 String refreshtoken = jwtUtil.getTokenFromRequest(request,
                     JwtUtil.REFRESH_TOKEN_HEADER);
 

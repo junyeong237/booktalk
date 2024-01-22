@@ -74,7 +74,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -83,10 +83,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -94,18 +94,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -119,7 +119,7 @@
     <div class="card chat-room-card">
       <div class="card-body">
         <h5 class="card-title">채팅방 1</h5>
-        <a href="/api/v1/chats/room/1" class="btn btn-primary">
+        <a href="/api/v2/chats/room/1" class="btn btn-primary">
           <i class="fas fa-comments"></i> 채팅방 입장
           <i class="fasout fa-comments"></i> 채팅방 종료
         </a>
@@ -142,7 +142,7 @@
 
         $.ajax({
           type: 'GET',
-          url: `/api/v1/chats/room`,
+          url: `/api/v2/chats/rooms`,
         })
         .done(function (res) {
           $('#chatRoomList').empty();
@@ -156,6 +156,17 @@
           alert(messages);
         });
 
+        $('#my-page').click(function (event) {
+          event.preventDefault(); // Prevents the default behavior of the link
+
+          const auth = getToken();
+          if (auth === undefined || auth === '') {
+            alert('로그인 후 이용 가능합니다.');
+          } else {
+            // If authentication is valid, navigate to the link
+            window.location.href = $(this).attr('href');
+          }
+        });
       });
 
   function renderChatRoomList(chatRoomList) {
@@ -179,7 +190,7 @@
 
 // 채팅방 입장 버튼 생성
       const enterButton = document.createElement('a');
-      enterButton.href = '/api/v1/chats/room/' + chatRoom.id;
+      enterButton.href = '/api/v2/chats/rooms/' + chatRoom.id + '/front';
       enterButton.className = 'btn btn-primary';
       enterButton.innerHTML = '<i class="fas fa-comments"></i> 채팅방 입장';
 
@@ -211,11 +222,11 @@
 
     $.ajax({
       type: "DELETE",
-      url: `/api/v1/chats/room/` + id,
+      url: `/api/v2/chats/rooms/` + id,
     })
     .done(function (res) {
       console.log("채팅방을 종료하였습니다..");
-      window.location.href = host + '/api/v1';
+      window.location.href = host + '/api/v2';
     })
     .fail(function (res) {
       alert('전송실패');
