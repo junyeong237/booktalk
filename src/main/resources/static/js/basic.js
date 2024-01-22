@@ -28,7 +28,7 @@ $(document).ready(function () {
 
   let protocol = window.location.protocol === 'https:' ? 'https://' : 'http://';
   let eventSource = new EventSource(
-      protocol + window.location.host + '/api/notification/subscribe');
+      protocol + window.location.host + '/api/v2/notifications/subscribe');
   // let eventSource = new EventSource(
   //     'http://' + window.location.host + '/api/notification/subscribe');
   console.log('확인');
