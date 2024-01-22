@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/v1/image")
+@RequestMapping("/api/v2/images")
 public class ImageController {
 
     private ImageFileService imageFileService;

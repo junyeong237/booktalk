@@ -103,7 +103,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -112,10 +112,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -123,18 +123,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="api/v1" type="button" class="btn btn-outline-primary"
+        <a href="api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -212,7 +212,7 @@
                class="btn btn-outline-primary mx-1">리뷰작성하기</a>
             <div style="margin-left: auto;">
               <!--              class="ml-auto" 적용이 왜 안될까-->
-              <a id="productListButoon" href="/api/v1/products/list"
+              <a id="productListButoon" href="/api/v2/products/list"
                  class="btn btn-outline-primary mx-1">상품목록</a>
               <a id="productEditButton" href="#" class="btn btn-outline-primary mx-1"
                  onclick="">수정하기</a>
@@ -238,7 +238,7 @@
       $(document).ready(function () {
         $.ajax({
           type: 'GET',
-          url: `/api/v1/products/` + productId,
+          url: `/api/v2/products/` + productId,
         })
         .done(function (res) {
           //$('#product-container').empty(); //
@@ -353,14 +353,14 @@
 
   }
 
-  function addProductLikes(productId) { //api/v1/productLikes
+  function addProductLikes(productId) {
 
     const data = {
       productId: productId
     };
     $.ajax({
       type: 'PUT',
-      url: `/api/v1/productLikes`,
+      url: `/api/v2/productLikes`,
       contentType: "application/json",
       data: JSON.stringify(data),
     })
@@ -467,7 +467,7 @@
 
     $.ajax({
       type: 'GET',
-      url: '/api/v1/categories',
+      url: '/api/v2/categories',
     })
             .done(function (categories) {
               var checkboxContainer = document.createElement('div');
@@ -569,7 +569,7 @@
 
     $.ajax({
       type: "PUT",
-      url: `/api/v1/products/` + productId,
+      url: `/api/v2/products/` + productId,
       data: formData,		// 필수
       processData: false,	// 필수
       contentType: false,	// 필수
@@ -595,11 +595,11 @@
     if (userConfirmed) {
       $.ajax({
         type: "DELETE",
-        url: `/api/v1/products/` + productId,
+        url: `/api/v2/products/` + productId,
       })
       .done(function (res) {
         alert('삭제완료');
-        window.location.href = host + '/api/v1/products/list';
+        window.location.href = host + '/api/v2/products/list';
       })
       .fail(function (res) {
         alert('삭제실패');
@@ -612,7 +612,7 @@
   }
 
   function getOtherProfile(userId) {
-    window.location.href = host + '/api/v1/users/' + userId + '/profile';
+    window.location.href = host + '/api/v2/users/' + userId + '/profile';
   }
 
   function chatTry(userId) {
@@ -622,13 +622,13 @@
     }
     $.ajax({
       type: "POST",
-      url: `/api/v1/chats/room`,
+      url: `/api/v2/chats/rooms`,
       contentType: "application/json",
       data: JSON.stringify(data),
     })
     .done(function (res) {
       console.log(res.id);
-      window.location.href = host + '/api/v1/chats/room/' + res.id;
+      window.location.href = host + '/api/v2/chats/rooms/' + res.id +'/front';
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -712,7 +712,7 @@
   }
 
   function searchProducts(query) {
-    var searchUrl = '/api/v1/products/kakao?query=' + encodeURIComponent(query);
+    var searchUrl = '/api/v2/products/kakao?query=' + encodeURIComponent(query);
 
     $.ajax({
       type: 'GET',
@@ -734,7 +734,7 @@
       alert('로그인 후 이용 가능합니다.');
     } else {
       // If authentication is valid, navigate to the link
-      window.location.href = '/api/v1/reviews/post/' + productId;
+      window.location.href = '/api/v2/reviews/post/' + productId;
     }
   }
 

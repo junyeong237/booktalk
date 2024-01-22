@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/v1/admin/{reportedUserId}/reports")
+@RequestMapping("/api/v2/admin/reports")
 @RequiredArgsConstructor
 public class AdminReportController {
 private final UserReportService userReportService;
-    @GetMapping
+    @GetMapping("/{reportedUserId}")
     public List<UserReportListRes> getUserReports(@PathVariable Long reportedUserId) {
 
         return userReportService.getUserReports(reportedUserId);

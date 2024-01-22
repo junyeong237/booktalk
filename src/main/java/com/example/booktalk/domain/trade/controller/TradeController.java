@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/trades")
+@RequestMapping("/api/v2/trades")
 @RequiredArgsConstructor
 public class TradeController {
 

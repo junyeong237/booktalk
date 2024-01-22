@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/chats")
+@RequestMapping("/api/v2/chats/rooms")
 @RequiredArgsConstructor
 public class ChatRoomController {
 
     private final ChatRoomServcie chatRoomServcie;
     private final NotificationService notificationService;
 
-    @GetMapping("/room")
+    @GetMapping
     public List<ChatRoomListRes> getChatRoomList
         (@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -34,7 +34,7 @@ public class ChatRoomController {
 
     }
 
-    @PostMapping("/room")
+    @PostMapping
     public ChatRoomCreateRes createChatRoom
         (@RequestBody ChatRoomCreateReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -44,7 +44,7 @@ public class ChatRoomController {
 
     }
 
-    @DeleteMapping("/room/{roomId}")
+    @DeleteMapping("/{roomId}")
     public ChatRoomDeleteRes deleteChatRoom
         (@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 

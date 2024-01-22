@@ -88,7 +88,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -97,10 +97,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -108,18 +108,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -235,7 +235,7 @@
 
     $.ajax({
       type: 'GET',
-      url: `/api/v1/categories`
+      url: `/api/v2/categories`
     })
     .done(function (res) {
 
@@ -332,10 +332,10 @@
     const json = JSON.stringify(req);
     const blob = new Blob([json], {type: "application/json"});
     formData.append("req", blob);
-    console.log(host + '/api/v1/products/list');
+    console.log(host + '/api/v2/products/list');
     $.ajax({
       type: "POST",
-      url: `/api/v1/products`,
+      url: `/api/v2/products`,
       data: formData,		// 필수
       processData: false,	// 필수
       contentType: false	// 필수
@@ -344,7 +344,7 @@
       console.log('check');
       alert('등록완료');
       console.log(res);
-      window.location.href = host + '/api/v1/products/list';
+      window.location.href = host + '/api/v2/products/list';
     })
     .fail(function (res) {
       alert('전송실패');
