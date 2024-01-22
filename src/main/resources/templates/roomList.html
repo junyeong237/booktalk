@@ -190,7 +190,7 @@
 
 // 채팅방 입장 버튼 생성
       const enterButton = document.createElement('a');
-      enterButton.href = '/api/v2/chats/rooms/' + chatRoom.id;
+      enterButton.href = '/api/v2/chats/rooms/' + chatRoom.id + '/front';
       enterButton.className = 'btn btn-primary';
       enterButton.innerHTML = '<i class="fas fa-comments"></i> 채팅방 입장';
 
