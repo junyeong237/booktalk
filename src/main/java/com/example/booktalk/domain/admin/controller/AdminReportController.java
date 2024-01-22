@@ -19,8 +19,9 @@ public class AdminReportController {
     private final UserReportService userReportService;
 
     @GetMapping("/{reportedUserId}")
-    public List<UserReportListRes> getUserReports(@PathVariable Long reportedUserId) {
-
-        return userReportService.getUserReports(reportedUserId);
+    public ResponseEntity<List<UserReportListRes>> getUserReports(
+        @PathVariable Long reportedUserId) {
+        List<UserReportListRes> res = userReportService.getUserReports(reportedUserId);
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 }

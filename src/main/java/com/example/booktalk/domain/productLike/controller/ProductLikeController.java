@@ -1,8 +1,8 @@
 package com.example.booktalk.domain.productLike.controller;
 
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.productLike.dto.request.SwitchProductLikeReq;
-import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
+import com.example.booktalk.domain.productLike.dto.request.ProductLikeSwitchReq;
+import com.example.booktalk.domain.productLike.dto.response.ProductLikeSwitchRes;
 import com.example.booktalk.domain.productLike.service.ProductLikeService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
@@ -23,9 +23,11 @@ public class ProductLikeController {
     private final ProductLikeService productLikeService;
 
     @PutMapping
-    public ResponseEntity<ProductLikeRes> switchProductLike(@RequestBody SwitchProductLikeReq req,
-                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProductLikeRes productLikeRes = productLikeService.switchProductLike(req.productId(), userDetails.getUser().getId());
+    public ResponseEntity<ProductLikeSwitchRes> switchProductLike(
+        @RequestBody ProductLikeSwitchReq req,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ProductLikeSwitchRes productLikeRes = productLikeService.switchProductLike(req.productId(),
+            userDetails.getUser().getId());
 
         return ResponseEntity.ok(productLikeRes);
     }

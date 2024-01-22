@@ -5,13 +5,11 @@ import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
-import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
+import com.example.booktalk.domain.productLike.dto.response.ProductLikeSwitchRes;
 import com.example.booktalk.domain.productLike.entity.ProductLike;
 import com.example.booktalk.domain.productLike.exception.NotPermissionMineException;
 import com.example.booktalk.domain.productLike.exception.ProductLikeErrorCode;
 import com.example.booktalk.domain.productLike.repository.ProductLikeRepository;
-import com.example.booktalk.domain.reviewlike.exception.NotPermissionToggleException;
-import com.example.booktalk.domain.reviewlike.exception.ReviewLikeErrorCode;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.ArrayList;
@@ -30,8 +28,8 @@ public class ProductLikeService {
     private final UserRepository userRepository;
     private final ImageFileService imageFileService;
 
-    @Transactional
-    public ProductLikeRes switchProductLike(Long productId, Long userId) {
+
+    public ProductLikeSwitchRes switchProductLike(Long productId, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -43,7 +41,7 @@ public class ProductLikeService {
         Boolean updated = productLike.clickProdctLike();
         product.updateProductLikeCnt(updated);
 
-        return new ProductLikeRes(productLike.getIsProductLiked());
+        return new ProductLikeSwitchRes(productLike.getIsProductLiked());
     }
 
 

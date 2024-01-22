@@ -15,7 +15,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-
+    @Transactional(readOnly = true)
     public List<CategoryListRes> getCategoryList() {
 
         List<Category> categoryList = categoryRepository.findAll();

@@ -9,6 +9,8 @@ import com.example.booktalk.domain.notify.NotificationService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +29,10 @@ public class ChatRoomController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public List<ChatRoomListRes> getChatRoomList
+    public ResponseEntity<List<ChatRoomListRes>> getChatRoomList
         (@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        return chatRoomServcie.getChatRoomList(userDetails.getUser().getId());
+        List<ChatRoomListRes> res = chatRoomServcie.getChatRoomList(userDetails.getUser().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 

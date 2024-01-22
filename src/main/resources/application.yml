@@ -35,11 +35,16 @@ data:
 cloud:
   aws:
     s3:
-      bucket: booktalk-s3-1
+      bucket: ${BUCKET}
     stack:
       auto: false
     region:
       static: ap-northeast-2
     credentials:
-      access-key: AKIA4LJM27FWEZNL6D5S
-      secret-key: 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
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+
+  admin-token: ${ADMIN_TOKEN}
+
+  kakao-login:
+    key: ${KAKAO_LOGIN_KEY}
