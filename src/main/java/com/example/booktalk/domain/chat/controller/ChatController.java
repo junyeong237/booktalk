@@ -24,7 +24,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-
     @MessageMapping("/{roomId}/enter")
     @SendTo("/topic/{roomId}")
     public ChatEnterRes enter(@DestinationVariable String roomId, StompHeaderAccessor session) {
