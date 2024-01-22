@@ -150,7 +150,7 @@
   }
 
   function showGreeting(message) {
-
+    message = message.body
     if (message.name == null) {
       $("#chat-box").append(createMessage("<tr><td>" + message.message + "</td></tr>"));
     } else {

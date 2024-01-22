@@ -142,7 +142,7 @@
 
         $.ajax({
           type: 'GET',
-          url: `/api/v2/chats/rooms`,
+          url: `/api/v2/chatRooms`,
         })
         .done(function (res) {
           $('#chatRoomList').empty();
@@ -222,7 +222,7 @@
 
     $.ajax({
       type: "DELETE",
-      url: `/api/v2/chats/rooms/` + id,
+      url: `/api/v2/chatRooms/` + id,
     })
     .done(function (res) {
       console.log("채팅방을 종료하였습니다..");

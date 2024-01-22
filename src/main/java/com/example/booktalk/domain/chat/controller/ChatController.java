@@ -26,7 +26,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-
     @MessageMapping("/{roomId}/enter")
     @SendTo("/topic/{roomId}")
     public ResponseEntity<ChatEnterRes> enter(@DestinationVariable String roomId,
