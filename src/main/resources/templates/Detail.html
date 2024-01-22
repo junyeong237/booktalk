@@ -6,9 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
@@ -469,23 +473,23 @@
       type: 'GET',
       url: '/api/v2/categories',
     })
-            .done(function (categories) {
-              var checkboxContainer = document.createElement('div');
-              checkboxContainer.className = 'mb-3';
-              checkboxContainer.style.display = 'flex';
-              checkboxContainer.style.flexDirection = 'row';
+    .done(function (categories) {
+      var checkboxContainer = document.createElement('div');
+      checkboxContainer.className = 'mb-3';
+      checkboxContainer.style.display = 'flex';
+      checkboxContainer.style.flexDirection = 'row';
 
-              categories.forEach(function (category) {
-                checkboxContainer.appendChild(
-                        createCheckbox(category.name, 'categoryCheckbox' + category.id, category.name)
-                );
-              });
+      categories.forEach(function (category) {
+        checkboxContainer.appendChild(
+            createCheckbox(category.name, 'categoryCheckbox' + category.id, category.name)
+        );
+      });
 
-              productCategorylabel.appendChild(checkboxContainer);
-            })
-            .fail(function (res) {
-              alert('카테고리 목록을 가져오는 데 실패했습니다.');
-            });
+      productCategorylabel.appendChild(checkboxContainer);
+    })
+    .fail(function (res) {
+      alert('카테고리 목록을 가져오는 데 실패했습니다.');
+    });
 
     $('#button-group').empty();
     var buttonGroup = document.getElementById('button-group');
@@ -622,13 +626,13 @@
     }
     $.ajax({
       type: "POST",
-      url: `/api/v2/chats/rooms`,
+      url: `/api/v2/chatRooms`,
       contentType: "application/json",
       data: JSON.stringify(data),
     })
     .done(function (res) {
       console.log(res.id);
-      window.location.href = host + '/api/v2/chats/rooms/' + res.id +'/front';
+      window.location.href = host + '/api/v2/chats/rooms/' + res.id + '/front';
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -697,7 +701,7 @@
         }
 
         // 클릭 이벤트 추가
-        resultDiv.addEventListener('click', function() {
+        resultDiv.addEventListener('click', function () {
           // 해당 URL로 이동
           window.location.href = result.url;  // result.url은 해당 상품의 URL이라고 가정
         });

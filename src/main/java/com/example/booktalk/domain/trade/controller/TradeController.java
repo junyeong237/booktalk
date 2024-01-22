@@ -8,6 +8,8 @@ import com.example.booktalk.domain.trade.service.TradeService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,31 +27,34 @@ public class TradeController {
 
 
     @PostMapping
-    public TradeCreateRes createTrade(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<TradeCreateRes> createTrade(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody TradeCreateReq req) {
 
         TradeCreateRes res = tradeService.createTrade(userDetails.getUser().getId(), req);
 
-        return res;
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
 
     }
 
     @GetMapping("/{tradeId}")
-    public TradeGetRes getTrade(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<TradeGetRes> getTrade(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long tradeId) {
 
         TradeGetRes res = tradeService.getTrade(userDetails.getUser().getId(), tradeId);
 
-        return res;
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 
     @GetMapping
-    public List<TradeListRes> getTrade(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<List<TradeListRes>> getTrade(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         List<TradeListRes> res = tradeService.getTradeList(userDetails.getUser().getId());
 
-        return res;
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 

@@ -1,24 +1,26 @@
 package com.example.booktalk.domain.productLike.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
-import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
+import com.example.booktalk.domain.productLike.dto.response.ProductLikeSwitchRes;
 import com.example.booktalk.domain.productLike.entity.ProductLike;
 import com.example.booktalk.domain.productLike.repository.ProductLikeRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 public class ProductLikeServiceTest {
 
@@ -54,10 +56,12 @@ public class ProductLikeServiceTest {
         when(productRepository.findProductByIdWithThrow(product.getId())).thenReturn(product);
 
         ProductLike productLike = ProductLike.builder().product(product).user(user).build();
-        when(productLikeRepository.findByProductAndUser(product, user)).thenReturn(Optional.of(productLike));
+        when(productLikeRepository.findByProductAndUser(product, user)).thenReturn(
+            Optional.of(productLike));
 
         // When
-        ProductLikeRes result = productLikeService.switchProductLike(product.getId(), user.getId());
+        ProductLikeSwitchRes result = productLikeService.switchProductLike(product.getId(),
+            user.getId());
 
         // Then
         assertEquals(productLike.getIsProductLiked(), result.isProductLiked());

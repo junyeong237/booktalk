@@ -30,17 +30,19 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
@@ -49,7 +51,8 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
     private final ImageFileService imageFileService;
 
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${admin-token}")
+    private String ADMIN_TOKEN;
 
     public UserSignupRes signup(UserSignupReq req) {
         String email = req.email();
@@ -113,6 +116,7 @@ public class UserService {
         return new UserLoginRes("로그인 완료");
     }
 
+    @Transactional(readOnly = true)
     public UserOwnProfileGetRes getOwnProfile(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -125,6 +129,7 @@ public class UserService {
 
     }
 
+    @Transactional(readOnly = true)
     public UserProfileGetRes getProfile(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
@@ -157,7 +162,7 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
         }
-        if(!Objects.equals(user.getNickname(), req.nickname())){
+        if (!Objects.equals(user.getNickname(), req.nickname())) {
             if (userRepository.findByNickname(req.nickname()).isPresent()) {
                 throw new NicknameDuplicateExcpetion(UserErrorCode.NICKNAME_DUPLICATE);
             }
@@ -175,7 +180,6 @@ public class UserService {
     }
 
 
-    @Transactional
     public UserWithdrawRes withdraw(UserWithdrawReq req, Long id) {
         String password = req.password();
         String passwordCheck = req.passwordCheck();
@@ -192,7 +196,6 @@ public class UserService {
         return new UserWithdrawRes("탈퇴 완료");
     }
 
-    @Transactional
     public UserPWUpdateRes passwordUpdate(UserPWUpdateReq req, Long id) {
         String password = req.password();
         String newPassword = passwordEncoder.encode(req.newPassword());

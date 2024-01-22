@@ -23,13 +23,7 @@ public class FrontProductController {
     @GetMapping("/api/v2/products/register")
     public String productUpdatePage() {
 
-        return "ProductRegistration";
+        return "productRegistration";
     }
 
-//    @GetMapping("/api/v1/products/edit/{productId}")
-//    public String productUpdatePage(@PathVariable Long productId, Model model) {
-//
-//        model.addAttribute("productId", productId);
-//        return "ProductRegistration";
-//    }
 }

@@ -15,14 +15,14 @@ import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -34,34 +34,35 @@ public class CommentService {
         User user = userRepository.findUserByIdWithThrow(userId);
         Review review = reviewRepository.findReviewByIdWithThrow(req.reviewId());
 
-        if(req.content().isEmpty()) {
+        if (req.content().isEmpty()) {
             throw new EmptyContentException(CommentErrorCode.EMPTY_CONTENT);
         }
 
         Comment comment = Comment.builder()
-                .content(req.content())
-                .review(review)
-                .user(user)
-                .build();
+            .content(req.content())
+            .review(review)
+            .user(user)
+            .build();
 
         Comment result = commentRepository.save(comment);
 
         return new CommentCreateRes(result.getId(), result.getContent(),
-                result.getUser().getNickname());
+            result.getUser().getNickname());
     }
 
+    @Transactional(readOnly = true)
     public List<CommentGetListRes> getCommentList(Long reviewId) {
 
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         List<Comment> commentList = commentRepository.findAllByReviewOrderByCreatedAtDesc(review);
 
         return commentList.stream()
-                .map(comment -> new CommentGetListRes(comment.getId(),
-                        comment.getContent(), comment.getUser().getNickname()))
-                .toList();
+            .map(comment -> new CommentGetListRes(comment.getId(),
+                comment.getContent(), comment.getUser().getNickname()))
+            .toList();
     }
 
-    @Transactional
+
     public CommentUpdateRes updateComment(Long commentId, CommentUpdateReq req, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
@@ -86,8 +87,9 @@ public class CommentService {
 
 
     private void validateCommentUser(User user, Comment comment) {
-        if(!user.getId().equals(comment.getUser().getId())) {
-            throw new NotPermissionCommentAuthorityException(CommentErrorCode.NOT_PERMISSION_COMMENT_AUTHORITY);
+        if (!user.getId().equals(comment.getUser().getId())) {
+            throw new NotPermissionCommentAuthorityException(
+                CommentErrorCode.NOT_PERMISSION_COMMENT_AUTHORITY);
         }
     }
 
