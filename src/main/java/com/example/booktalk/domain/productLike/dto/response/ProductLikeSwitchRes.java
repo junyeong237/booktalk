@@ -1,5 +1,5 @@
 package com.example.booktalk.domain.productLike.dto.response;
 
-public record ProductLikeRes(Boolean isProductLiked) {
+public record ProductLikeSwitchRes(Boolean isProductLiked) {
 
 }

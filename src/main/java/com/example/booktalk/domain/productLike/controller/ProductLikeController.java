@@ -5,12 +5,15 @@ import com.example.booktalk.domain.productLike.dto.request.SwitchProductLikeReq;
 import com.example.booktalk.domain.productLike.dto.response.ProductLikeRes;
 import com.example.booktalk.domain.productLike.service.ProductLikeService;
 import com.example.booktalk.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +31,8 @@ public class ProductLikeController {
     }
 
     @GetMapping
-    public List<ProductListRes> getMyLikedProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public List<ProductListRes> getMyLikedProducts(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return productLikeService.getMyLikedProducts(userDetails.getUser().getId());
     }
 }

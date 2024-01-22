@@ -74,9 +74,10 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v2").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v2/products/main").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v2/products").permitAll() //상품목록페이지
-                .requestMatchers(HttpMethod.GET, "/api/v2/products/detail/**").permitAll() //상품단건조회페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products/detail/**")
+                .permitAll() //상품단건조회페이지
                 .requestMatchers(HttpMethod.GET, "api/v2/reviews/**").permitAll()
-                .requestMatchers("/api/v2/products/**").permitAll()
+                //.requestMatchers("/api/v2/products/**").permitAll()
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v2/users/signup").permitAll() //회원가입
                 .requestMatchers("/api/v2/users/login").permitAll() //로그인

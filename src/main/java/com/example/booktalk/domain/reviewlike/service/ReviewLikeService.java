@@ -9,11 +9,10 @@ import com.example.booktalk.domain.reviewlike.exception.ReviewLikeErrorCode;
 import com.example.booktalk.domain.reviewlike.repository.ReviewLikeRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,18 +29,19 @@ public class ReviewLikeService {
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         validateReviewLikeUser(user, review);
 
-        Optional<ReviewLike> existReviewLike = reviewLikeRepository.findByReviewAndUser(review, user);
+        Optional<ReviewLike> existReviewLike = reviewLikeRepository.findByReviewAndUser(review,
+            user);
 
-        if(existReviewLike.isPresent()) {
+        if (existReviewLike.isPresent()) {
             reviewLikeRepository.delete(existReviewLike.get());
             review.decreaseReviewLike();
             return new ReviewLikeToggleRes("좋아요 취소");
         }
 
         ReviewLike reviewLike = ReviewLike.builder()
-                .user(user)
-                .review(review)
-                .build();
+            .user(user)
+            .review(review)
+            .build();
         reviewLikeRepository.save(reviewLike);
         review.increaseReviewLike();
         return new ReviewLikeToggleRes("좋아요!");
@@ -49,7 +49,7 @@ public class ReviewLikeService {
     }
 
     private void validateReviewLikeUser(User user, Review review) {
-        if(user.getId().equals(review.getUser().getId())) {
+        if (user.getId().equals(review.getUser().getId())) {
             throw new NotPermissionToggleException(ReviewLikeErrorCode.NOT_PERMISSION_TOGGLE);
         }
     }

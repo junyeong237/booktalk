@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/admin/products")
 @RequiredArgsConstructor
 public class AdminProductController {
+
     private final AdminProductService adminProductService;
+
     @DeleteMapping("/{productId}")
     public ProductDeleteRes deleteProduct(
             @PathVariable Long productId

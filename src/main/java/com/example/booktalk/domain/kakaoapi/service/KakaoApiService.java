@@ -57,7 +57,9 @@ public class KakaoApiService {
                 String url = (String) map.get("url");
                 String name = (String) map.get("title"); // 수정된 부분
                 String imageUrl = (String) map.get("thumbnail");
-                System.out.println("sale_price: " + salePrice + ", url: " + url + ", name: " + name + ", imageUrl" + imageUrl);
+                System.out.println(
+                    "sale_price: " + salePrice + ", url: " + url + ", name: " + name + ", imageUrl"
+                        + imageUrl);
                 return new ProductApiListRes(salePrice.longValue(), url, name, imageUrl);
             })
             .toList();

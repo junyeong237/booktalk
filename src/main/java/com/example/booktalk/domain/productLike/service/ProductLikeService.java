@@ -14,17 +14,17 @@ import com.example.booktalk.domain.reviewlike.exception.NotPermissionToggleExcep
 import com.example.booktalk.domain.reviewlike.exception.ReviewLikeErrorCode;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class ProductLikeService {
+
     private final ProductRepository productRepository;
     private final ProductLikeRepository productLikeRepository;
     private final UserRepository userRepository;
@@ -38,7 +38,7 @@ public class ProductLikeService {
         Product product = productRepository.findProductByIdWithThrow(productId);
 
         ProductLike productLike = productLikeRepository.findByProductAndUser(product, user)
-                .orElseGet(() -> saveProductLike(product, user));
+            .orElseGet(() -> saveProductLike(product, user));
 
         Boolean updated = productLike.clickProdctLike();
         product.updateProductLikeCnt(updated);
@@ -46,46 +46,48 @@ public class ProductLikeService {
         return new ProductLikeRes(productLike.getIsProductLiked());
     }
 
-    @Transactional
+
     public ProductLike saveProductLike(Product product, User user) {
-        if(user.getId().equals(product.getUser().getId())) {
+        if (user.getId().equals(product.getUser().getId())) {
             throw new NotPermissionMineException(ProductLikeErrorCode.NOT_PERMISSION_MINE);
         }
 
         ProductLike productLike = ProductLike.builder()
-                .product(product)
-                .user(user)
-                .build();
+            .product(product)
+            .user(user)
+            .build();
 
         return productLikeRepository.save(productLike);
     }
 
     @Transactional(readOnly = true)
     public List<ProductListRes> getMyLikedProducts(Long userId) {
-        List<ProductLike> productLikeList = productLikeRepository.findByUser_IdAndIsProductLikedTrue(userId);
+        List<ProductLike> productLikeList = productLikeRepository.findByUser_IdAndIsProductLikedTrue(
+            userId);
         List<Product> likedProducts = new ArrayList<>();
 
         for (ProductLike productLike : productLikeList) {
-            Product product= productRepository.findProductByIdWithThrow(productLike.getProduct().getId());
+            Product product = productRepository.findProductByIdWithThrow(
+                productLike.getProduct().getId());
             likedProducts.add(product);
         }
 
         return likedProducts.stream()
-                .map(product -> {
-                    List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
+            .map(product -> {
+                List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
 
-                    List<String> categories = product.getProductCategoryList().stream()
-                            .map(productCategory -> {
-                                return productCategory.getCategory().getName();
-                            })
-                            .toList();
-                    ImageListRes imageGetRes = imageListRes.isEmpty() ? null : imageListRes.get(0);
+                List<String> categories = product.getProductCategoryList().stream()
+                    .map(productCategory -> {
+                        return productCategory.getCategory().getName();
+                    })
+                    .toList();
+                ImageListRes imageGetRes = imageListRes.isEmpty() ? null : imageListRes.get(0);
 
-                    return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
-                            product.getQuantity(), product.getProductLikeCnt(), categories,
-                            product.getRegion(), imageGetRes);
-                })
-                .toList();
+                return new ProductListRes(product.getId(), product.getName(), product.getPrice(),
+                    product.getQuantity(), product.getProductLikeCnt(), categories,
+                    product.getRegion(), imageGetRes);
+            })
+            .toList();
     }
 
 

@@ -54,10 +54,12 @@ public class ProductLikeServiceTest {
         when(productRepository.findProductByIdWithThrow(product.getId())).thenReturn(product);
 
         ProductLike productLike = ProductLike.builder().product(product).user(user).build();
-        when(productLikeRepository.findByProductAndUser(product, user)).thenReturn(Optional.of(productLike));
+        when(productLikeRepository.findByProductAndUser(product, user)).thenReturn(
+            Optional.of(productLike));
 
         // When
-        ProductLikeRes result = productLikeService.switchProductLike(product.getId(), user.getId());
+        ProductLikeSwitchRes result = productLikeService.switchProductLike(product.getId(),
+            user.getId());
 
         // Then
         assertEquals(productLike.getIsProductLiked(), result.isProductLiked());

@@ -35,20 +35,23 @@ public class ChatRoomController {
     }
 
     @PostMapping
-    public ChatRoomCreateRes createChatRoom
+    public ResponseEntity<ChatRoomCreateRes> createChatRoom
         (@RequestBody ChatRoomCreateReq req, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        var b = chatRoomServcie.createChatRoom(userDetails.getUser().getId(), req);
+        ChatRoomCreateRes res = chatRoomServcie.createChatRoom(userDetails.getUser().getId(), req);
         notificationService.notifyMessage(req.receiverId());
-        return b;
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
 
     }
 
     @DeleteMapping("/{roomId}")
-    public ChatRoomDeleteRes deleteChatRoom
+    public ResponseEntity<ChatRoomDeleteRes> deleteChatRoom
         (@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return chatRoomServcie.deleteChatRoom(roomId, userDetails.getUser().getId());
+        ChatRoomDeleteRes res = chatRoomServcie.deleteChatRoom(roomId,
+            userDetails.getUser().getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
 
