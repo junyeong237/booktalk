@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewLikeService {
 
     private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
-    @Transactional
     public ReviewLikeToggleRes toggleReviewLike(Long reviewId, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);

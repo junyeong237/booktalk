@@ -2,15 +2,17 @@ package com.example.booktalk.domain.review.service;
 
 import com.example.booktalk.domain.comment.dto.response.CommentGetListRes;
 import com.example.booktalk.domain.comment.repository.CommentRepository;
-import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
-import com.example.booktalk.domain.imageFile.entity.ImageFile;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
-import com.example.booktalk.domain.product.dto.response.ProductRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.review.dto.request.ReviewCreateReq;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
-import com.example.booktalk.domain.review.dto.response.*;
+import com.example.booktalk.domain.review.dto.response.ReviewCreateRes;
+import com.example.booktalk.domain.review.dto.response.ReviewDeleteRes;
+import com.example.booktalk.domain.review.dto.response.ReviewGetListRes;
+import com.example.booktalk.domain.review.dto.response.ReviewGetRes;
+import com.example.booktalk.domain.review.dto.response.ReviewSearchListRes;
+import com.example.booktalk.domain.review.dto.response.ReviewUpdateRes;
 import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.exception.NotPermissionReviewAuthorityException;
 import com.example.booktalk.domain.review.exception.ReviewErrorCode;
@@ -18,18 +20,17 @@ import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -62,7 +63,7 @@ public class ReviewService {
             result.getContent(), result.getUser().getNickname(), result.getReviewImagePathUrl());
     }
 
-
+    @Transactional(readOnly = true)
     public List<ReviewGetListRes> getReviewList(String sortBy, boolean isAsc) {
 
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -92,6 +93,7 @@ public class ReviewService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public ReviewGetRes getReview(Long reviewId) {
 
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
