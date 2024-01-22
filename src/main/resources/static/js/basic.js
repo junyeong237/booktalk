@@ -66,7 +66,7 @@ function chatRooms() {
     alert('로그인 후 이용 가능합니다.');
   } else {
     window.location.href = 'http://' + window.location.host
-        + '/api/v2/chats/room/list';
+        + '/api/v2/chats/rooms/list';
   }
 }
 

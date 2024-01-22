@@ -185,7 +185,7 @@
     var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
     var productLink = document.getElementById("productLink");
     $.ajax({
-      url: '/api/v2 /reviews/' + reviewId,
+      url: '/api/v2/reviews/' + reviewId,
       method: 'GET',
       dataType: 'json',
       success: function (data) {
