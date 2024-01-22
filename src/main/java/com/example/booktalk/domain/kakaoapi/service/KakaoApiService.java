@@ -31,6 +31,9 @@ public class KakaoApiService {
     @Value("${kakao.key}")
     private String key;
 
+    @Value("${kakao-login.key}")
+    private String loginKey;
+
     String url = "https://dapi.kakao.com/v3/search/book";
 
     public List<ProductApiListRes> getProductWithKakaoApi(String query) {

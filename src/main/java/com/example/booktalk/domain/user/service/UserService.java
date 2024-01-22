@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,8 @@ public class UserService {
     private final RefreshTokenService refreshTokenService;
     private final ImageFileService imageFileService;
 
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${admin-token}")
+    private String ADMIN_TOKEN;
 
     public UserSignupRes signup(UserSignupReq req) {
         String email = req.email();
