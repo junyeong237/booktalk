@@ -59,7 +59,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -68,10 +68,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -79,17 +79,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+                                id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -127,7 +128,7 @@
   </div>
 
   <div class="profile-item mt-4">
-    <a href="/api/v1" class="btn btn-primary">메인 페이지로 돌아가기</a>
+    <a href="/api/v2" class="btn btn-primary">메인 페이지로 돌아가기</a>
     <button class="btn btn-danger" style="float: right" data-bs-toggle="modal" data-bs-target="#reportModal">회원 신고하기</button>
   </div>
 
@@ -162,7 +163,7 @@
           $(document).ready(function () {
             $.ajax({
               type: 'GET',
-              url: `/api/v1/users/` + userId,
+              url: `/api/v2/users/` + userId,
             })
                     .done(function (res) {
                       console.log(res)
@@ -192,6 +193,18 @@
                       alert(messages);
                     });
 
+            $('#my-page').click(function (event) {
+              event.preventDefault(); // Prevents the default behavior of the link
+
+              const auth = getToken();
+              if (auth === undefined || auth === '') {
+                alert('로그인 후 이용 가능합니다.');
+              } else {
+                // If authentication is valid, navigate to the link
+                window.location.href = $(this).attr('href');
+              }
+            });
+
           });
 
   function onReport() {
@@ -200,7 +213,7 @@
 
     $.ajax({
       type: "POST",
-      url: "/api/v1/reports",
+      url: "/api/v2/reports",
       contentType: "application/json",
       data: JSON.stringify({reportedUserId: reportedUserId, reason: reason}),
     })
@@ -208,8 +221,10 @@
               alert("신고 완료");
               $('#reportModal').modal('hide');
             })
-            .fail(function (jqXHR) {
-              alert("신고 제출 실패");
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
             });
   }
 

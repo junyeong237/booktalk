@@ -10,22 +10,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v2/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     @PostMapping
     public ResponseEntity<ReviewCreateRes> createReview(
-            @RequestBody ReviewCreateReq req,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.createReview(req, userDetails.getUser().getId()));
+            @RequestPart("req") ReviewCreateReq req,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam("upload") MultipartFile file) throws IOException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.createReview(req, userDetails.getUser().getId(),file));
     }
 
     @GetMapping
@@ -38,23 +40,23 @@ public class ReviewController {
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewGetRes> getReview(
-            @PathVariable(name = "reviewId") Long reviewId
+            @PathVariable Long reviewId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(reviewId));
     }
 
-    @PatchMapping("/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewUpdateRes> updateReview(
-            @PathVariable(name = "reviewId") Long reviewId,
-            @RequestBody ReviewUpdateReq req,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewId, req, userDetails.getUser().getId()));
+            @PathVariable Long reviewId,
+            @RequestPart("req") ReviewUpdateReq req,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam("upload") MultipartFile file) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewId, req, userDetails.getUser().getId(),file));
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewDeleteRes> deleteReview(
-            @PathVariable(name = "reviewId") Long reviewId,
+            @PathVariable Long reviewId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewId, userDetails.getUser().getId()));

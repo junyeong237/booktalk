@@ -107,7 +107,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -116,10 +116,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -127,18 +127,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">관리자페이지</a></li>
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+                                id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -149,13 +149,14 @@
 <div class="banner-container">
   <div class="banner-slides">
     <div class="banner-slide active"><img
-        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/dbda3de9-c0aa-4ade-a3c8-e3c6ca21e4f4.png"
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/f54c3491-e543-492f-a1a5-0db2ef4214fb.png"
         alt="Banner 1"></div>
     <div class="banner-slide"><img
-        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/136b952e-6f2d-41a4-a6f7-a3322c7adc8b.png">
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/473fa577-2f32-44b8-bba8-c888d3c59a9f.png"
+        alt="Banner 2">
     </div>
     <div class="banner-slide"><img
-        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/f40cc2ee-7473-4566-9bc3-c66b0f425776.png"
+        src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/9576aee6-de8d-4cc4-a82c-3dc586f8ac00.png"
         alt="Banner 3"></div>
   </div>
 
@@ -181,10 +182,9 @@
       <p class="float-end mb-1">
         <a href="#">Back to top</a>
       </p>
-      <p class="mb-1">Album example is © Bootstrap, but please download and customize it for
-        yourself!</p>
-      <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a
-          href="/docs/5.1/getting-started/introduction/">getting started guide</a>.</p>
+      <p class="mb-1">© Bootstrap</p>
+      <p class="mb-0">New to Bootstrap? <a href="https://getbootstrap.kr/docs/5.1/examples/">Visit
+        the homepage</a></p>
     </div>
   </footer>
 
@@ -196,13 +196,13 @@
   const host = 'http://' + window.location.host;
 
   function redirectToLogin() {
-    window.location.href = host + '/api/v1/users/login';
+    window.location.href = host + '/api/v2/users/login';
   }
 
   $(document).ready(function () {
     $.ajax({
       type: 'GET',
-      url: `/api/v1/products/main`,
+      url: `/api/v2/products/main`,
     })
     .done(function (res) {
       $('#main-product-page').empty();
@@ -215,6 +215,17 @@
       alert('알수없는 오류가 발생했습니다.');
     });
 
+  });
+  $('#my-page').click(function (event) {
+    event.preventDefault(); // Prevents the default behavior of the link
+
+    const auth = getToken();
+    if (auth === undefined || auth === '') {
+      alert('로그인 후 이용 가능합니다.');
+    } else {
+      // If authentication is valid, navigate to the link
+      window.location.href = $(this).attr('href');
+    }
   });
 
   function renderMainProduct(product) {
@@ -260,7 +271,7 @@
     btnGroupDiv.className = 'btn-group';
     // 버튼 엘리먼트 생성
     var buttonElement = document.createElement('a');
-    buttonElement.href = '/api/v1/products/detail/' + product.id;
+    buttonElement.href = '/api/v2/products/detail/' + product.id;
     buttonElement.className = 'btn btn-outline-secondary'; // 부트스트랩 버튼 클래스 추가
     buttonElement.textContent = '자세히보기';
 

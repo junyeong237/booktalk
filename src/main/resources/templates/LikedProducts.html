@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script src="/js/basic.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+  <header
+          class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
+    <div class="col-md-3 mb-2 mb-md-0">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
+        <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <span class="fs-4">Book톡방</span>
+        </svg>
+      </a>
+    </div>
+
+    <div class="col-md-6 text-center">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        </li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
+            채팅방
+          </button>
+        </li>
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link">관리자페이지</a></li>
+      </ul>
+    </div>
+
+    <div class="text-md-end">
+      <div class="d-flex align-items-center">
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
+           id="login-button">
+          Login
+        </a>
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
+           id="logout-button">
+          Logout
+        </a>
+      </div>
+    </div>
+  </header>
+  <div class="container d-flex flex-column">
+    <div id="sorting-options" class="d-flex justify-content-center mt-2 mb-2">
+      <!-- 정렬 옵션 부분은 삭제 -->
+    </div>
+  </div>
+
+  <div class="row row-cols-1" id="product-container">
+    <!-- 상품을 나타낼 컨테이너 -->
+  </div>
+</div>
+
+
+
+
+
+<script>
+
+  const host = 'http://' + window.location.host;
+
+  $(document).ready(function () {
+    showProducts();
+
+    $('#my-page').click(function (event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능합니다.');
+      } else {
+        // If authentication is valid, navigate to the link
+        window.location.href = $(this).attr('href');
+      }
+    });
+  });
+
+  function showProducts() {
+    $.ajax({
+      type: 'GET',
+      url: `/api/v2/productLikes`,
+    })
+            .done(function (res) {
+              $('#product-container').empty();
+              res.forEach(function (product) {
+                renderProducts(product);
+              })
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
+  }
+
+
+  function renderProducts(product) {
+    var row = document.getElementById("product-container");
+
+    // col 엘리먼트 생성
+    var col = document.createElement("div");
+    col.className = "col mb-4 ";
+
+    // card 엘리먼트 생성
+    var card = document.createElement("div");
+    card.className = "card h-100 shadow d-flex";
+
+    // row 엘리먼트 생성
+    var rowInsideCard = document.createElement("div");
+    rowInsideCard.className = "row";
+
+    // col-md-2 엘리먼트 생성
+    var colImage = document.createElement("div");
+    colImage.className = "col-md-2 d-flex justify-content-center";
+    console.log(product.imageListRes)
+    // 이미지 엘리먼트 생성
+    var image = document.createElement("img");
+    image.src = product.imageListRes.imagePathUrl;
+    image.className = "card-img-top mx-2";
+    image.alt = "상품이미지";
+    image.style.maxWidth = "100%";
+    image.style.maxHeight = "100%";
+
+    // col-md-10 엘리먼트 생성
+    var colText = document.createElement("div");
+    colText.className = "col-md-8 align-self-center";
+
+    // card-body 엘리먼트 생성
+    var cardBody = document.createElement("div");
+    cardBody.className = "card-body mb-3";
+
+    // 제목 엘리먼트 생성
+    var cardTitle = document.createElement("h2");
+    cardTitle.className = "card-title";
+    cardTitle.textContent = product.name;
+    cardTitle.style.cursor = "pointer";
+    cardTitle.addEventListener("click", function () {
+      redirectSpecificProduct(product.id);
+    });
+
+    // 가격 엘리먼트 생성
+    var cardDescription = document.createElement("p");
+    cardDescription.className = "card-text";
+    cardDescription.textContent = "가격: " + product.price + "원";
+
+    const tagsContainer = document.createElement('div');
+    tagsContainer.classList.add('tags-container');
+
+    product.categories.forEach(category => {
+      if (category) {
+        const tagElement = document.createElement('span');
+        tagElement.classList.add('badge', 'bg-secondary', 'text-white'); // 부트스트랩의 badge 스타일을 추가
+        tagElement.textContent = "#" + category;
+        tagElement.style.cursor = "pointer";
+        tagElement.addEventListener('click', function () {
+          showProductsByTag(category);
+        });
+        tagsContainer.appendChild(tagElement);
+      }
+    });
+
+    // 관심갯수 엘리먼트 생성
+    var LikesCol = document.createElement("div");
+    LikesCol.className = "col-md-2 d-flex align-self-end justify-content-center";
+
+    var LikesCount = document.createElement("p");
+    LikesCount.className = "card-text mb-2";
+    LikesCount.textContent = "관심갯수: " + product.productLikes;
+
+    // p 엘리먼트를 col 엘리먼트의 자식으로 추가
+    LikesCol.appendChild(LikesCount);
+
+    // 각 엘리먼트를 계층적으로 추가
+    colImage.appendChild(image);
+    colText.appendChild(cardBody);
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardDescription);
+    cardBody.appendChild(tagsContainer);
+
+    rowInsideCard.appendChild(colImage);
+    rowInsideCard.appendChild(colText);
+    rowInsideCard.appendChild(LikesCol);
+    card.appendChild(rowInsideCard);
+    col.appendChild(card);
+    row.appendChild(col);
+  }
+
+  function redirectSpecificProduct(productId) {
+    window.location.href = host + '/api/v2/products/detail/' + productId;
+  }
+
+
+
+
+
+</script>
+
+</body>
+
+</html>

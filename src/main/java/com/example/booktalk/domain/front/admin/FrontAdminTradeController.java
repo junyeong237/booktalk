@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class FrontAdminTradeController {
 
-    @GetMapping("api/v1/admin/trades/list")
+    @GetMapping("api/v2/admin/trades/list")
     public String adminTradesPage() {
         return "tradeList";
     }

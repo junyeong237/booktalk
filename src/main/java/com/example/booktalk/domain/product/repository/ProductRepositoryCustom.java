@@ -2,13 +2,13 @@ package com.example.booktalk.domain.product.repository;
 
 
 import com.example.booktalk.domain.product.entity.Product;
-import java.util.List;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface ProductRepositoryCustom {
 
-    List<Product> getPostListByName(Sort sort, String search);
+    Page<Product> getPostListByName(Pageable pageable, String search);
 
-    List<Product> getProductListByTag(Sort sort, String tag);
+    Page<Product> getProductListByTag(Pageable pageable, String tag);
 }

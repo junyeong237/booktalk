@@ -13,6 +13,8 @@ import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
 import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
+import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.service.UserService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v2/users")
 public class UserController {
 
     private final UserService userService;
@@ -75,7 +77,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserProfileUpdateRes> updateProfile(@PathVariable Long userId,
-        @RequestPart("req") UserProfileReq req,
+        @Valid @RequestPart("req") UserProfileReq req,
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestParam("upload") MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
@@ -95,5 +97,10 @@ public class UserController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.passwordUpdate(req, userDetails.getUser().getId()));
+    }
+
+    @GetMapping("/role")
+    public UserRoleType getUserRole(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails.getUser().getRole();
     }
 }

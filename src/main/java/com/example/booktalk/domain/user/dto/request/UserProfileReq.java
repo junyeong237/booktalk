@@ -7,7 +7,7 @@ public record UserProfileReq(
     String nickname,
     String location,
     String description,
-    @Pattern(regexp = "^[0-9]-*$",message = "번호를 다시 확인해주세요.")
+    @Pattern(regexp = "^[0-9]+(-[0-9]+)*$",message = "전화번호 양식을 맞춰주세요.")
     String phone
 ) {
 

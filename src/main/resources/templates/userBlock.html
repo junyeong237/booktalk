@@ -19,11 +19,12 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+    <script src="/js/basic.js"></script>
     <title>유저 목록</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
@@ -60,10 +61,24 @@
             border-radius: 3px;
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
+            margin: 5px;
         }
 
         .blockButton:hover {
             background-color: #c82333;
+        }
+        .unBlockButton {
+            background-color: #2b49f3;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .unBlockButton:hover {
+            background-color: #1037bb;
         }
 
         .reportContainer {
@@ -88,11 +103,6 @@
         .reportItem:last-child {
             margin-bottom: 0;
         }
-
-        /* 블록된 사용자의 텍스트 색상을 빨간색으로 지정 */
-        .blockedUser {
-            color: red;
-        }
     </style>
 </head>
 
@@ -101,7 +111,7 @@
 <div class="container">
     <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
-            <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+            <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
                 <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
                     <span class="fs-4">Book톡방</span>
                 </svg>
@@ -110,18 +120,22 @@
 
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">카테고리</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">상품</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
-                <li class="nav-item"><a href="/api/v1/admin/userBlock" class="nav-link">회원차단</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link">카테고리</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/trades/list" class="nav-link">거래내역</a></li>
+                <li class="nav-item"><a href="/api/v2/admin/userBlock" class="nav-link">회원차단</a></li>
             </ul>
         </div>
 
         <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-outline-primary">
+                <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
+                   id="login-button">
                     Login
-                </button>
+                </a>
+                <a href="/api/v2" type="button" class="btn btn-outline-primary"
+                   id="logout-button">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
@@ -137,7 +151,7 @@
         function getUsers() {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/api/v1/admin/users',
+                url: '/api/v2/admin/users',
                 success: function (users) {
                     displayUsers(users);
                 },
@@ -161,11 +175,17 @@
                 var userItem = $('<div>').addClass('userItem')
                     .append($('<div>').addClass('userInfo')
                         .text('ID: ' + user.id + ' | Name: ' + user.name + ' | Reports: ' + user.reportCount + ' | Role: ' + user.roleType))
-                    .append($('<button>').addClass('blockButton')
-                        .text('차단')
+                    .append($('<button>').addClass(user.roleType === 'BLOCK' ? 'unBlockButton':'blockButton')
+                        .text(user.roleType === 'BLOCK' ? '차단 해제' : '차단')
                         .click(function (event) {
                             event.stopPropagation();
-                            blockUser(user.id);
+                            toggleBlockUser(user.id, user.roleType);
+                        }))
+                    .append($('<button>').addClass("blockButton")
+                        .text('프로필 조회')
+                        .click(function (event) {
+                            event.stopPropagation();
+                            getOtherProfile(user.id);
                         }))
                     .append($('<div>').addClass('reportContainer')
                         .append($('<h3>').text('유저 신고 목록'))
@@ -182,6 +202,9 @@
                 userList.append(userItem);
             });
         }
+        function getOtherProfile(userId) {
+            window.location.href = '/api/v2/users/' + userId + '/profile';
+        }
 
         function toggleReportList(userItem) {
             var reportContainer = userItem.find('.reportContainer');
@@ -196,7 +219,7 @@
         function getReportsForUser(userId, userItem) {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/api/v1/admin/' + userId + '/reports',
+                url: '/api/v2/admin/' + userId + '/reports',
                 success: function (reports) {
                     displayReports(reports, userItem);
                 },
@@ -217,17 +240,25 @@
             });
         }
 
-        function blockUser(userId) {
+        function toggleBlockUser(userId, currentRoleType) {
+            var action = currentRoleType === 'BLOCK' ? 'unBlock' : 'block';
+
             $.ajax({
                 type: 'PUT',
-                url: 'http://localhost:8080/api/v1/admin/user/' + userId,
+                url: '/api/v2/admin/' +action +'/'+ userId,
                 success: function () {
-                    alert('사용자를 차단했습니다. ID: ' + userId);
+                    var message = currentRoleType === 'BLOCK' ? '차단 해제 했습니다.' : '사용자를 차단했습니다.';
+                    alert(message + ' ID: ' + userId);
                     location.reload();
                 },
                 error: function (error) {
-                    console.error('사용자 차단 중 오류 발생:', error);
+                    console.error('사용자 차단/차단해제 중 오류 발생:', error);
                 }
+            }).fail(function (res) {
+                alert('차단 실패');
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
             });
         }
 

@@ -28,7 +28,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v1" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -37,10 +37,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -48,18 +48,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">회원신고</a></li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link">관리자페이지</a></li>
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+                                id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -82,28 +82,28 @@
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByCreatedAt"
              value="createdAt"
-             checked onchange="showProducts()">
+             checked onchange="showProducts(1)">
       <label class="form-check-label" for="sortByCreatedAt">
         생성순
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByTitle"
-             value="name" onchange="showProducts()">
+             value="name" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByTitle">
         상품명
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByLPrice"
-             value="price" onchange="showProducts()">
+             value="price" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByLPrice">
         가격
       </label>
     </div>
     <div class="form-check mx-1">
       <input class="form-check-input" type="radio" name="sortingOption" id="sortByLikes"
-             value="productLikeCnt" onchange="showProducts()">
+             value="productLikeCnt" onchange="showProducts(1)">
       <label class="form-check-label" for="sortByLPrice">
         좋아요
       </label>
@@ -111,8 +111,9 @@
 
   </div>
 
+
   <div class="mb-2">
-    <a href="/api/v1/products/register" class="btn btn-primary" style="float: right" type="submit">
+    <a href="/api/v2/products/register" class="btn btn-primary" style="float: right" type="submit">
       상품 등록하기
     </a>
   </div>
@@ -120,6 +121,11 @@
   <div class="row row-cols-1" id="product-container">
 
   </div>
+
+  <div id="pagination-controls" class="d-flex justify-content-center mt-4 mb-4">
+    <ul class="pagination"></ul>
+  </div>
+
 </div>
 
 <script>
@@ -127,25 +133,49 @@
   const host = 'http://' + window.location.host;
 
   $(document).ready(function () {
-    showProducts();
+    showProducts(1);
+
+    $('#my-page').click(function (event) {
+      event.preventDefault(); // Prevents the default behavior of the link
+
+      const auth = getToken();
+      if (auth === undefined || auth === '') {
+        alert('로그인 후 이용 가능합니다.');
+      } else {
+        // If authentication is valid, navigate to the link
+        window.location.href = $(this).attr('href');
+      }
+    });
 
   });
 
-  function showProducts() {
+  function showProducts(page, search, tag) {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+    var addurl;
+    if (search == null && tag == null) {
+      addurl = '';
+    } else if (search == null && tag != null) {
+      addurl = '/tag'
+    } else if (search != null && tag == null) {
+      addurl = '/search'
+    }
     $.ajax({
       type: 'GET',
-      url: `/api/v1/products`,
+      url: `/api/v2/products` + addurl,
       data: {
-        sortBy: selectedValue
+        sortBy: selectedValue,
+        tag: tag,
+        query: search,
+        page: page,
+        size: 5
       },
     })
     .done(function (res) {
       $('#product-container').empty();
-      res.forEach(function (product) {
+      res.content.forEach(function (product) {
         renderProducts(product);
-      })
-
+      });
+      renderPagination(res.totalPages, page, tag, search);
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -247,68 +277,47 @@
   }
 
   function redirectSpecificProduct(productId) {
-    window.location.href = host + '/api/v1/products/detail/' + productId;
+    window.location.href = host + '/api/v2/products/detail/' + productId;
   }
 
   function handleSearchSubmit() {
     event.preventDefault(); // 기본 동작 막기 새로고침막음
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    console.log(selectedValue);
     const query = document.getElementById('searchInput').value;
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/products/search`,
-      data: {
-        query: query,
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
-
+    showProducts(1, query, null);
   }
 
   function showProductsByTag(category) {
+    alert(category)
+    console.log(category);
     //event.preventDefault(); // 기본 동작 막기 새로고침막음
-    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
-    $.ajax({
-      type: 'GET',
-      url: `/api/v1/products/tag`,
-      data: {
-        tag: category,
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      $('#product-container').empty();
-      res.forEach(function (product) {
-        renderProducts(product);
-      })
-
-    })
-    .fail(function (res) {
-      console.log(res);
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-
-    });
+    showProducts(1, null, category);
   }
 
-  function sortCheck() {
+  function renderPagination(totalPages, currentPage, tag, search) {
+    const paginationControls = $('#pagination-controls ul');
+    paginationControls.empty();
+
+    const createPageItem = (pageNum, text, isActive = false) => {
+      const pageItem = $(`<li class="page-item ${isActive ? 'active'
+          : ''}"><a class="page-link" href="#" onclick="showProducts(${pageNum},${search
+          ? `'${search}'` : null},${tag ? `'${tag}'` : null})">${text}</a>
+</li>`); //search , tag는 문자라 ${tag}이렇게바로 못줌
+      return pageItem;
+    };
+
+    // 이전 버튼
+    paginationControls.append(createPageItem(currentPage - 1, '이전', false));
+
+    // 페이지 숫자
+    for (let i = Math.max(1, currentPage - 2); i <= Math.min(currentPage + 2, totalPages); i++) {
+      paginationControls.append(createPageItem(i, i, i === currentPage));
+    }
+
+    // 다음 버튼
+    paginationControls.append(createPageItem(currentPage + 1, '다음', false));
 
   }
+
 
 </script>
 
