@@ -405,13 +405,19 @@
   $(document).on('click', '#likeReviewBtn', function () {
     console.log('Like button clicked.');
 
-    likeReview(reviewId);
+    likeReview();
   });
 
-  function likeReview(reviewId) {
+  function likeReview() {
+    const request = {
+      reviewId: reviewId,
+    };
+
     $.ajax({
-      url: '/api/v2/reviewLikes/' + reviewId ,
+      url: '/api/v2/reviewLikes',
       method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(request),
       success: function (data, status, xhr) {
         console.log('Review liked successfully. Response Status:', xhr.status);
         fetchReviewDetails(reviewId);
