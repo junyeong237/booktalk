@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v2/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -40,14 +40,14 @@ public class ReviewController {
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewGetRes> getReview(
-            @PathVariable(name = "reviewId") Long reviewId
+            @PathVariable Long reviewId
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReview(reviewId));
     }
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewUpdateRes> updateReview(
-            @PathVariable(name = "reviewId") Long reviewId,
+            @PathVariable Long reviewId,
             @RequestPart("req") ReviewUpdateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("upload") MultipartFile file) throws IOException {
@@ -56,7 +56,7 @@ public class ReviewController {
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewDeleteRes> deleteReview(
-            @PathVariable(name = "reviewId") Long reviewId,
+            @PathVariable Long reviewId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.deleteReview(reviewId, userDetails.getUser().getId()));

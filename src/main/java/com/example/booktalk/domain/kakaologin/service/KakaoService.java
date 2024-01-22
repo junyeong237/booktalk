@@ -73,7 +73,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", "72548d65398245d85bdedb836da29d17");//restapi인증키
-        body.add("redirect_uri", "https://woogin.shop/api/v1/users/kakao/callback");
+        body.add("redirect_uri", "https://woogin.shop/api/v2/users/kakao/callback");
         body.add("code", code);
 
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity

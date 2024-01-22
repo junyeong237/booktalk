@@ -17,7 +17,7 @@ $(document).ready(function () {
     if(role === 'BLOCK') {
       clearCookie();
       alert('신고누적으로 차단되엇습니다.');
-      window.location.href = "/api/v1";
+      window.location.href = "/api/v2";
     }
   } else {
     $('#logout-button').hide();
@@ -28,7 +28,7 @@ $(document).ready(function () {
 
   let protocol = window.location.protocol === 'https:' ? 'https://' : 'http://';
   let eventSource = new EventSource(
-      protocol + window.location.host + '/api/notification/subscribe');
+      protocol + window.location.host + '/api/v2/notifications/subscribe');
   // let eventSource = new EventSource(
   //     'http://' + window.location.host + '/api/notification/subscribe');
   console.log('확인');
@@ -47,7 +47,7 @@ $(document).ready(function () {
   $('#logout-button').click(function () {
     $.ajax({
       type: 'POST', // or 'GET', depending on your server implementation
-      url: '/api/v1/users/logout',
+      url: '/api/v2/users/logout',
       success: function () {
         alert('로그아웃 되었습니다.');
       },
@@ -66,7 +66,7 @@ function chatRooms() {
     alert('로그인 후 이용 가능합니다.');
   } else {
     window.location.href = 'http://' + window.location.host
-        + '/api/v1/chats/room/list';
+        + '/api/v2/chats/rooms/list';
   }
 }
 
@@ -96,7 +96,7 @@ function getToken() {
 function getUserRole() {
   let role;
   $.ajax({
-    url: '/api/v1/users/role',
+    url: '/api/v2/users/role',
     method: 'GET',
     dataType: 'json',
     async: false, // 동기적으로 설정

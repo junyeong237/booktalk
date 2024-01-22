@@ -2,7 +2,7 @@ package com.example.booktalk.domain.reviewlike.service;
 
 import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
-import com.example.booktalk.domain.reviewlike.dto.response.ReviewLiketoggleRes;
+import com.example.booktalk.domain.reviewlike.dto.response.ReviewLikeToggleRes;
 import com.example.booktalk.domain.reviewlike.entity.ReviewLike;
 import com.example.booktalk.domain.reviewlike.exception.NotPermissionToggleException;
 import com.example.booktalk.domain.reviewlike.exception.ReviewLikeErrorCode;
@@ -24,7 +24,7 @@ public class ReviewLikeService {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public ReviewLiketoggleRes toggleReviewLike(Long reviewId, Long userId) {
+    public ReviewLikeToggleRes toggleReviewLike(Long reviewId, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
@@ -35,7 +35,7 @@ public class ReviewLikeService {
         if(existReviewLike.isPresent()) {
             reviewLikeRepository.delete(existReviewLike.get());
             review.decreaseReviewLike();
-            return new ReviewLiketoggleRes("좋아요 취소");
+            return new ReviewLikeToggleRes("좋아요 취소");
         }
 
         ReviewLike reviewLike = ReviewLike.builder()
@@ -44,7 +44,7 @@ public class ReviewLikeService {
                 .build();
         reviewLikeRepository.save(reviewLike);
         review.increaseReviewLike();
-        return new ReviewLiketoggleRes("좋아요!");
+        return new ReviewLikeToggleRes("좋아요!");
 
     }
 

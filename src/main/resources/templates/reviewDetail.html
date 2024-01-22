@@ -29,7 +29,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -38,10 +38,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -49,18 +49,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v1" type="button" class="btn btn-outline-primary"
+        <a href="/api/v2" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -185,7 +185,7 @@
     var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
     var productLink = document.getElementById("productLink");
     $.ajax({
-      url: '/api/v1/reviews/' + reviewId,
+      url: '/api/v2/reviews/' + reviewId,
       method: 'GET',
       dataType: 'json',
       success: function (data) {
@@ -202,7 +202,7 @@
 
         productNameInput.value = data.productId;
 
-        productLink.href = "/api/v1/products/detail/" + data.productId;
+        productLink.href = "/api/v2/products/detail/" + data.productId;
 
         var b = $('#postTitle').text(data.title);
         $('#postAuthor').text('' + data.nickname);
@@ -253,7 +253,7 @@
     };
 
     $.ajax({
-      url: '/api/v1/comments',
+      url: '/api/v2/comments',
       method: 'POST',
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(newComment),
@@ -282,7 +282,7 @@
 
   function deleteComment(commentId) {
     $.ajax({
-      url: '/api/v1/comments/' + commentId,
+      url: '/api/v2/comments/' + commentId,
       method: 'DELETE',
       success: function (data, status, xhr) {
         console.log('Comment deleted successfully. Response Status:', xhr.status);
@@ -311,12 +311,12 @@
 
   function deleteReview(reviewId) {
     $.ajax({
-      url: '/api/v1/reviews/' + reviewId,
+      url: '/api/v2/reviews/' + reviewId,
       method: 'DELETE',
       success: function (data, status, xhr) {
         console.log('Review deleted successfully. Response Status:', xhr.status);
 
-        window.location.href = '/api/v1/reviews/list';
+        window.location.href = '/api/v2/reviews/list';
       },
       error: function (res) {
         const jsonObject = JSON.parse(res.responseText);
@@ -372,7 +372,7 @@
     };
 
     $.ajax({
-      url: '/api/v1/comments/' + commentId,
+      url: '/api/v2/comments/' + commentId,
       method: 'PUT',
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(editedComment),
@@ -405,13 +405,19 @@
   $(document).on('click', '#likeReviewBtn', function () {
     console.log('Like button clicked.');
 
-    likeReview(reviewId);
+    likeReview();
   });
 
-  function likeReview(reviewId) {
+  function likeReview() {
+    const request = {
+      reviewId: reviewId,
+    };
+
     $.ajax({
-      url: '/api/v1/reviews/' + reviewId + '/likes',
+      url: '/api/v2/reviewLikes',
       method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(request),
       success: function (data, status, xhr) {
         console.log('Review liked successfully. Response Status:', xhr.status);
         fetchReviewDetails(reviewId);
@@ -425,12 +431,12 @@
   }
   function redirectToEditPage() {
     $.ajax({
-      url: '/api/v1/reviews/edit/' + reviewId,
+      url: '/api/v2/reviews/edit/' + reviewId,
       method: 'GET',
     }).done(function (data) {
       // 성공적으로 요청이 완료되었을 때의 처리
       // 리다이렉트를 여기에서 수행
-      window.location.href = "/api/v1/reviews/edit/" + reviewId;
+      window.location.href = "/api/v2/reviews/edit/" + reviewId;
     }).fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
       const messages = jsonObject.messages;

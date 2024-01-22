@@ -63,7 +63,7 @@
     <header
             class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
         <div class="col-md-3 mb-2 mb-md-0">
-            <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v1">
+            <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
                 <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
                     <span class="fs-4">Book톡방</span>
                 </svg>
@@ -72,10 +72,10 @@
 
         <div class="col-md-6 text-center">
             <ul class="nav justify-content-center">
-                <li class="nav-item"><a href="/api/v1/users/profile" class="nav-link" id="my-page">마이페이지</a>
+                <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
                 </li>
-                <li class="nav-item"><a href="/api/v1/products/list" class="nav-link">상품</a></li>
-                <li class="nav-item"><a href="/api/v1/reviews/list" class="nav-link">리뷰</a></li>
+                <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
+                <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
                 <li class="nav-item">
                     <button type="button" class="btn btn-outline-primary position-relative"
                             id="header-chat-list"
@@ -83,18 +83,18 @@
                         채팅방
                     </button>
                 </li>
-                <li class="nav-item"><a href="/api/v1/admin/categories" class="nav-link"
+                <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
                                         id="admin-page">관리자페이지</a></li>
             </ul>
         </div>
 
         <div class="text-md-end">
             <div class="d-flex align-items-center">
-                <a href="/api/v1/users/login" type="button" class="btn btn-outline-primary"
+                <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
                    id="login-button">
                     Login
                 </a>
-                <a href="/api/v1" type="button" class="btn btn-outline-primary"
+                <a href="/api/v2" type="button" class="btn btn-outline-primary"
                    id="logout-button">
                     Logout
                 </a>
@@ -179,14 +179,14 @@
     function loadReviewData() {
         $.ajax({
             type: "GET",
-            url: "/api/v1/reviews/" + reviewId,
+            url: "/api/v2/reviews/" + reviewId,
             contentType: "application/json;charset=UTF-8",
             success: function (data) {
                 $('#productName').val(data.productId);
                 $('#postTitle').val(data.title);
                 $('#postContent').val(data.content);
 
-                productLink.href = "/api/v1/products/detail/" + data.productId;
+                productLink.href = "/api/v2/products/detail/" + data.productId;
 
                 // Set the initial preview based on the existing review image
                 if (data.reviewImagePathUrl) {
@@ -230,14 +230,14 @@
 
         $.ajax({
             type: "PUT",
-            url: "/api/v1/reviews/" + reviewId,
+            url: "/api/v2/reviews/" + reviewId,
             contentType: false,
             processData: false,
             data: formDataa,
             success: function (data) {
                 console.log('Review updated successfully:', data);
                 alert("리뷰 수정 완료!");
-                window.location.href = "/api/v1/reviews/list";
+                window.location.href = "/api/v2/reviews/list";
             },
             error: function (error) {
                 console.error('Error updating review:', error);

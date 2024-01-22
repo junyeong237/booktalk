@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class FrontProductController {
 
-    @GetMapping("/api/v1/products/list")
+    @GetMapping("/api/v2/products/list")
     public String productsPage() {
         return "products";
     }
 
-    @GetMapping("/api/v1/products/detail/{productId}")
+    @GetMapping("/api/v2/products/detail/{productId}")
     public String productPage(@PathVariable Long productId, Model model) {
 
         model.addAttribute("productId", productId);
         return "Detail";
     }
 
-    @GetMapping("/api/v1/products/register")
+    @GetMapping("/api/v2/products/register")
     public String productUpdatePage() {
 
         return "ProductRegistration";

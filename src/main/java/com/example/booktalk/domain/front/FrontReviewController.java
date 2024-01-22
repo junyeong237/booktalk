@@ -17,25 +17,25 @@ public class FrontReviewController {
     private final ReviewService reviewService;
     private final ReviewRepository reviewRepository;
 
-    @GetMapping("/api/v1/reviews/list")
+    @GetMapping("/api/v2/reviews/list")
     public String reviewPage() {
         return "reviewlist";
     }
 
-    @GetMapping("/api/v1/reviews/post/{productId}")
+    @GetMapping("/api/v2/reviews/post/{productId}")
     public String postReviewPage(
         @PathVariable Long productId, Model model) {
         model.addAttribute("productId", productId);
         return "reviewForm";
     }
 
-    @GetMapping("api/v1/reviews/detail/{reviewId}")
+    @GetMapping("api/v2/reviews/detail/{reviewId}")
     public String reviewDetailPage(@PathVariable Long reviewId, Model model) {
         model.addAttribute("reviewId", reviewId);
         return "reviewDetail";
     }
 
-    @GetMapping("/api/v1/reviews/edit/{reviewId}")
+    @GetMapping("/api/v2/reviews/edit/{reviewId}")
     public String editReviewPage(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long reviewId, Model model) {

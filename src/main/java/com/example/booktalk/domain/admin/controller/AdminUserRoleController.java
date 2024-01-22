@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v2/admin")
 @RequiredArgsConstructor
 public class AdminUserRoleController {
 
     private final AdminUserRoleService adminUserRoleService;
-    @PutMapping("/user/{userId}/block")
+    @PutMapping("/block/{userId}")
     public UserBlockRes userBlock(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                   @PathVariable Long userId
     ) {
         return adminUserRoleService.userBlock(userDetails.getUser().getId(),userId);
     }
 
-    @PutMapping("/user/{userId}/unBlock")
+    @PutMapping("/unBlock/{userId}")
     public UserUnblockRes userUnBlock(
             @PathVariable Long userId
     ) {
