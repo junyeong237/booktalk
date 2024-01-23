@@ -316,7 +316,7 @@
       success: function (data, status, xhr) {
         console.log('Review deleted successfully. Response Status:', xhr.status);
 
-        window.location.href = '/api/v2/reviews/list';
+        window.location.href = '/booktalk/reviews/list';
       },
       error: function (res) {
         const jsonObject = JSON.parse(res.responseText);
