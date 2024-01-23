@@ -18,7 +18,7 @@ public class ChatMsgController {
         return "chat";
     }
 
-    @GetMapping("/api/v2/chats/rooms/list")
+    @GetMapping("/booktalk/chats/rooms/list")
     public String chatRoomList(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         model.addAttribute("userId", userDetails.getUser().getId());
         return "roomList";

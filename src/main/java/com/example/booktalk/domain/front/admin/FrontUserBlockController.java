@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class FrontUserBlockController {
-    @GetMapping("/api/v2/admin/userBlock")
+
+    @GetMapping("/booktalk/admin/userBlock")
     public String categoryPage() {
         return "userBlock";
     }
