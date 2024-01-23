@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.example.booktalk.BooktalkApplication;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.global.exception.GlobalException;
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = BooktalkApplication.class)
 @Transactional
 class UserRepositoryTest {
 

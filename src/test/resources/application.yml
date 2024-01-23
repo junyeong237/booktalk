@@ -25,9 +25,6 @@ jwt:
 kakao:
   key: d4ee4d56fb48da76a8de567698192d24
 
-kakao:
-  key: d4ee4d56fb48da76a8de567698192d24
-
 cloud:
   aws:
     s3:
@@ -39,3 +36,7 @@ cloud:
     credentials:
       access-key: testtest
       secret-key: testtest
+admin-token: test
+
+kakao-login:
+    key: test
