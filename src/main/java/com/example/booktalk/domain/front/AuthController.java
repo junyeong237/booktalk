@@ -14,17 +14,17 @@ public class AuthController {
 
     private final KakaoApiService kakaoApiService;
 
-    @GetMapping("/api/v2/users/login")
+    @GetMapping("/booktalk/users/login")
     public String loginPage() {
         return "login";
     }
 
-    @GetMapping("/api/v2/users/signup")
+    @GetMapping("/booktalk/users/signup")
     public String signupPage() {
         return "signup";
     }
 
-    @GetMapping("/api/v2/users/kakao/callback")
+    @GetMapping("/booktalk/users/kakao/callback")
     public String kakaologin(
         @RequestParam String code, HttpServletResponse res
     ) throws JsonProcessingException {

@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         rel="stylesheet">
   <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           crossorigin="anonymous"></script>
@@ -28,7 +28,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/booktalk">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -37,10 +37,11 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        <li class="nav-item"><a href="/booktalk/users/profile" class="nav-link"
+                                id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/booktalk/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/booktalk/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -48,18 +49,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/booktalk/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/booktalk/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v2" type="button" class="btn btn-outline-primary"
+        <a href="/booktalk" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -87,7 +88,8 @@
       </div>
 
       <div class="form-check mx-1">
-        <input class="form-check-input" id="sortByreviewLikeCnt" name="sortingOption" onchange="handleSortingChange()"
+        <input class="form-check-input" id="sortByreviewLikeCnt" name="sortingOption"
+               onchange="handleSortingChange()"
                type="radio" value="reviewLikeCount">
         <label class="form-check-label" for="sortByreviewLikeCnt">
           좋아요순
@@ -171,7 +173,7 @@
 
   function redirectToReviewDetail(element) {
     var reviewId = $(element).data('review-id');
-    window.location.href = host + '/api/v2/reviews/detail/' + reviewId;
+    window.location.href = host + '/booktalk/reviews/detail/' + reviewId;
   }
 
   function handleReviewSearchSubmit(event) {
@@ -196,6 +198,7 @@
       alert(messages);
     });
   }
+
   function handleSortingChange() {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
 

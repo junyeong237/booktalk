@@ -77,13 +77,13 @@
     })
     .done(function (res, status, xhr) {
       alert("로그인 성공");
-      window.location.href = host + '/api/v2';
+      window.location.href = host + '/booktalk';
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
       const messages = jsonObject.messages;
       alert(messages);
-      window.location.href = host + '/api/v2/users/login';
+      window.location.href = host + '/booktalk/users/login';
     });
   }
 </script>

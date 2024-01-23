@@ -67,20 +67,21 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("api/v2").permitAll()
+                .requestMatchers("/booktalk").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v2/users/**").permitAll()
                 .requestMatchers("/api/v2/users/kakao/**").permitAll()
                 .requestMatchers("/api/v2/images/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v2").permitAll() //메인페이지
-                .requestMatchers(HttpMethod.GET, "/api/v2/products/main").permitAll() //메인페이지
-                .requestMatchers(HttpMethod.GET, "/api/v2/products").permitAll() //상품목록페이지
-                .requestMatchers(HttpMethod.GET, "/api/v2/products/detail/**")
+                .requestMatchers(HttpMethod.GET, "/booktalk").permitAll() //메인페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products/main")
+                .permitAll() //메인페이지에서 인가상품Top3 반환
+                .requestMatchers(HttpMethod.GET, "/booktalk/products").permitAll() //상품목록페이지
+                .requestMatchers(HttpMethod.GET, "/booktalk/products/detail/**")
                 .permitAll() //상품단건조회페이지
-                .requestMatchers(HttpMethod.GET, "api/v2/reviews/**").permitAll()
-                //.requestMatchers("/api/v2/products/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/booktalk/reviews/**").permitAll()
+                .requestMatchers("/booktalk/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/v2/users/signup").permitAll() //회원가입
-                .requestMatchers("/api/v2/users/login").permitAll() //로그인
+                .requestMatchers("/booktalk/users/signup").permitAll() //회원가입
+                .requestMatchers("/booktalk/users/login").permitAll() //로그인
 
                 .anyRequest().authenticated()
         );

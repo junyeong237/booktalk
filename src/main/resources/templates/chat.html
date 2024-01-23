@@ -206,7 +206,7 @@
       stompClient.send("/app/" + roomId + "/exit", {}, JSON.stringify({}));
       console.log("채팅방을 종료하였습니다..");
       stompClient.disconnect();
-      window.location.href = host + "/api/v2";
+      window.location.href = host + "/booktalk";
     }
 
   }
