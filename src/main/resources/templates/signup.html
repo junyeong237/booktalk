@@ -86,6 +86,7 @@
       }),
     })
     .done(function (res, status, xhr) {
+      alert("회원가입 성공")
       window.location.href = 'http://' + window.location.host + '/booktalk/users/login';
     })
     .fail(function (res) {
