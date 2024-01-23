@@ -72,7 +72,7 @@ class UserReportServiceTest {
             //given
             UserReportCreateReq req = new UserReportCreateReq(reportedUser.getId(), "신고 이유");
             given(userRepository.findUserByIdWithThrow(1L)).willReturn(reportingUser);
-            given(userRepository.findById(2L)).willReturn(Optional.ofNullable(reportedUser));
+            given(userRepository.findUserByIdWithThrow(2L)).willReturn(reportedUser);
 
             //when
             UserReportCreateRes result = userReportService.createUserReport(req, reportingUser.getId());
@@ -87,7 +87,6 @@ class UserReportServiceTest {
             //given
             UserReportCreateReq req = new UserReportCreateReq(reportingUser.getId(), "자기 자신 신고");
             given(userRepository.findUserByIdWithThrow(1L)).willReturn(reportingUser);
-            given(userRepository.findById(1L)).willReturn(Optional.ofNullable(reportingUser));
 
             //when & then
             assertThrows(NotPermissionSelfReportException.class,
