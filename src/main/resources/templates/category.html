@@ -201,6 +201,10 @@
         error: function (error) {
           console.error('카테고리 삭제 중 오류 발생:', error);
         }
+      }).done(function (res) {
+        console.log('check');
+        alert('삭제 성공');
+        console.log(res);
       }).fail(function (res) {
         alert('삭제실패');
         const jsonObject = JSON.parse(res.responseText);
@@ -221,6 +225,10 @@
         error: function (error) {
           console.error('카테고리 추가 중 오류 발생:', error);
         }
+      }).done(function (res) {
+        console.log('check');
+        alert('추가 성공');
+        console.log(res);
       }).fail(function (res) {
         alert('추가 실패');
         const jsonObject = JSON.parse(res.responseText);
@@ -243,6 +251,10 @@
           error: function (error) {
             console.error('카테고리 수정 중 오류 발생:', error);
           }
+        }).done(function (res) {
+          console.log('check');
+          alert('수정 성공');
+          console.log(res);
         }).fail(function (res) {
           alert('수정 실패');
           const jsonObject = JSON.parse(res.responseText);
