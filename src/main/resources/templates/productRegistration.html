@@ -333,7 +333,6 @@
     const json = JSON.stringify(req);
     const blob = new Blob([json], {type: "application/json"});
     formData.append("req", blob);
-    console.log(host + '/api/v2/products/list');
     $.ajax({
       type: "POST",
       url: `/api/v2/products`,

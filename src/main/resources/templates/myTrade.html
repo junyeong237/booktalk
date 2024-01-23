@@ -83,7 +83,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a href="/api/v2" class="d-inline-flex link-body-emphasis text-decoration-none">
+      <a href="/booktalk" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -195,7 +195,7 @@
 
       var productNameCell = $('<td>').append($('<a>', {
         text: trade.productName,
-        href: '/api/v2/products/detail/' + trade.productId,
+        href: '/booktalk/products/detail/' + trade.productId,
       }));
       newRow.append(productNameCell);
 
