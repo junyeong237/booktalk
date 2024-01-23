@@ -2,108 +2,109 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
-    <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-    <script src="/js/basic.js"></script>
-    <title>유저 목록</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script src="/js/basic.js"></script>
+  <title>유저 목록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
 
-        #userList1 {
-            width: 700px;
-            margin: 0 auto; /* 가운데 정렬을 위한 자동 마진 설정 */
-        }
+    #userList1 {
+      width: 700px;
+      margin: 0 auto; /* 가운데 정렬을 위한 자동 마진 설정 */
+    }
 
-        .userItem {
-            margin-bottom: 10px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            background-color: #fff;
-            transition: background-color 0.3s ease-in-out;
-        }
+    .userItem {
+      margin-bottom: 10px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #fff;
+      transition: background-color 0.3s ease-in-out;
+    }
 
-        .userItem:hover {
-            background-color: #f1f1f1;
-        }
+    .userItem:hover {
+      background-color: #f1f1f1;
+    }
 
-        .userInfo {
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
+    .userInfo {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
 
-        .blockButton {
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            margin: 5px;
-        }
+    .blockButton {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+      margin: 5px;
+    }
 
-        .blockButton:hover {
-            background-color: #c82333;
-        }
-        .unBlockButton {
-            background-color: #2b49f3;
-            color: #fff;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-        }
+    .blockButton:hover {
+      background-color: #c82333;
+    }
 
-        .unBlockButton:hover {
-            background-color: #1037bb;
-        }
+    .unBlockButton {
+      background-color: #2b49f3;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
 
-        .reportContainer {
-            margin-top: 10px;
-            display: none;
-        }
+    .unBlockButton:hover {
+      background-color: #1037bb;
+    }
 
-        .reportList {
-            list-style: none;
-            padding: 0;
-            margin-top: 10px;
-        }
+    .reportContainer {
+      margin-top: 10px;
+      display: none;
+    }
 
-        .reportItem {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-        }
+    .reportList {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
 
-        .reportItem:last-child {
-            margin-bottom: 0;
-        }
-    </style>
+    .reportItem {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+    }
+
+    .reportItem:last-child {
+      margin-bottom: 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -142,62 +143,63 @@
 </div>
 
 <div id="userList1">
-    <h1>유저 목록</h1>
-    <div id="userList"></div>
+  <h1>유저 목록</h1>
+  <div id="userList"></div>
 </div>
 
 <script>
-    $(document).ready(function () {
-        function getUsers() {
-            $.ajax({
-                type: 'GET',
-                url: '/api/v2/admin/users',
-                success: function (users) {
-                    displayUsers(users);
-                },
-                error: function (error) {
-                    console.error('유저 정보를 불러오는 중 오류 발생:', error);
-                }
-            });
+  $(document).ready(function () {
+    function getUsers() {
+      $.ajax({
+        type: 'GET',
+        url: '/api/v2/admin/users',
+        success: function (users) {
+          displayUsers(users);
+        },
+        error: function (error) {
+          console.error('유저 정보를 불러오는 중 오류 발생:', error);
         }
+      });
+    }
 
-        function displayUsers(users) {
-            var userList = $('#userList');
-            userList.empty();
+    function displayUsers(users) {
+      var userList = $('#userList');
+      userList.empty();
 
-            users.sort(function (a, b) {
-                return a.roleType === 'BLOCK' ? 1 :
-                    b.roleType === 'BLOCK' ? -1 :
-                        b.reportCount - a.reportCount;
-            });
+      users.sort(function (a, b) {
+        return a.roleType === 'BLOCK' ? 1 :
+            b.roleType === 'BLOCK' ? -1 :
+                b.reportCount - a.reportCount;
+      });
 
-            users.forEach(function (user) {
-                var userItem = $('<div>').addClass('userItem')
-                    .append($('<div>').addClass('userInfo')
-                        .text('ID: ' + user.id + ' | Name: ' + user.name + ' | Reports: ' + user.reportCount + ' | Role: ' + user.roleType))
-                    .append($('<button>').addClass(user.roleType === 'BLOCK' ? 'unBlockButton':'blockButton')
-                        .text(user.roleType === 'BLOCK' ? '차단 해제' : '차단')
-                        .click(function (event) {
-                            event.stopPropagation();
-                            toggleBlockUser(user.id, user.roleType);
-                        }))
-                    .append($('<button>').addClass("blockButton")
-                        .text('프로필 조회')
-                        .click(function (event) {
-                            event.stopPropagation();
-                            getOtherProfile(user.id);
-                        }))
-                    .append($('<div>').addClass('reportContainer')
-                        .append($('<h3>').text('유저 신고 목록'))
-                        .append($('<ul>').addClass('reportList'))
-                    )
-                    .click(function () {
-                        toggleReportList($(this));
-                    });
+      users.forEach(function (user) {
+        var userItem = $('<div>').addClass('userItem')
+        .append($('<div>').addClass('userInfo')
+        .text('ID: ' + user.id + ' | Name: ' + user.name + ' | Reports: ' + user.reportCount
+            + ' | Role: ' + user.roleType))
+        .append($('<button>').addClass(user.roleType === 'BLOCK' ? 'unBlockButton' : 'blockButton')
+        .text(user.roleType === 'BLOCK' ? '차단 해제' : '차단')
+        .click(function (event) {
+          event.stopPropagation();
+          toggleBlockUser(user.id, user.roleType);
+        }))
+        .append($('<button>').addClass("blockButton")
+        .text('프로필 조회')
+        .click(function (event) {
+          event.stopPropagation();
+          getOtherProfile(user.id);
+        }))
+        .append($('<div>').addClass('reportContainer')
+            .append($('<h3>').text('유저 신고 목록'))
+            .append($('<ul>').addClass('reportList'))
+        )
+        .click(function () {
+          toggleReportList($(this));
+        });
 
-                if (user.roleType === 'BLOCK') {
-                    userItem.addClass('blockedUser');
-                }
+        if (user.roleType === 'BLOCK') {
+          userItem.addClass('blockedUser');
+        }
 
                 userList.append(userItem);
             });
@@ -206,64 +208,64 @@
             window.location.href = '/api/v2/users/' + userId + '/profile';
         }
 
-        function toggleReportList(userItem) {
-            var reportContainer = userItem.find('.reportContainer');
-            reportContainer.toggle();
+    function toggleReportList(userItem) {
+      var reportContainer = userItem.find('.reportContainer');
+      reportContainer.toggle();
 
-            if (reportContainer.is(':visible')) {
-                var userId = userItem.find('.userInfo').text().match(/ID: (\d+)/)[1];
-                getReportsForUser(userId, userItem);
-            }
+      if (reportContainer.is(':visible')) {
+        var userId = userItem.find('.userInfo').text().match(/ID: (\d+)/)[1];
+        getReportsForUser(userId, userItem);
+      }
+    }
+
+    function getReportsForUser(userId, userItem) {
+      $.ajax({
+        type: 'GET',
+        url: '/api/v2/admin/' + userId + '/reports',
+        success: function (reports) {
+          displayReports(reports, userItem);
+        },
+        error: function (error) {
+          console.error('신고 글 정보를 불러오는 중 오류 발생:', error);
         }
+      });
+    }
 
-        function getReportsForUser(userId, userItem) {
-            $.ajax({
-                type: 'GET',
-                url: '/api/v2/admin/' + userId + '/reports',
-                success: function (reports) {
-                    displayReports(reports, userItem);
-                },
-                error: function (error) {
-                    console.error('신고 글 정보를 불러오는 중 오류 발생:', error);
-                }
-            });
+    function displayReports(reports, userItem) {
+      var reportList = userItem.find('.reportList');
+      reportList.empty();
+
+      reports.forEach(function (report) {
+        var reportItem = $('<li>').addClass('reportItem')
+        .text('  신고 내용: ' + report.reason + '   신고 시간: ' + report.createdAt);
+        reportList.append(reportItem);
+      });
+    }
+
+    function toggleBlockUser(userId, currentRoleType) {
+      var action = currentRoleType === 'BLOCK' ? 'unBlock' : 'block';
+
+      $.ajax({
+        type: 'PUT',
+        url: '/api/v2/admin/' + action + '/' + userId,
+        success: function () {
+          var message = currentRoleType === 'BLOCK' ? '차단 해제 했습니다.' : '사용자를 차단했습니다.';
+          alert(message + ' ID: ' + userId);
+          location.reload();
+        },
+        error: function (error) {
+          console.error('사용자 차단/차단해제 중 오류 발생:', error);
         }
+      }).fail(function (res) {
+        alert('차단 실패');
+        const jsonObject = JSON.parse(res.responseText);
+        const messages = jsonObject.messages;
+        alert(messages);
+      });
+    }
 
-        function displayReports(reports, userItem) {
-            var reportList = userItem.find('.reportList');
-            reportList.empty();
-
-            reports.forEach(function (report) {
-                var reportItem = $('<li>').addClass('reportItem')
-                    .text('  신고 내용: ' + report.reason + '   신고 시간: ' + report.createdAt);
-                reportList.append(reportItem);
-            });
-        }
-
-        function toggleBlockUser(userId, currentRoleType) {
-            var action = currentRoleType === 'BLOCK' ? 'unBlock' : 'block';
-
-            $.ajax({
-                type: 'PUT',
-                url: '/api/v2/admin/' +action +'/'+ userId,
-                success: function () {
-                    var message = currentRoleType === 'BLOCK' ? '차단 해제 했습니다.' : '사용자를 차단했습니다.';
-                    alert(message + ' ID: ' + userId);
-                    location.reload();
-                },
-                error: function (error) {
-                    console.error('사용자 차단/차단해제 중 오류 발생:', error);
-                }
-            }).fail(function (res) {
-                alert('차단 실패');
-                const jsonObject = JSON.parse(res.responseText);
-                const messages = jsonObject.messages;
-                alert(messages);
-            });
-        }
-
-        getUsers();
-    });
+    getUsers();
+  });
 </script>
 
 </body>

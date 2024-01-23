@@ -632,7 +632,7 @@
     })
     .done(function (res) {
       console.log(res.id);
-      window.location.href = host + '/api/v2/chats/rooms/' + res.id + '/front';
+      window.location.href = host + '/booktalk/chats/rooms/' + res.id + '/front';
     })
     .fail(function (res) {
       const jsonObject = JSON.parse(res.responseText);
@@ -738,7 +738,7 @@
       alert('로그인 후 이용 가능합니다.');
     } else {
       // If authentication is valid, navigate to the link
-      window.location.href = '/api/v2/reviews/post/' + productId;
+      window.location.href = '/booktalk/reviews/post/' + productId;
     }
   }
 

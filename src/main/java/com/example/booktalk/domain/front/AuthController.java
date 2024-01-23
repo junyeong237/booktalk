@@ -14,7 +14,7 @@ public class AuthController {
 
     private final KakaoApiService kakaoApiService;
 
-    @GetMapping("/api/v2/users/login")
+    @GetMapping("/booktalk/users/login")
     public String loginPage() {
         return "login";
     }

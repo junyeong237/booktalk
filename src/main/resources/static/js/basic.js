@@ -6,18 +6,18 @@ $(document).ready(function () {
     $('#logout-button').show();
     $('#login-button').hide();
     const role = getUserRole();
-    if(role !== null ) {
-      if(role === 'ADMIN') {
+    if (role !== null) {
+      if (role === 'ADMIN') {
         $('#admin-page').show();
-      }else {
+      } else {
         $('#admin-page').hide();
       }
     }
 
-    if(role === 'BLOCK') {
+    if (role === 'BLOCK') {
       clearCookie();
       alert('신고누적으로 차단되엇습니다.');
-      window.location.href = "/api/v2";
+      window.location.href = "/booktalk";
     }
   } else {
     $('#logout-button').hide();
@@ -66,7 +66,7 @@ function chatRooms() {
     alert('로그인 후 이용 가능합니다.');
   } else {
     window.location.href = 'http://' + window.location.host
-        + '/api/v2/chats/rooms/list';
+        + '/booktalk/chats/rooms/list';
   }
 }
 

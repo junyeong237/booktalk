@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @RequiredArgsConstructor
 public class FrontReviewController {
+
     private final ReviewService reviewService;
     private final ReviewRepository reviewRepository;
 
@@ -37,12 +38,12 @@ public class FrontReviewController {
 
     @GetMapping("/api/v2/reviews/edit/{reviewId}")
     public String editReviewPage(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long reviewId, Model model) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long reviewId, Model model) {
 
-            Review review=reviewRepository.findReviewByIdWithThrow(reviewId);
-            reviewService.validateReviewUser(userDetails.getUser(),review);
-            model.addAttribute("productId", reviewId);
+        Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
+        reviewService.validateReviewUser(userDetails.getUser(), review);
+        model.addAttribute("productId", reviewId);
         return "reviewEdit";
     }
 
