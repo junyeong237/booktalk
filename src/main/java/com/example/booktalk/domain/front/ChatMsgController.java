@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ChatMsgController {
 
-    @GetMapping("/api/v2/chats/rooms/{roomId}/front")
+    @GetMapping("/booktalk/chats/rooms/{roomId}/front")
     public String chatPage(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long roomId, Model model) {
         model.addAttribute("roomId", roomId);

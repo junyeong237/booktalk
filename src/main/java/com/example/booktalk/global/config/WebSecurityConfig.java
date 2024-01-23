@@ -67,7 +67,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("api/v2").permitAll()
+                .requestMatchers("/booktalk").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v2/users/**").permitAll()
                 .requestMatchers("/api/v2/users/kakao/**").permitAll()
                 .requestMatchers("/api/v2/images/**").permitAll()
@@ -80,8 +80,8 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/booktalk/reviews/**").permitAll()
                 .requestMatchers("/booktalk/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/v2/users/signup").permitAll() //회원가입
-                .requestMatchers("/api/v2/users/login").permitAll() //로그인
+                .requestMatchers("/booktalk/users/signup").permitAll() //회원가입
+                .requestMatchers("/booktalk/users/login").permitAll() //로그인
 
                 .anyRequest().authenticated()
         );

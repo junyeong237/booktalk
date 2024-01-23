@@ -64,7 +64,7 @@
   <header
       class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
     <div class="col-md-3 mb-2 mb-md-0">
-      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/api/v2">
+      <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/booktalk">
         <svg aria-label="Bootstrap" class="bi" height="32" role="img" width="40">
           <span class="fs-4">Book톡방</span>
         </svg>
@@ -73,10 +73,10 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/api/v2/users/profile" class="nav-link" id="my-page">마이페이지</a>
+        <li class="nav-item"><a href="/booktalk/users/profile" class="nav-link" id="my-page">마이페이지</a>
         </li>
-        <li class="nav-item"><a href="/api/v2/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/api/v2/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item"><a href="/booktalk/products/list" class="nav-link">상품</a></li>
+        <li class="nav-item"><a href="/booktalk/reviews/list" class="nav-link">리뷰</a></li>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -84,18 +84,18 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/api/v2/admin/categories" class="nav-link"
+        <li class="nav-item"><a href="/booktalk/admin/categories" class="nav-link"
                                 id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
     <div class="text-md-end">
       <div class="d-flex align-items-center">
-        <a href="/api/v2/users/login" type="button" class="btn btn-outline-primary"
+        <a href="/booktalk/users/login" type="button" class="btn btn-outline-primary"
            id="login-button">
           Login
         </a>
-        <a href="/api/v2" type="button" class="btn btn-outline-primary"
+        <a href="/booktalk" type="button" class="btn btn-outline-primary"
            id="logout-button">
           Logout
         </a>
@@ -172,7 +172,7 @@
         var productLink = document.getElementById("productLink");
         productNameInput.value = productId;
 
-        productLink.href = "/api/v2/products/detail/" + productId;
+        productLink.href = "/booktalk/products/detail/" + productId;
 
         if (reviewId == null || reviewId === '') {
           console.log('reviewId:',reviewId);
@@ -267,7 +267,7 @@
       .done(function (res) {
         console.log("Response Data:", res);
         alert("리뷰 작성 완료!");
-        window.location.href = "/api/v2/reviews/list";
+        window.location.href = "/booktalk/reviews/list";
       })
       .fail(function (res) {
         const jsonObject = JSON.parse(res.responseText);
