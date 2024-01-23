@@ -14,6 +14,7 @@ import com.example.booktalk.domain.comment.repository.CommentRepository;
 import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.repository.ReviewRepository;
 import com.example.booktalk.domain.user.entity.User;
+import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -87,7 +88,8 @@ public class CommentService {
 
 
     private void validateCommentUser(User user, Comment comment) {
-        if (!user.getId().equals(comment.getUser().getId())) {
+        if (!user.getId().equals(comment.getUser().getId())
+            && !user.getRole().equals(UserRoleType.ADMIN)) {
             throw new NotPermissionCommentAuthorityException(
                 CommentErrorCode.NOT_PERMISSION_COMMENT_AUTHORITY);
         }
