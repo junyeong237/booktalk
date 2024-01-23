@@ -4,18 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
+import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
+import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
+import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
+import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -162,9 +167,8 @@ class UserServiceTest {
     @Nested
     class 프로필_테스트 {
 
-        @DisplayName("프로필 조회")
         @Test
-        void getProfile() {
+        void 프로필_조회() {
             // given
             Long userId = 2L;
             ReflectionTestUtils.setField(user, "nickname", "TestNickname");
@@ -181,9 +185,8 @@ class UserServiceTest {
             assertNotNull(res.location());
         }
 
-        @DisplayName("프로필 수정")
         @Test
-        void updateProfile() throws IOException {
+        void 프로필_수정() throws IOException {
             // given
             Long userId = 2L;
             Long userDetailsId = 2L;
@@ -237,6 +240,97 @@ class UserServiceTest {
 
             //then
             assertEquals(UserErrorCode.NOT_MATCH_PASSWORD,
+                exception.getErrorCode());
+        }
+    }
+    @Nested
+    class 탈퇴_테스트{
+
+        @Test
+        void 탈퇴_성공() {
+            //given
+            Long userDetailsId = 2L;
+            UserWithdrawReq req = new UserWithdrawReq(
+                "password",
+                "password"
+            );
+            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user);
+            given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
+
+            //when
+            UserWithdrawRes res = userService.withdraw(req,userDetailsId);
+
+            //then
+            assertTrue(user.isDeleted());
+        }
+
+        @Test
+        void 탈퇴_실패() {
+            //given
+            Long userDetailsId = 2L;
+            UserWithdrawReq req = new UserWithdrawReq(
+                "password",
+                "wrongPasswordCheck"
+            );
+            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user);
+            given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
+
+            //when
+            GlobalException exception = assertThrows(GlobalException.class, () -> {
+                userService.withdraw(req,userDetailsId);
+            });
+
+            //then
+            assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
+                exception.getErrorCode());
+        }
+    }
+
+    @Nested
+    class 비밀번호_변경_테스트 {
+
+        @Test
+        void 비밀번호_변경_성공() {
+            //given
+            Long userId = 1L;
+            Long userDetailsId =1L;
+            UserPWUpdateReq req = new UserPWUpdateReq(
+                "password",
+                "newPassword",
+                "newPassword"
+            );
+            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user1);
+            given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(true);
+            given(passwordEncoder.encode(req.newPassword())).willReturn(req.newPasswordCheck());
+            given(passwordEncoder.matches(req.newPasswordCheck(), req.newPassword())).willReturn(true);
+
+            //when
+            UserPWUpdateRes res = userService.passwordUpdate(req,userId);
+
+            //then
+            assertThat(req.newPassword()).isEqualTo(user1.getPassword());
+        }
+
+        @Test
+        void 비밀번호_변경_실패() {
+            //given
+            Long userDetailsId =1L;
+            UserPWUpdateReq req = new UserPWUpdateReq(
+                "password",
+                "newPassword",
+                "newPassword"
+            );
+            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user1);
+            given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(true);
+            given(passwordEncoder.encode(req.newPassword())).willReturn("wrongPassword");
+
+            //when
+            GlobalException exception = assertThrows(GlobalException.class, () -> {
+                userService.passwordUpdate(req,userDetailsId);
+            });
+
+            //then
+            assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
                 exception.getErrorCode());
         }
     }
