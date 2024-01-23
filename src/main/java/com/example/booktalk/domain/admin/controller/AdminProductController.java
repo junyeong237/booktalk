@@ -1,6 +1,5 @@
 package com.example.booktalk.domain.admin.controller;
 
-import com.example.booktalk.domain.admin.service.AdminProductService;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
