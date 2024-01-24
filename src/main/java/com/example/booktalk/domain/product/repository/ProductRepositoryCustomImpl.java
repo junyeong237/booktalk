@@ -79,12 +79,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .limit(pageable.getPageSize())
             .fetch();
 
-//        return PageableExecutionUtils.getPage(productList, pageable,
-//            () -> query.fetchCount()); // 이게 더 최적화
 
         //distinct() !
         return PageableExecutionUtils.getPage(productList, pageable,
-            () -> query.distinct().fetchCount()); // 이게 더 최적화
+            () -> query.distinct().fetchCount()); 
     }
 
     private BooleanExpression hasTag(String tagName) {
