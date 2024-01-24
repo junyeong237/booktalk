@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import com.example.booktalk.domain.category.entity.Category;
 import com.example.booktalk.domain.category.exception.CategoryErrorCode;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
-import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
@@ -19,8 +18,6 @@ import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
-import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
@@ -38,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -51,41 +47,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class) // junit5용
 
 public class ProductServiceTest implements ProductTest {
 
-    @Mock
-    private ProductRepository productRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private CategoryRepository categoryRepository;
-
-    @Mock
-    private ProductCategoryRepository productCategoryRepository;
-
-    @Mock
-    private ImageFileService imageFileService;
-
-    @InjectMocks
-    private ProductService productService;
-
     Product TEST_PRODCUT;
     Product TEST_ANOTHER_PRODCUT;
-
     Category TEST_CATE;
     Category TEST_ANOTHER_CATE;
     Category TEST_ANOTHER_CATE2;
-
-
     User TEST_USER = User.builder()
         .randomNickname(TEST_USER_NAME)
         .password(TEST_USER_PASSWORD)
@@ -96,6 +68,18 @@ public class ProductServiceTest implements ProductTest {
         .password(ANOTHER_PREFIX + TEST_USER_PASSWORD)
         .role(UserRoleType.USER)
         .build();
+    @Mock
+    private ProductRepository productRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private CategoryRepository categoryRepository;
+    @Mock
+    private ProductCategoryRepository productCategoryRepository;
+    @Mock
+    private ImageFileService imageFileService;
+    @InjectMocks
+    private ProductService productService;
 
     @BeforeEach
     void setup() {
@@ -158,7 +142,8 @@ public class ProductServiceTest implements ProductTest {
             given(productRepository.save(any(Product.class))).willReturn(TEST_PRODCUT);
 
             // when
-            ProductCreateRes res = productService.createProduct(TEST_USER_ID, req, TEST_MULTIPARTFILE_LIST);
+            ProductCreateRes res = productService.createProduct(TEST_USER_ID, req,
+                TEST_MULTIPARTFILE_LIST);
 
             // then
             assertThat(res.id()).isEqualTo(TEST_PRODCUT.getId());
@@ -275,7 +260,6 @@ public class ProductServiceTest implements ProductTest {
                 given(userRepository.findUserByIdWithThrow(eq(TEST_ANOTHER_USER_ID))).willReturn(
                     TEST_ANOTHER_USER);
 
-
                 // when
                 GlobalException exception = assertThrows(GlobalException.class, () -> {
                     ProductUpdateRes res = productService.updateProduct(TEST_ANOTHER_USER_ID,
@@ -349,11 +333,13 @@ public class ProductServiceTest implements ProductTest {
             void 상품_리스트조회() {
 
                 // given
-                List<Product> mockProductList = new ArrayList<>(List.of(TEST_PRODCUT, TEST_ANOTHER_PRODCUT));
+                List<Product> mockProductList = new ArrayList<>(
+                    List.of(TEST_PRODCUT, TEST_ANOTHER_PRODCUT));
 
                 //when
                 mockProductList.sort(Comparator.comparing(Product::getPrice).reversed());
-                when(productRepository.findAllByDeletedFalse(any(Pageable.class))).thenReturn(new PageImpl<>(mockProductList));
+                when(productRepository.findAllByDeletedFalse(any(Pageable.class))).thenReturn(
+                    new PageImpl<>(mockProductList));
                 Page<ProductListRes> res = productService.getProductList(0, 10, "price", false);
 
                 // then
