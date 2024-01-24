@@ -60,6 +60,21 @@ $(document).ready(function () {
 
 });
 
+function myPage() {
+  const auth = getToken();
+  if (auth === undefined || auth === '') {
+    alert('로그인 후 이용 가능합니다.');
+  } else {
+    window.location.href = 'http://' + window.location.host
+        + '/booktalk/users/profile';
+  }
+}
+
+function products() {
+    window.location.href = 'http://' + window.location.host
+        + '/booktalk/products/list';
+}
+
 function chatRooms() {
   const auth = getToken();
   if (auth === undefined || auth === '') {
@@ -69,6 +84,17 @@ function chatRooms() {
         + '/booktalk/chats/rooms/list';
   }
 }
+
+function reviews() {
+  const auth = getToken();
+  if (auth === undefined || auth === '') {
+    alert('로그인 후 이용 가능합니다.');
+  } else {
+    window.location.href = 'http://' + window.location.host
+        + '/booktalk/reviews/list';
+  }
+}
+
 
 function alertBadge() {
 

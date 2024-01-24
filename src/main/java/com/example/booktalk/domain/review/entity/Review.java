@@ -20,7 +20,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(ReviewListener.class)
 @Table(name = "TB_REVIEW")
 public class Review extends BaseEntity {
 
@@ -58,16 +57,13 @@ public class Review extends BaseEntity {
         this.user = user;
         this.product = product;
         this.reviewImagePathUrl=reviewImagePathUrl;
+        this.reviewLikeCount = 0;
     }
 
     public void update(ReviewUpdateReq req,String reviewImagePathUrl) {
         this.title = req.title();
         this.content = req.content();
         this.reviewImagePathUrl=reviewImagePathUrl;
-    }
-
-    public void setReviewLikeCount(Integer reviewLikeCount) {
-        this.reviewLikeCount = reviewLikeCount;
     }
 
     public void increaseReviewLike() {
