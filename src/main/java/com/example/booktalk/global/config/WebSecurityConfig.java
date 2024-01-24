@@ -74,7 +74,8 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/booktalk").permitAll() //메인페이지
                 .requestMatchers(HttpMethod.GET, "/api/v2/products/main")
                 .permitAll() //메인페이지에서 인가상품Top3 반환
-                .requestMatchers(HttpMethod.GET, "/booktalk/products").permitAll() //상품목록페이지
+                .requestMatchers(HttpMethod.GET, "/booktalk/products/list").permitAll() //상품목록페이지
+                .requestMatchers(HttpMethod.GET, "/api/v2/products/**").permitAll() //상품조회
                 .requestMatchers(HttpMethod.GET, "/booktalk/products/detail/**")
                 .permitAll() //상품단건조회페이지
                 .requestMatchers(HttpMethod.GET, "/booktalk/reviews/**").permitAll()
