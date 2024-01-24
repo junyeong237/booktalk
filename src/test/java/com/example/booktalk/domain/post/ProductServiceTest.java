@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import com.example.booktalk.domain.category.entity.Category;
 import com.example.booktalk.domain.category.exception.CategoryErrorCode;
@@ -33,7 +34,9 @@ import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.exception.GlobalException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +48,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -338,28 +344,28 @@ public class ProductServiceTest implements ProductTest {
 
             }
 
-//            @DisplayName("상품 리스트조회_가격순으로내림차순정렬")
-//            @Test
-//            void 상품_리스트조회() {
-//
-//                // given
-//                Sort.Direction direction = Direction.DESC;
-//                Sort sort = Sort.by(direction, "price");
-//                given(productRepository.findAllByDeletedFalse(sort)).willReturn(
-//                    List.of(TEST_ANOTHER_PRODCUT, TEST_PRODCUT)
-//                );
-//
-//                //when
-//
-//                List<ProductListRes> res = productService.getProductList("price", false);
-//
-//                // then
-//                assertThat(res.size()).isEqualTo(2);
-//                assertThat(res.get(0).price()).isEqualTo(TEST_ANOTHER_PRODCUT.getPrice());
-//                assertThat(res.get(1).price()).isEqualTo(TEST_PRODCUT.getPrice());
-//
-//
-//            }
+            @DisplayName("상품 리스트조회_가격순으로내림차순정렬")
+            @Test
+            void 상품_리스트조회() {
+
+                // given
+                List<Product> mockProductList = new ArrayList<>(List.of(TEST_PRODCUT, TEST_ANOTHER_PRODCUT));
+
+                //when
+                mockProductList.sort(Comparator.comparing(Product::getPrice).reversed());
+                when(productRepository.findAllByDeletedFalse(any(Pageable.class))).thenReturn(new PageImpl<>(mockProductList));
+                Page<ProductListRes> res = productService.getProductList(0, 10, "price", false);
+
+                // then
+                assertThat(res.getContent()).hasSize(2);
+                ProductListRes firstProduct = res.getContent().get(0);
+                assertThat(firstProduct.name()).isEqualTo(TEST_ANOTHER_PRODCUT.getName());
+
+                ProductListRes secondProduct = res.getContent().get(1);
+                assertThat(secondProduct.name()).isEqualTo(TEST_PRODCUT.getName());
+
+
+            }
 
 //            @DisplayName("상품 리스트조회_제목검색조회")
 //            @Test
