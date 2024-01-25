@@ -30,7 +30,7 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN_HEADER = "RefreshToken";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    public final long ACCESS_TOKEN_TIME = 60 * 1000;
+    public final long ACCESS_TOKEN_TIME = 60 * 1000 * 60;
     public final long REFRESH_TOKEN_TIME = 60 * 60 * 1000L * 24;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 

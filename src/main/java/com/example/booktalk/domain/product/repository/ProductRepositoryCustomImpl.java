@@ -82,7 +82,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         //distinct() !
         return PageableExecutionUtils.getPage(productList, pageable,
-            () -> query.distinct().fetchCount()); 
+            () -> query.distinct().fetchCount());
     }
 
     private BooleanExpression hasTag(String tagName) {
