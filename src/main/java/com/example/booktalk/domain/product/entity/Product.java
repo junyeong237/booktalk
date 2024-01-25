@@ -64,7 +64,6 @@ public class Product extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
-// cascade = CascadeType.PERSIST, , orphanRemoval = true
     private final List<ProductCategory> productCategoryList = new ArrayList<>();
 
     @Builder

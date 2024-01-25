@@ -78,7 +78,6 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v2/products/**").permitAll() //상품조회
                 .requestMatchers(HttpMethod.GET, "/booktalk/products/detail/**")
                 .permitAll() //상품단건조회페이지
-                .requestMatchers(HttpMethod.GET, "/booktalk/reviews/**").permitAll()
                 .requestMatchers("/booktalk/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
                 .requestMatchers("/booktalk/users/signup").permitAll() //회원가입

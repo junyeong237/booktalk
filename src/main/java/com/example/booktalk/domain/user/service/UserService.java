@@ -34,7 +34,9 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class UserService {
 
     private final PasswordEncoder passwordEncoder;
@@ -145,6 +148,7 @@ public class UserService {
             profileImagePathUrl);
     }
 
+    @CacheEvict(value = "user", key = "#userId")
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId, MultipartFile file) throws IOException {
         String password = req.password();
@@ -179,12 +183,12 @@ public class UserService {
             location, user.getPhone(), user.getProfileImagePathUrl());
     }
 
-
-    public UserWithdrawRes withdraw(UserWithdrawReq req, Long id) {
+    @CacheEvict(value = "user", key = "#userId")
+    public UserWithdrawRes withdraw(UserWithdrawReq req, Long userId) {
         String password = req.password();
         String passwordCheck = req.passwordCheck();
 
-        User user = userRepository.findUserByIdWithThrow(id);
+        User user = userRepository.findUserByIdWithThrow(userId);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
