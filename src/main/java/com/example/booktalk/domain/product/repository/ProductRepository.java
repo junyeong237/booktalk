@@ -16,6 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     List<Product> findTop3ByDeletedFalseOrderByProductLikeCntDesc();
 
+    List<Product> findProductsByUserId(Long userId);
+
     default Product findProductByIdWithThrow(Long id) {
         return findById(id).orElseThrow(() ->
             new NotFoundProductException(ProductErrorCode.NOT_FOUND_PRODUCT));

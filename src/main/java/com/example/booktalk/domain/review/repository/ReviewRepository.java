@@ -12,6 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     List<Review> findAll(Sort sort);
 
+    List<Review> findByProductId(Long id, Sort sort);
 
     default Review findReviewByIdWithThrow(Long id) {
         return findById(id).orElseThrow(() ->

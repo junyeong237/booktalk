@@ -7,12 +7,7 @@ import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.repository.ProductRepository;
 import com.example.booktalk.domain.review.dto.request.ReviewCreateReq;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
-import com.example.booktalk.domain.review.dto.response.ReviewCreateRes;
-import com.example.booktalk.domain.review.dto.response.ReviewDeleteRes;
-import com.example.booktalk.domain.review.dto.response.ReviewGetListRes;
-import com.example.booktalk.domain.review.dto.response.ReviewGetRes;
-import com.example.booktalk.domain.review.dto.response.ReviewSearchListRes;
-import com.example.booktalk.domain.review.dto.response.ReviewUpdateRes;
+import com.example.booktalk.domain.review.dto.response.*;
 import com.example.booktalk.domain.review.entity.Review;
 import com.example.booktalk.domain.review.exception.NotPermissionReviewAuthorityException;
 import com.example.booktalk.domain.review.exception.ReviewErrorCode;
@@ -21,6 +16,7 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -64,6 +60,33 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
+    public List<ByMeReviewGetListRes> byMeGetReviewList(String sortBy, boolean isAsc, Long userId) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        List<Product> productList = productRepository.findProductsByUserId(userId);
+
+
+        List<ByMeReviewGetListRes> result = new ArrayList<>();
+
+        for (Product product : productList) {
+            // 각 상품에 대한 리뷰 가져오기
+            List<Review> reviewList = reviewRepository.findByProductId(product.getId(), sort);
+
+            result.addAll(reviewList.stream()
+                    .map(review -> new ByMeReviewGetListRes(
+                            review.getId(),
+                            review.getTitle(),
+                            review.getUser().getNickname(),
+                            review.getReviewLikeCount()
+                    ))
+                    .toList());
+        }
+        return result;
+    }
+
+    @Transactional(readOnly = true)
     public List<ReviewGetListRes> getReviewList(String sortBy, boolean isAsc) {
 
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -72,11 +95,12 @@ public class ReviewService {
         List<Review> reviewList = reviewRepository.findAll(sort);
 
         return reviewList.stream()
-            .map(review -> new ReviewGetListRes(review.getId(),
-                review.getTitle(), review.getUser().getNickname(),
-                review.getReviewLikeCount()))
-            .toList();
+                .map(review -> new ReviewGetListRes(review.getId(),
+                        review.getTitle(), review.getUser().getNickname(),
+                        review.getReviewLikeCount()))
+                .toList();
     }
+
 
     @Transactional(readOnly = true)
     public List<ReviewSearchListRes> getReviewSearchList(String sortBy, boolean isAsc,
