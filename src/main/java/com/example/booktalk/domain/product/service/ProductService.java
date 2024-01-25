@@ -30,6 +30,8 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -74,10 +76,10 @@ public class ProductService {
             product.getPrice()
             , product.getRegion(), product.getFinished(), userRes, product.getContent(),
             req.categoryList(), imageCreateResList);
-        //TODO 생성자로 한줄정리
 
     }
 
+    @CacheEvict(value = "product", key = "#productId")
     public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req,
         List<MultipartFile> files) throws IOException {
 
@@ -98,7 +100,7 @@ public class ProductService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Cacheable(value = "product", key = "#productId")
     public ProductGetRes getProduct(Long productId) {
 
         Product product = productRepository.findProductByIdWithThrow(productId);
@@ -227,7 +229,7 @@ public class ProductService {
 
     }
 
-
+    @CacheEvict(value = "product", key = "#productId")
     public ProductDeleteRes deleteProduct(Long userId, Long productId) {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
@@ -244,7 +246,7 @@ public class ProductService {
     private void validateProductUser(User user, Product product) {
 
         if (!user.getId().equals(product.getUser().getId())
-                && !user.getRole().equals(UserRoleType.ADMIN)) {
+            && !user.getRole().equals(UserRoleType.ADMIN)) {
             throw new NotPermissionAuthority(ProductErrorCode.NOT_PERMISSION_AUTHORITHY);
         }
     }
@@ -282,17 +284,15 @@ public class ProductService {
         productCategoryList.forEach(productCategory ->
         {
             productCategoryRepository.delete(productCategory);
-            //product.removeProductCategory(productCategory); remove도 따로 만들어줘야할까..?
         });
 
 
     }
 
-
     private void updateCategory(List<String> reqCategoryList, Product product) {
 
         List<String> currentCategories = product.getProductCategoryList()
-            .stream() //성능이슈 확인 N + 1
+            .stream()
             .map(ProductCategory::getCategory)
             .map(Category::getName).toList();
 
