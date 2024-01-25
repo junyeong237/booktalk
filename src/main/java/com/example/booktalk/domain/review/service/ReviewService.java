@@ -59,7 +59,7 @@ public class ReviewService {
 
         Review result = reviewRepository.save(review);
 
-        return new ReviewCreateRes(result.getId(), product.getId(), result.getTitle(),
+        return new ReviewCreateRes(product.getUser().getId(),result.getId(), product.getId(), result.getTitle(),
             result.getContent(), result.getUser().getNickname(), result.getReviewImagePathUrl());
     }
 

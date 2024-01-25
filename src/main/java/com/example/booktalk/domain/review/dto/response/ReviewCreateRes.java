@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public record ReviewCreateRes(
+    Long productUserId,
     Long reviewId,
     Long productId,
     String title,

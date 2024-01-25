@@ -38,6 +38,12 @@ $(document).ready(function () {
     alert(message);
     alertBadge();
   })
+  eventSource.addEventListener("createReview", function (event) {
+    console.log(event);
+    let message = event.data;
+    alert(message);
+    alertReviewBadge();
+  })
 
   eventSource.addEventListener("error", function (event) {
     console.log('eventSource종료')
@@ -107,6 +113,19 @@ function alertBadge() {
   innerSpan.textContent = 'New alerts';
   headerChatlist.appendChild(newSpan);
   console.log(headerChatlist);
+}
+
+function alertReviewBadge() {
+
+  var headerReviewlist = document.getElementById('header-review-list');
+  const newSpan = document.createElement('span');
+  newSpan.className = 'position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle';
+  console.log(newSpan);
+  const innerSpan = document.createElement('span');
+  innerSpan.className = 'visually-hidden';
+  innerSpan.textContent = 'New alerts';
+  headerReviewlist.appendChild(newSpan);
+  console.log(headerReviewlist);
 }
 
 function getToken() {
