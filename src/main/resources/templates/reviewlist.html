@@ -112,6 +112,13 @@
           좋아요순
         </label>
       </div>
+
+      <div class="text-center">
+        <button type="button" class="btn btn-outline-primary" onclick="loadByMeReviews()">
+          내게 작성된 리뷰 보기
+        </button>
+      </div>
+
     </div>
 
     <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
@@ -227,6 +234,25 @@
 
   function setCreateCookie() {
     document.cookie = "createBtn=create; path=/";
+  }
+  function loadByMeReviews() {
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+
+    $.ajax({
+      type: 'GET',
+      url: `/api/v2/reviews/byme`,
+      data: {
+        sortBy: selectedValue
+      },
+    })
+            .done(function (res) {
+              displayReviews(res);
+            })
+            .fail(function (res) {
+              const jsonObject = JSON.parse(res.responseText);
+              const messages = jsonObject.messages;
+              alert(messages);
+            });
   }
 
 </script>
