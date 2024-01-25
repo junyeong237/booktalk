@@ -130,7 +130,7 @@ public class ImageFileService {
         }
     }
 
-    private MultipartFile resizer(MultipartFile originalImage) {
+    public MultipartFile resizer(MultipartFile originalImage) {
         try {
             BufferedImage image = ImageIO.read(originalImage.getInputStream());
 

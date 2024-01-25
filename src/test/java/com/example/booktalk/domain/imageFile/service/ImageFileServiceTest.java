@@ -1,6 +1,8 @@
 package com.example.booktalk.domain.imageFile.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageDeleteRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
@@ -23,7 +25,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,30 +71,15 @@ class ImageFileServiceTest {
     private  List<MultipartFile> fileList = new ArrayList<>();
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
         when(s3Config.amazonS3Client()).thenReturn(s3ClientMock);
 
 
-        file = new MockMultipartFile(
-                "file",
-                "test-image.jpg",
-                "image/jpeg",
-                "test image content".getBytes()
-        );
-        file1 = new MockMultipartFile(
-                "file1",
-                "1test-image.jpg",
-                "1image/jpeg",
-                "1test image content".getBytes()
-        );
-        file2 = new MockMultipartFile(
-                "file2",
-                "2test-image.jpg",
-                "2image/jpeg",
-                "2test image content".getBytes()
-        );
+        file = ImageFileTestUtils.createMockImageFile("test-image.jpg", "jpg", 800, 600);
+        file1 = ImageFileTestUtils.createMockImageFile("1test-image.jpg", "jpg", 1024, 768);
+        file2 = ImageFileTestUtils.createMockImageFile("2test-image.jpg", "jpg", 640, 480);
         fileList.add(file);
         fileList.add(file1);
         fileList.add(file2);
@@ -202,26 +192,49 @@ class ImageFileServiceTest {
     }
 
     @Test
-    @DisplayName("이미지 업로드 테스트")
+    @DisplayName("이미지 업로드 및 리사이징 테스트")
     public void testImageUpload() throws IOException {
-        // 테스트 이미지 파일 생성
-        MultipartFile file = new MockMultipartFile(
-                "file",
-                "test-image.jpg",
-                "image/jpeg",
-                "test image content".getBytes()
-        );
+        // Mock 데이터 설정
+        String expectedS3Url = "https://example.com/test-image.jpg";
+
         when(s3Config.amazonS3Client()).thenReturn(s3ClientMock);
 
-        when(s3ClientMock.getUrl(anyString(), anyString())).thenReturn(new URL("https://example.com/test-image.jpg"));
+        when(s3ClientMock.getUrl(anyString(), anyString())).thenReturn(new URL(expectedS3Url));
 
         ReflectionTestUtils.setField(imageFileService, "bucket", "test");
 
-        // 이미지 업로드
-        String imageUrl = imageFileService.imageUpload(file);
+        // 이미지 업로드 메서드 호출
+        String actualS3Url = imageFileService.imageUpload(file);
 
-        // S3에 이미지가 업로드되었는지 확인
-        assertTrue(imageUrl.startsWith("https://example.com/test-image.jpg"));
+        // 결과 확인
+        assertEquals(expectedS3Url, actualS3Url);
+
+        // S3에 업로드 메서드가 1번 호출되었는지 확인
+        verify(s3ClientMock, times(1)).putObject(any(PutObjectRequest.class));
+
+        // S3 URL을 가져오는 메서드가 1번 호출되었는지 확인
+        verify(s3ClientMock, times(1)).getUrl(eq("test"), anyString());
+    }
+
+    @Test
+    public void testResizer() throws IOException {
+
+        // 리사이징된 이미지 획득
+        MultipartFile resizedImage = imageFileService.resizer(file);
+
+        BufferedImage image = ImageIO.read(file.getInputStream());
+
+        // 리사이징 확인 (가로 크기가 500 이하이면 리사이징이 이루어지지 않는 것으로 가정)
+        if (image.getWidth() > 500) {
+            assertEquals(500, ImageIO.read(resizedImage.getInputStream()).getWidth());
+        } else {
+            // 리사이징이 이루어지지 않았다면, 원본 이미지와 리사이징된 이미지의 크기는 같아야 함
+            assertEquals(image.getWidth(), ImageIO.read(resizedImage.getInputStream()).getWidth());
+        }
+
+        // JPEG 변환 확인
+        assertEquals("image/jpg", resizedImage.getContentType());
+
     }
 
 }
