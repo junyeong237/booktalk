@@ -20,6 +20,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
   <script src="/js/basic.js"></script>
+  <style>
+    .nav-item button {
+      margin-right: 10px;
+    }
+  </style>
 </head>
 
 <body>
@@ -37,11 +42,22 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/booktalk/users/profile" class="nav-link"
-                                id="my-page">마이페이지</a>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="myPage()">
+            마이페이지
+          </button>
         </li>
-        <li class="nav-item"><a href="/booktalk/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/booktalk/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="products()">
+            상품
+          </button>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="reviews()">
+            리뷰
+          </button>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -109,6 +125,9 @@
         좋아요
       </label>
     </div>
+    <button type="button" class="btn btn-outline-primary position-relative" id="sorting-button" onclick="toggleSortingDirection()">
+      <span id="sorting-text">오름차순으로</span>
+    </button>
 
   </div>
 
@@ -137,20 +156,9 @@
   $(document).ready(function () {
     showProducts(1);
 
-    $('#my-page').click(function (event) {
-      event.preventDefault(); // Prevents the default behavior of the link
-
-      const auth = getToken();
-      if (auth === undefined || auth === '') {
-        alert('로그인 후 이용 가능합니다.');
-      } else {
-        // If authentication is valid, navigate to the link
-        window.location.href = $(this).attr('href');
-      }
-    });
-
   });
-
+  // 전역 변수로 정렬 방향을 저장할 변수 추가
+  let isAscending = false;
   function showProducts(page, search, tag) {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
     var addurl;
@@ -166,6 +174,7 @@
       url: `/api/v2/products` + addurl,
       data: {
         sortBy: selectedValue,
+        isAsc: isAscending, // 정렬 방향 적용
         tag: tag,
         query: search,
         page: page,
@@ -185,6 +194,14 @@
       alert(messages);
 
     });
+  }
+
+  // 버튼을 클릭할 때마다 정렬 방향 토글
+  function toggleSortingDirection() {
+    isAscending = !isAscending;
+    const sortingText = document.getElementById("sorting-text");
+    sortingText.textContent = isAscending ? "내림차순으로" : "오름차순으로";
+    showProducts(1); // 새로운 정렬 방향으로 상품 로드
   }
 
   function renderProducts(product) {

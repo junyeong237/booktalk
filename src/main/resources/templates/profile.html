@@ -50,6 +50,10 @@
       display: block;
 
     }
+
+    .nav-item button {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -67,14 +71,26 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a class="nav-link" href="/booktalk/users/profile">마이페이지</a>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="/booktalk/products/list">상품</a></li>
-        <li class="nav-item"><a class="nav-link" href="/booktalk/reviews/list">리뷰</a></li>
         <li class="nav-item">
-          <button class="btn btn-outline-primary position-relative" id="header-chat-list"
-                  onclick="chatRooms()"
-                  type="button">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="myPage()">
+            마이페이지
+          </button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="products()">
+            상품
+          </button>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="reviews()">
+            리뷰
+          </button>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-chat-list"
+                  onclick="chatRooms()">
             채팅방
           </button>
         </li>

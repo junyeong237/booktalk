@@ -20,6 +20,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
   <script src="/js/basic.js"></script>
+  <style>
+    .nav-item button {
+      margin-right: 10px;
+    }
+  </style>
 </head>
 
 <body>
@@ -37,11 +42,22 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/booktalk/users/profile" class="nav-link"
-                                id="my-page">마이페이지</a>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="myPage()">
+            마이페이지
+          </button>
         </li>
-        <li class="nav-item"><a href="/booktalk/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/booktalk/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="products()">
+            상품
+          </button>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="reviews()">
+            리뷰
+          </button>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -49,7 +65,8 @@
             채팅방
           </button>
         </li>
-        <li class="nav-item"><a href="/booktalk/admin/categories" class="nav-link">관리자페이지</a></li>
+        <li class="nav-item"><a href="/booktalk/admin/categories" class="nav-link"
+                                id="admin-page">관리자페이지</a></li>
       </ul>
     </div>
 
@@ -84,19 +101,6 @@
 
   $(document).ready(function () {
     showProducts();
-
-    $('#my-page').click(function (event) {
-      event.preventDefault(); // Prevents the default behavior of the link
-
-      const auth = getToken();
-      if (auth === undefined || auth === '') {
-        alert('로그인 후 이용 가능합니다.');
-      } else {
-        // If authentication is valid, navigate to the link
-        window.location.href = $(this).attr('href');
-      }
-    });
-  });
 
   function showProducts() {
     $.ajax({

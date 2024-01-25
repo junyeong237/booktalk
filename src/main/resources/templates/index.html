@@ -81,6 +81,9 @@
       background-color: rgb(128, 128, 128); /* 활성화된 인디케이터 스타일 */
     }
 
+    .nav-item button {
+      margin-right: 10px;
+    }
 
     .card-img-top {
       width: auto;
@@ -116,11 +119,22 @@
 
     <div class="col-md-6 text-center">
       <ul class="nav justify-content-center">
-        <li class="nav-item"><a href="/booktalk/users/profile" class="nav-link"
-                                id="my-page">마이페이지</a>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="myPage()">
+            마이페이지
+          </button>
         </li>
-        <li class="nav-item"><a href="/booktalk/products/list" class="nav-link">상품</a></li>
-        <li class="nav-item"><a href="/booktalk/reviews/list" class="nav-link">리뷰</a></li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="products()">
+            상품
+          </button>
+        <li class="nav-item">
+          <button type="button" class="btn btn-outline-primary position-relative"
+                  onclick="reviews()">
+            리뷰
+          </button>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
                   id="header-chat-list"
@@ -212,17 +226,6 @@
       alert('알수없는 오류가 발생했습니다.');
     });
 
-  });
-  $('#my-page').click(function (event) {
-    event.preventDefault(); // Prevents the default behavior of the link
-
-    const auth = getToken();
-    if (auth === undefined || auth === '') {
-      alert('로그인 후 이용 가능합니다.');
-    } else {
-      // If authentication is valid, navigate to the link
-      window.location.href = $(this).attr('href');
-    }
   });
 
   function renderMainProduct(product) {
