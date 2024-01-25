@@ -55,6 +55,7 @@
           </button>
         <li class="nav-item">
           <button type="button" class="btn btn-outline-primary position-relative"
+                  id="header-review-list"
                   onclick="reviews()">
             리뷰
           </button>
@@ -111,6 +112,11 @@
           좋아요순
         </label>
       </div>
+        <button type="button" class="btn btn-outline-primary" id="toggleReviewsButton" onclick="loadByMeReviews()">
+          내게 작성된 리뷰 보기
+        </button>
+
+
     </div>
 
     <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
@@ -127,6 +133,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+  var isMyReviews = false;
+
 
   const host = 'http://' + window.location.host;
 
@@ -207,25 +215,90 @@
   function handleSortingChange() {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
 
-    $.ajax({
-      type: 'GET',
-      url: `/api/v2/reviews`,
-      data: {
-        sortBy: selectedValue
-      },
-    })
-    .done(function (res) {
-      displayReviews(res);
-    })
-    .fail(function (res) {
-      const jsonObject = JSON.parse(res.responseText);
-      const messages = jsonObject.messages;
-      alert(messages);
-    });
+    if (isMyReviews) {
+      // "내게 작성된 리뷰 보기"가 활성화된 경우 선택한 옵션으로 정렬된 리뷰를 로드
+      $.ajax({
+        type: 'GET',
+        url: `/api/v2/reviews/byme`,
+        data: {
+          sortBy: selectedValue
+        },
+      })
+              .done(function (res) {
+                displayReviews(res);
+              })
+              .fail(function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
+    } else {
+      // 그렇지 않으면 선택한 옵션으로 모든 리뷰를 로드
+      $.ajax({
+        type: 'GET',
+        url: `/api/v2/reviews`,
+        data: {
+          sortBy: selectedValue
+        },
+      })
+              .done(function (res) {
+                displayReviews(res);
+              })
+              .fail(function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
+    }
   }
 
-  function setCreateCookie() {
-    document.cookie = "createBtn=create; path=/";
+  function loadByMeReviews() {
+    var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
+
+    if (isMyReviews) {
+      // 모든 리뷰를 표시하도록 토글
+      $.ajax({
+        type: 'GET',
+        url: `/api/v2/reviews`,
+        data: {
+          sortBy: selectedValue
+        },
+      })
+              .done(function (res) {
+                displayReviews(res);
+                isMyReviews = false;
+                updateToggleButton();
+              })
+              .fail(function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
+    } else {
+      // 현재 사용자의 리뷰를 표시하도록 토글
+      $.ajax({
+        type: 'GET',
+        url: `/api/v2/reviews/byme`,
+        data: {
+          sortBy: selectedValue
+        },
+      })
+              .done(function (res) {
+                displayReviews(res);
+                isMyReviews = true;
+                updateToggleButton();
+              })
+              .fail(function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
+    }
+  }
+
+  function updateToggleButton() {
+    var toggleButton = document.getElementById('toggleReviewsButton');
+    toggleButton.textContent = isMyReviews ? '전체 리뷰 보기' : '내게 작성된 리뷰 보기';
   }
 
 </script>

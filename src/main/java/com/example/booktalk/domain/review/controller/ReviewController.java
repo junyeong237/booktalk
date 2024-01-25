@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.review.controller;
 
+import com.example.booktalk.domain.notify.NotificationService;
 import com.example.booktalk.domain.review.dto.request.ReviewCreateReq;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
 import com.example.booktalk.domain.review.dto.response.*;
@@ -21,13 +22,16 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     @PostMapping
     public ResponseEntity<ReviewCreateRes> createReview(
             @RequestPart("req") ReviewCreateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("upload") MultipartFile file) throws IOException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.createReview(req, userDetails.getUser().getId(),file));
+        ReviewCreateRes res=reviewService.createReview(req, userDetails.getUser().getId(),file);
+        notificationService.notifyReviewMessage(res.productUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @GetMapping
@@ -37,6 +41,16 @@ public class ReviewController {
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getReviewList(sortBy, isAsc));
     }
+
+    @GetMapping("/byme")
+    public ResponseEntity<List<ByMeReviewGetListRes>> byMeGetReviewList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+            @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.byMeGetReviewList(sortBy, isAsc, userDetails.getUser().getId()));
+    }
+
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewGetRes> getReview(
