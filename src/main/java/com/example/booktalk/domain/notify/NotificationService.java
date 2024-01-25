@@ -60,4 +60,24 @@ public class NotificationService {
         }
     }
 
+    public void notifyReviewMessage(Long receiverId) {
+        // 5. 수신자 정보 조회
+        //User user = userRepository.findByNickname(receiver).get();
+
+        // 6. 수신자 정보로부터 id 값 추출
+        Long userId = receiverId;
+
+        // 7. Map 에서 userId 로 사용자 검색
+        if (NotificationController.sseEmitters.containsKey(userId)) {
+            SseEmitter sseEmitterReceiver = NotificationController.sseEmitters.get(userId);
+            // 8. 알림 메시지 전송 및 해체
+            try {
+                sseEmitterReceiver.send(
+                        SseEmitter.event().name("createReview").data("상품에 리뷰가 달렸습니다."));
+            } catch (Exception e) {
+                NotificationController.sseEmitters.remove(userId);
+            }
+        }
+    }
+
 }
