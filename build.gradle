@@ -77,6 +77,8 @@ dependencies {
     implementation 'com.h2database:h2'
 
 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {
