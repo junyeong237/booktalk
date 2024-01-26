@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,8 @@ import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
 import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
 import com.example.booktalk.domain.product.dto.response.ProductGetRes;
 import com.example.booktalk.domain.product.dto.response.ProductListRes;
+import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
+import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
@@ -353,57 +356,46 @@ public class ProductServiceTest implements ProductTest {
 
             }
 
-//            @DisplayName("상품 리스트조회_제목검색조회")
-//            @Test
-//            void 상품_리스트조회_제목검색() {
-//
-//                // given
-//                Sort.Direction direction = Direction.DESC;
-//                Sort sort = Sort.by(direction, "title");
-//                given(productRepository.getPostListByName(sort, "name2")).willReturn(
-//                    List.of(TEST_PRODCUT)
-//                );
-//
-//                //when
-//
-//                List<ProductSerachListRes> res = productService.getProductSearchList("title", false,
-//                    "name2");
-//
-//                // then
-//                assertThat(res.size()).isEqualTo(1);
-//                assertThat(res.get(0).name()).isEqualTo(TEST_PRODCUT.getName());
-//
-//            }
-//
-//
-//            @DisplayName("상품 리스트조회_태그검색조회")
-//            @Test
-//            void 상품_리스트조회_태그검색() {
-//
-//                // given
-//                Sort.Direction direction = Direction.DESC;
-//                Sort sort = Sort.by(direction, "price");
-//                given(productRepository.getProductListByTag(sort, "추리")).willReturn(
-//                    List.of(TEST_ANOTHER_PRODCUT, TEST_PRODCUT)
-//                );
-//
-//                //when
-//
-//                List<ProductTagListRes> res = productService.getProductSearchTagList("price", false,
-//                    "추리");
-//
-//                // then
-//                assertThat(res.size()).isEqualTo(2);
-//                assertThat(res.get(0).price()).isEqualTo(TEST_ANOTHER_PRODCUT.getPrice());
-//                assertThat(res.get(1).price()).isEqualTo(TEST_PRODCUT.getPrice());
-//
-//
-//            }
+            @DisplayName("상품 리스트조회_제목검색조회")
+            @Test
+            void 상품_리스트조회_제목검색() {
 
+                // given
+                List<Product> mockProductList = new ArrayList<>(
+                    List.of(TEST_PRODCUT, TEST_ANOTHER_PRODCUT));
+
+                //when
+                when(productRepository.getPostListByName(any(Pageable.class), anyString()))
+                    .thenReturn(new PageImpl<>(mockProductList));
+                Page<ProductSerachListRes> res = productService.getProductSearchList(0, 10, "price",
+                    false, TEST_PRODUCT_NAME);
+
+                // then
+                ProductSerachListRes firstProduct = res.getContent().get(0);
+                assertThat(firstProduct.name()).isEqualTo(TEST_PRODCUT.getName());
+
+            }
+
+
+            @DisplayName("상품 리스트조회_태그검색조회")
+            @Test
+            void 상품_리스트조회_태그검색() {
+
+                // given
+                List<Product> mockProductList = new ArrayList<>(
+                    List.of(TEST_PRODCUT, TEST_ANOTHER_PRODCUT));
+
+                //when
+                when(productRepository.getProductListByTag(any(Pageable.class), anyString()))
+                    .thenReturn(new PageImpl<>(mockProductList));
+                Page<ProductTagListRes> res = productService.getProductSearchTagList(0, 10, "price",
+                    false, TEST_CATE.getName());
+
+                // then
+                ProductTagListRes firstProduct = res.getContent().get(0);
+                assertThat(firstProduct.name()).isEqualTo(TEST_PRODCUT.getName());
+
+            }
         }
-
-
     }
-
-
 }
