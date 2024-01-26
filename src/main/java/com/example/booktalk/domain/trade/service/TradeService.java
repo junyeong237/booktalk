@@ -15,9 +15,7 @@ import com.example.booktalk.domain.trade.repository.TradeRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,7 @@ public class TradeService {
     private final TradeRepository tradeRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-
-    @CacheEvict(value = "user", key = "#userId")
+    
     public TradeCreateRes createTrade(Long userId, TradeCreateReq req) {
         User buyer = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(req.productId());
@@ -51,7 +48,7 @@ public class TradeService {
 
         tradeRepository.save(trade);
 
-        Double averageScore = calculateAverageScore(tradeRepository.findBySeller(seller));
+        Double averageScore = calculateAverageScore(tradeRepository.findBySellerId(seller.getId()));
         seller.setScore(averageScore);
 
         return new TradeCreateRes(trade.getId(), buyer.getNickname(), product.getName(),
@@ -86,10 +83,10 @@ public class TradeService {
         List<Trade> tradeLists = tradeRepository.getTradeListByUser(user);
 
         return tradeLists.stream()
-                .map(trade -> new TradeListRes(trade.getId(), trade.getSeller().getNickname(),
-                        trade.getProduct().getName(), trade.getBuyer().getNickname(),
-                        trade.getScore(), trade.getProduct().getId()))
-                .toList();
+            .map(trade -> new TradeListRes(trade.getId(), trade.getSeller().getNickname(),
+                trade.getProduct().getName(), trade.getBuyer().getNickname(),
+                trade.getScore(), trade.getProduct().getId()))
+            .toList();
 
     }
 
@@ -125,5 +122,6 @@ public class TradeService {
             return 0.0;
         }
     }
+
 
 }
