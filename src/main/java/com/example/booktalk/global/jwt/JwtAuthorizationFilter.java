@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -63,6 +64,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     setContext(accessToken);
 
                 } else {
+                    Cookie cookie = new Cookie(JwtUtil.REFRESH_TOKEN_HEADER, null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+
                     UserLoginRes res = new UserLoginRes(
                         "유효하지 않은 토큰입니다.");
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
