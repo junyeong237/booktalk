@@ -39,7 +39,7 @@ public class ReviewService {
         throws IOException {
         User user = userRepository.findUserByIdWithThrow(userId);
         String reviewImagePathUrl;
-        if (!file.isEmpty()) {
+        if (file!=null) {
             reviewImagePathUrl = imageFileService.imageUpload(file);
         } else {
             reviewImagePathUrl = null;

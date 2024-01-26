@@ -210,11 +210,6 @@
   function submitReview() {
     var input = document.getElementById('productImage');
 
-    if(input.files.length === 0){
-      alert('사진을 입력해주세요')
-      window.location.reload();
-    }
-
     var title = document.getElementById("postTitle").value;
     var content = document.getElementById("postContent").value;
 
