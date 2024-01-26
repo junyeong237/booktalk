@@ -1,7 +1,6 @@
 package com.example.booktalk.domain.user.service;
 
 
-import com.example.booktalk.domain.imageFile.exception.NotFoundImageFileException;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
@@ -24,7 +23,6 @@ import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileExceptio
 import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
 import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
 import com.example.booktalk.domain.user.exception.NicknameDuplicateExcpetion;
-import com.example.booktalk.domain.user.exception.NotMatchPasswordException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
@@ -151,7 +149,6 @@ public class UserService {
     @CacheEvict(value = "user", key = "#userId")
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId, MultipartFile file) throws IOException {
-        String password = req.password();
         String description = req.description();
         String phone = req.phone();
         String location = req.location();
@@ -163,20 +160,18 @@ public class UserService {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
         }
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new NotMatchPasswordException(UserErrorCode.NOT_MATCH_PASSWORD);
-        }
         if (!Objects.equals(user.getNickname(), req.nickname())) {
             if (userRepository.findByNickname(req.nickname()).isPresent()) {
                 throw new NicknameDuplicateExcpetion(UserErrorCode.NICKNAME_DUPLICATE);
             }
         }
 
-        if (file!=null) {
+        if (file != null) {
             String profileImagePathUrl = imageFileService.imageUpload(file);
             user.updateProfile(description, phone, location, nickname, profileImagePathUrl);
         } else {
-            user.updateProfile(description, phone, location, nickname, user.getProfileImagePathUrl());
+            user.updateProfile(description, phone, location, nickname,
+                user.getProfileImagePathUrl());
         }
         userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,

@@ -30,10 +30,9 @@ import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -72,13 +71,12 @@ public class ProductService {
 
         List<ImageCreateRes> imageCreateResList;
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
-        if (files!=null) {
+        if (files != null) {
             imageCreateResList = imageFileService.createImage(userId,
-                    product.getId(), files);
+                product.getId(), files);
         } else {
             throw new NotFoundImageFileException(UserErrorCode.NOT_IMAGE_FILE);
         }
-
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
@@ -87,17 +85,14 @@ public class ProductService {
 
     }
 
-    @CacheEvict(value = "product", key = "#productId")
     public ProductUpdateRes updateProduct(Long userId, Long productId, ProductUpdateReq req,
         List<MultipartFile> files) throws IOException {
 
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
-
-        List<ImageCreateRes> imageCreateResList = imageFileService.updateImage(userId, productId,
-            files);
-
+        List<ImageCreateRes> imageCreateResList = new ArrayList<>();
+        
         product.update(req);
         updateCategory(req.categoryList(), product);
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
@@ -108,7 +103,6 @@ public class ProductService {
 
     }
 
-    @Cacheable(value = "product", key = "#productId")
     public ProductGetRes getProduct(Long productId) {
 
         Product product = productRepository.findProductByIdWithThrow(productId);
@@ -237,7 +231,6 @@ public class ProductService {
 
     }
 
-    @CacheEvict(value = "product", key = "#productId")
     public ProductDeleteRes deleteProduct(Long userId, Long productId) {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
