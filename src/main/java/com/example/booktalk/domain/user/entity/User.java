@@ -1,7 +1,6 @@
 package com.example.booktalk.domain.user.entity;
 
 import com.example.booktalk.domain.common.BaseEntity;
-import com.example.booktalk.domain.trade.entity.Trade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,10 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,11 +60,7 @@ public class User extends BaseEntity {
 
     @Column
     private Long kakaoId;
-
-    @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();
-    ;
-
+    
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname,
         String profileImagePathUrl) {
@@ -103,17 +95,17 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void averageScore() {
-        if (!tradeList.isEmpty()) {
-            Double sum = 7.0;
-            for (Trade trade : tradeList) {
-                sum += trade.getScore();
-            }
-            this.score = Math.round((sum / (tradeList.size() + 1)) * 10.0) / 10.0;
-        } else {
-            this.score = 7.0;
-        }
-    }
+//    public void averageScore() {
+//        if (!tradeList.isEmpty()) {
+//            Double sum = 7.0;
+//            for (Trade trade : tradeList) {
+//                sum += trade.getScore();
+//            }
+//            this.score = Math.round((sum / (tradeList.size() + 1)) * 10.0) / 10.0;
+//        } else {
+//            this.score = 7.0;
+//        }
+//    }
 
 
     public User kakaoIdUpdate(Long kakaoId) {
