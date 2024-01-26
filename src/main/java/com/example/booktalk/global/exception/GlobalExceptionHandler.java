@@ -43,11 +43,4 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(MissingServletRequestPartException.class)
-    public ResponseEntity<String> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
-        // 원하는 응답 형태로 메시지를 작성
-        String errorMessage = "이미지 파일을 입력해주세요.";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-    }
-
 }

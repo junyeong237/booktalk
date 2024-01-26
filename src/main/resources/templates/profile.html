@@ -364,10 +364,9 @@
 
       })
               .fail(function (res) {
-                console.log('AJAX 실패:', res);
-                resetModal();
-                const errorMessage = res.responseText; // 에러 메시지 추출
-                alert(errorMessage); // 알람창에 에러 메시지 표시
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
               });
     } else {
       alert('비밀번호를 입력하세요');
