@@ -65,9 +65,6 @@ public class User extends BaseEntity {
     @Column
     private Long kakaoId;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Trade> tradeList = new ArrayList<>();
-    ;
 
     @Builder
     public User(String email, String password, UserRoleType role, String randomNickname,
@@ -103,18 +100,6 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void averageScore() {
-        if (!tradeList.isEmpty()) {
-            Double sum = 7.0;
-            for (Trade trade : tradeList) {
-                sum += trade.getScore();
-            }
-            this.score = Math.round((sum / (tradeList.size() + 1)) * 10.0) / 10.0;
-        } else {
-            this.score = 7.0;
-        }
-    }
-
 
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
@@ -134,4 +119,7 @@ public class User extends BaseEntity {
         this.reportCount++;
     }
 
+    public void setScore(Double score) {
+        this.score = score;
+    }
 }
