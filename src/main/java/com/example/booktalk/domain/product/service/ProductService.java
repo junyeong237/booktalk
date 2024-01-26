@@ -6,6 +6,7 @@ import com.example.booktalk.domain.category.exception.NotFoundCategoryException;
 import com.example.booktalk.domain.category.repository.CategoryRepository;
 import com.example.booktalk.domain.imageFile.dto.response.ImageCreateRes;
 import com.example.booktalk.domain.imageFile.dto.response.ImageListRes;
+import com.example.booktalk.domain.imageFile.exception.NotFoundImageFileException;
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
@@ -26,6 +27,7 @@ import com.example.booktalk.domain.productcategory.repository.ProductCategoryRep
 import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.List;
@@ -67,10 +69,16 @@ public class ProductService {
         product = productRepository.save(product);
 
         addCategory(req.categoryList(), product);
-        UserRes userRes = new UserRes(user.getId(), user.getNickname());
 
-        List<ImageCreateRes> imageCreateResList = imageFileService.createImage(userId,
-            product.getId(), files);
+        List<ImageCreateRes> imageCreateResList;
+        UserRes userRes = new UserRes(user.getId(), user.getNickname());
+        if (files!=null) {
+            imageCreateResList = imageFileService.createImage(userId,
+                    product.getId(), files);
+        } else {
+            throw new NotFoundImageFileException(UserErrorCode.NOT_IMAGE_FILE);
+        }
+
 
         return new ProductCreateRes(product.getId(), product.getName(), product.getQuantity(),
             product.getPrice()
