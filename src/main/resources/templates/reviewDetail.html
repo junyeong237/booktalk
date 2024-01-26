@@ -438,7 +438,7 @@
   }
   function redirectToEditPage() {
     $.ajax({
-      url: '/api/v2/reviews/edit/' + reviewId,
+      url: '/booktalk/reviews/edit/' + reviewId,
       method: 'GET',
     }).done(function (data) {
       // 성공적으로 요청이 완료되었을 때의 처리

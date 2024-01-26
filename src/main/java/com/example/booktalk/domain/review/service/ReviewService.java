@@ -141,11 +141,11 @@ public class ReviewService {
         Review review = reviewRepository.findReviewByIdWithThrow(reviewId);
         validateReviewUser(user, review);
 
-        if (!file.isEmpty()) {
+        if (file!=null) {
             String reviewImagePathUrl = imageFileService.imageUpload(file);
             review.update(req, reviewImagePathUrl);
         } else {
-            review.update(req, null);
+            review.update(req, review.getReviewImagePathUrl());
         }
 
         return new ReviewUpdateRes(review.getId(), review.getProduct().getId(), review.getTitle(),
