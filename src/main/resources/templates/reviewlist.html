@@ -112,15 +112,16 @@
           좋아요순
         </label>
       </div>
-        <button type="button" class="btn btn-outline-primary" id="toggleReviewsButton" onclick="loadByMeReviews()">
-          내게 작성된 리뷰 보기
-        </button>
+
 
 
     </div>
-
-    <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
-
+    <div class="d-flex justify-content-between mt-2 mb-2">
+      <h2 class="mb-3" id="reviewBoardTitle">리뷰 게시판</h2>
+      <button type="button" class="btn btn-outline-primary" id="toggleReviewsButton" onclick="loadByMeReviews()">
+        내게 작성된 리뷰 보기
+      </button>
+    </div>
     <div class="mb-3" id="reviewsContainer"></div>
 
     <div class="collapse" id="createPostForm">
