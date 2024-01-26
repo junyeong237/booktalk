@@ -15,6 +15,7 @@ import com.example.booktalk.domain.trade.repository.TradeRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,9 @@ public class TradeService {
 
         tradeRepository.save(trade);
 
+        Double averageScore = calculateAverageScore(tradeRepository.findBySeller(seller));
+        seller.setScore(averageScore);
+
         return new TradeCreateRes(trade.getId(), buyer.getNickname(), product.getName(),
             seller.getNickname(),
             trade.getScore());
@@ -77,21 +81,15 @@ public class TradeService {
     @Transactional(readOnly = true)
     public List<TradeListRes> getTradeList(Long userId) { //본인의 거래 내역 전체 조회
 
-        User buyer = userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithThrow(userId);
 
-        List<Trade> tradeList = tradeRepository.findAllByBuyer(buyer);
+        List<Trade> tradeLists = tradeRepository.getTradeListByUser(user);
 
-        List<TradeListRes> tradeListRes = tradeList.stream().map(
-            trade -> {
-                //기능테스트
-                return new TradeListRes(trade.getId(), buyer.getNickname(),
-                    trade.getProduct().getName(), trade.getSeller().getNickname(),
-                    trade.getScore(), trade.getProduct().getId());
-            }
-
-        ).toList();
-
-        return tradeListRes;
+        return tradeLists.stream()
+                .map(trade -> new TradeListRes(trade.getId(), trade.getSeller().getNickname(),
+                        trade.getProduct().getName(), trade.getBuyer().getNickname(),
+                        trade.getScore(), trade.getProduct().getId()))
+                .toList();
 
     }
 
@@ -113,6 +111,18 @@ public class TradeService {
     private void validateScore(Long score) {
         if (score > 10 || score < 1) {
             throw new InvalidScroeInputException(TradeErrorCode.INVALIE_SCORE_INPUT);
+        }
+    }
+
+    private Double calculateAverageScore(List<Trade> tradeList) {
+        if (!tradeList.isEmpty()) {
+            Double sum = 7.0;
+            for (Trade trade : tradeList) {
+                sum += trade.getScore();
+            }
+            return Math.round((sum / (tradeList.size() + 1)) * 10.0) / 10.0;
+        } else {
+            return 0.0;
         }
     }
 
