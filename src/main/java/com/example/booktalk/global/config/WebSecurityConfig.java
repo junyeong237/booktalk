@@ -82,6 +82,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/v2/admin/**").hasRole("ADMIN")
                 .requestMatchers("/booktalk/users/signup").permitAll() //회원가입
                 .requestMatchers("/booktalk/users/login").permitAll() //로그인
+                .requestMatchers("/getKakaoLoginUrl").permitAll()
 
                 .anyRequest().authenticated()
         );
