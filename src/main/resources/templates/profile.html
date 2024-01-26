@@ -65,7 +65,9 @@
       <a class="d-inline-flex link-body-emphasis text-decoration-none" href="/booktalk">
         <svg class="bi" width="60" height="32" role="img" aria-label="Bootstrap">
           <div class="image-container">
-            <img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png" width="180" height="65" alt="Book Image" />
+            <img
+                src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png"
+                width="180" height="65" alt="Book Image"/>
           </div>
         </svg>
       </a>
@@ -177,31 +179,7 @@
     <button class="btn btn-danger" style="float: right" onclick="quitMember()">회원 탈퇴하기</button>
 
   </div>
-
-  <div class="modal" id="passwordModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">비밀번호 입력</h5>
-          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                  onclick="resetModal()"
-                  type="button"></button>
-        </div>
-        <div class="modal-body">
-          <input class="form-control mb-2" id="passwordInput" placeholder="비밀번호" type="password">
-          <input class="form-control mb-2" id="passwordInputCheck" placeholder="비밀번호확인"
-                 type="password">
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetModal()"
-                  type="button">닫기
-          </button>
-          <button class="btn btn-primary" onclick="editUser()" type="button">수정완료</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  
   <div class="modal" id="newPasswordModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -325,7 +303,7 @@
     editProfile('profile-address');
     editProfile('profile-description');
     document.getElementById('profileEditButton').innerHTML = '수정하기';
-    document.getElementById('profileEditButton').onclick = openPasswordInput;
+    document.getElementById('profileEditButton').onclick = editUser;
   }
 
   function editUser() {
@@ -338,41 +316,34 @@
       formData.append('upload', input.files[i]);
     }
 
-    const passwordValue = $('#passwordInput').val();
-    if (passwordValue) {
+    const req = {
+      nickname: $('#profile-nickname textarea').val(),
+      location: $('#profile-address textarea').val(),
+      description: $('#profile-description textarea ').val(),
+      phone: $('#profile-phone textarea').val()
+    };
 
-      const req = {
-        nickname: $('#profile-nickname textarea').val(),
-        location: $('#profile-address textarea').val(),
-        description: $('#profile-description textarea ').val(),
-        phone: $('#profile-phone textarea').val(),
-        password: passwordValue
-      };
+    const json = JSON.stringify(req);
+    const blob = new Blob([json], {type: "application/json"});
+    formData.append("req", blob);
 
-      const json = JSON.stringify(req);
-      const blob = new Blob([json], {type: "application/json"});
-      formData.append("req", blob);
+    $.ajax({
+      type: "PUT",
+      url: `/api/v2/users/` + userId,
+      data: formData,		// 필수
+      processData: false,	// 필수
+      contentType: false,	// 필수
+    })
+    .done(function (res) {
+      alert('프로필 수정완료');
+      location.reload();
 
-      $.ajax({
-        type: "PUT",
-        url: `/api/v2/users/` + userId,
-        data: formData,		// 필수
-        processData: false,	// 필수
-        contentType: false,	// 필수
-      })
-      .done(function (res) {
-        alert('프로필 수정완료');
-        location.reload();
-
-      })
-              .fail(function (res) {
-                const jsonObject = JSON.parse(res.responseText);
-                const messages = jsonObject.messages;
-                alert(messages);
-              });
-    } else {
-      alert('비밀번호를 입력하세요');
-    }
+    })
+    .fail(function (res) {
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
+    });
 
   }
 
