@@ -26,7 +26,7 @@ public class UserReportService {
     public UserReportCreateRes createUserReport(UserReportCreateReq req, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
-        User reportedUser = userRepository.findUserByIdWithThrow(req.reportedUserId());
+        User reportedUser = userRepository.findUserByReportedIdWithThrow(req.reportedUserId());
 
         if (user.getId().equals(reportedUser.getId())) {
             throw new NotPermissionSelfReportException(
@@ -47,7 +47,6 @@ public class UserReportService {
     @Transactional(readOnly = true)
     public List<UserReportListRes> getUserReports(Long reportedUserId) {
         List<UserReport> userReportList = userReportRepository.findByReportedUserId(reportedUserId);
-
         // UserReport를 UserReportListRes로 변환
         List<UserReportListRes> userReportListResList = new ArrayList<>();
         for (UserReport userReport : userReportList) {

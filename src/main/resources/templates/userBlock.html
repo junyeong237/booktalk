@@ -225,7 +225,7 @@
     function getReportsForUser(userId, userItem) {
       $.ajax({
         type: 'GET',
-        url: '/api/v2/admin/' + userId + '/reports',
+        url: '/api/v2/admin/reports/' + userId,
         success: function (reports) {
           displayReports(reports, userItem);
         },
@@ -251,7 +251,7 @@
 
       $.ajax({
         type: 'PUT',
-        url: '/api/v2/admin/' + action + '/' + userId,
+        url: '/api/v2/admin/users/' + action + '/' + userId,
         success: function () {
           var message = currentRoleType === 'BLOCK' ? '차단 해제 했습니다.' : '사용자를 차단했습니다.';
           alert(message + ' ID: ' + userId);

@@ -5,6 +5,7 @@ import com.example.booktalk.domain.user.exception.NotFoundUserException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -24,6 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findUserByIdWithThrow(Long userId) {
         return findById(userId).orElseThrow(() ->
             new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+    }
+
+    @CacheEvict(value = "user", key = "#reportedId")
+    default User findUserByReportedIdWithThrow(Long reportedId) {
+        return findById(reportedId).orElseThrow(() ->
+            new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
+
     }
 
     List<User> findAll();
