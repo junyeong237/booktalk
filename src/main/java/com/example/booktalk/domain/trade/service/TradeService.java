@@ -16,6 +16,7 @@ import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class TradeService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
+    @CacheEvict(value = "user", key = "#userId")
     public TradeCreateRes createTrade(Long userId, TradeCreateReq req) {
         User buyer = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(req.productId());
