@@ -7,9 +7,9 @@ import com.example.booktalk.domain.user.entity.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TradeRepository extends JpaRepository<Trade, Long> {
+public interface TradeRepository extends JpaRepository<Trade, Long>, TradeRepositoryCustom {
 
-    List<Trade> findAllByBuyer(User buyer);
+    List<Trade> findBySeller(User seller);
 
     default Trade findTradeByIdWithThrow(Long id) {
         return findById(id).orElseThrow(() ->
