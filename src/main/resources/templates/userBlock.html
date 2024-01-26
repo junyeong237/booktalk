@@ -223,7 +223,7 @@
     function getReportsForUser(userId, userItem) {
       $.ajax({
         type: 'GET',
-        url: '/api/v2/admin/' + userId + '/reports',
+        url: '/api/v2/admin/reports/' + userId,
         success: function (reports) {
           displayReports(reports, userItem);
         },
