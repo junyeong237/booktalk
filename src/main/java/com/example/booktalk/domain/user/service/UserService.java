@@ -172,11 +172,11 @@ public class UserService {
             }
         }
 
-        if (!file.isEmpty()) {
+        if (file!=null) {
             String profileImagePathUrl = imageFileService.imageUpload(file);
             user.updateProfile(description, phone, location, nickname, profileImagePathUrl);
         } else {
-            throw new NotFoundImageFileException(UserErrorCode.NOT_IMAGE_FILE);
+            user.updateProfile(description, phone, location, nickname, user.getProfileImagePathUrl());
         }
         userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,

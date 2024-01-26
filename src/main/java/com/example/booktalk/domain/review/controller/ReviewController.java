@@ -28,7 +28,7 @@ public class ReviewController {
     public ResponseEntity<ReviewCreateRes> createReview(
             @RequestPart("req") ReviewCreateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam("upload") MultipartFile file) throws IOException {
+            @RequestParam(value = "upload",required = false) MultipartFile file) throws IOException {
         ReviewCreateRes res=reviewService.createReview(req, userDetails.getUser().getId(),file);
         notificationService.notifyReviewMessage(res.productUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
@@ -64,7 +64,7 @@ public class ReviewController {
             @PathVariable Long reviewId,
             @RequestPart("req") ReviewUpdateReq req,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam("upload") MultipartFile file) throws IOException {
+            @RequestParam(value = "upload",required = false) MultipartFile file) throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.updateReview(reviewId, req, userDetails.getUser().getId(),file));
     }
 

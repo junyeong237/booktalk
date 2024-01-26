@@ -363,13 +363,11 @@
         location.reload();
 
       })
-      .fail(function (res) {
-        resetModal();
-        const jsonObject = JSON.parse(res.responseText);
-        const messages = jsonObject.messages;
-        alert(messages);
-
-      });
+              .fail(function (res) {
+                const jsonObject = JSON.parse(res.responseText);
+                const messages = jsonObject.messages;
+                alert(messages);
+              });
     } else {
       alert('비밀번호를 입력하세요');
     }

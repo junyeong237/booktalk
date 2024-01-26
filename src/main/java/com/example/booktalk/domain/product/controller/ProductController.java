@@ -42,7 +42,7 @@ public class ProductController {
     public ResponseEntity<ProductCreateRes> createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestPart("req") ProductCreateReq req,
-        @RequestParam("upload") List<MultipartFile> files
+        @RequestParam(value = "upload",required = false) List<MultipartFile> files
     ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.createProduct(userDetails.getUser().getId(), req, files));
