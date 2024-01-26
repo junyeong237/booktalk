@@ -15,6 +15,7 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class ProductLikeService {
     private final UserRepository userRepository;
     private final ImageFileService imageFileService;
 
-
+    @CacheEvict(value = "product", key = "#productId")
     public ProductLikeSwitchRes switchProductLike(Long productId, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
