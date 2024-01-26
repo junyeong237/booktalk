@@ -73,6 +73,7 @@ public class User extends BaseEntity {
         this.score = 7.0;
     }
 
+    @Builder
     public User(String nickname, String encodedPassword, String email, UserRoleType userRoleType,
         Long kakaoId) {
         this.nickname = nickname;
