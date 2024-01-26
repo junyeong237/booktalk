@@ -210,8 +210,13 @@ public class KakaoApiService {
                 String kakaoUserNickname = UUID.randomUUID().toString().replaceAll("-", "")
                     .substring(0, 10);
 
-                kakaoUser = new User(kakaoUserNickname, encodedPassword, email, UserRoleType.USER,
-                    kakaoId);
+                kakaoUser = User.builder()
+                    .email(email)
+                    .password(encodedPassword)
+                    .randomNickname(kakaoUserNickname)
+                    .role(UserRoleType.USER)
+                    .build();
+                kakaoUser = kakaoUser.kakaoIdUpdate(kakaoId);
             }
 
             userRepository.save(kakaoUser);
