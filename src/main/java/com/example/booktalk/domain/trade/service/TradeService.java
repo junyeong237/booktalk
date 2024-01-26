@@ -50,8 +50,6 @@ public class TradeService {
 
         tradeRepository.save(trade);
 
-        seller.averageScore();
-
         return new TradeCreateRes(trade.getId(), buyer.getNickname(), product.getName(),
             seller.getNickname(),
             trade.getScore());
