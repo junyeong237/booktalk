@@ -67,6 +67,21 @@
     border-color: #0056b3;
   }
 
+  .message-container {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .message {
+    font-size: 18px;
+    color: #555;
+  }
+
+
   .nav-item button {
     margin-right: 10px;
   }
@@ -81,7 +96,9 @@
       <a href="/booktalk" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="60" height="32" role="img" aria-label="Bootstrap">
           <div class="image-container">
-            <img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png" width="180" height="65" alt="Book Image" />
+            <img
+                src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png"
+                width="180" height="65" alt="Book Image"/>
           </div>
         </svg>
       </a>
@@ -136,13 +153,6 @@
 <div class="container">
   <div id="chatRoomList" class="d-flex flex-wrap justify-content-around">
     <div class="card chat-room-card">
-      <div class="card-body">
-        <h5 class="card-title">채팅방 1</h5>
-        <a href="/booktalk/chats/room/1" class="btn btn-primary">
-          <i class="fas fa-comments"></i> 채팅방 입장
-          <i class="fasout fa-comments"></i> 채팅방 종료
-        </a>
-      </div>
     </div>
 
   </div>
@@ -180,49 +190,62 @@
   function renderChatRoomList(chatRoomList) {
 
     var roomListContainer = document.getElementById('chatRoomList');
-    chatRoomList.forEach(function (chatRoom) {
+    if (chatRoomList.length !== 0) {
+      chatRoomList.forEach(function (chatRoom) {
 
-      // 새로운 채팅방 카드 생성
-      const chatRoomCard = document.createElement('div');
-      chatRoomCard.className = 'card chat-room-card';
+        // 새로운 채팅방 카드 생성
+        const chatRoomCard = document.createElement('div');
+        chatRoomCard.className = 'card chat-room-card';
 
-      // 채팅방 카드의 내용 생성
-      const cardBody = document.createElement('div');
-      cardBody.className = 'card-body';
+        // 채팅방 카드의 내용 생성
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
 
 // 채팅방 제목 생성
-      const cardTitle = document.createElement('h5');
-      cardTitle.className = 'card-title';
-      cardTitle.textContent = chatRoom.id + '번 채팅방';
-      cardTitle.textContent = chatRoom.sender + '와' + chatRoom.receiver + '의 채팅방';
+        const cardTitle = document.createElement('h5');
+        cardTitle.className = 'card-title';
+        cardTitle.textContent = chatRoom.id + '번 채팅방';
+        cardTitle.textContent = chatRoom.sender + '와' + chatRoom.receiver + '의 채팅방';
 
 // 채팅방 입장 버튼 생성
-      const enterButton = document.createElement('a');
-      enterButton.href = '/booktalk/chats/rooms/' + chatRoom.id + '/front';
-      enterButton.className = 'btn btn-primary';
-      enterButton.innerHTML = '<i class="fas fa-comments"></i> 채팅방 입장';
+        const enterButton = document.createElement('a');
+        enterButton.href = '/booktalk/chats/rooms/' + chatRoom.id + '/front';
+        enterButton.className = 'btn btn-primary';
+        enterButton.innerHTML = '<i class="fas fa-comments"></i> 채팅방 입장';
 
-      const outButton = document.createElement('button');
-      outButton.textContent = '채팅방 종료'
-      outButton.className = 'btn btn-danger';
-      outButton.style.float = 'right';
-      outButton.addEventListener("click", function () {
-        // 클로저 내에서 buttonClickHandler 함수를 호출하면서 인자를 전달합니다.
-        removeRoom(chatRoom.id);
-      });
+        const outButton = document.createElement('button');
+        outButton.textContent = '채팅방 종료'
+        outButton.className = 'btn btn-danger';
+        outButton.style.float = 'right';
+        outButton.addEventListener("click", function () {
+          // 클로저 내에서 buttonClickHandler 함수를 호출하면서 인자를 전달합니다.
+          removeRoom(chatRoom.id);
+        });
 
 // 버튼을 카드의 내용에 추가
-      cardBody.appendChild(cardTitle);
-      cardBody.appendChild(enterButton);
-      cardBody.appendChild(outButton);
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(enterButton);
+        cardBody.appendChild(outButton);
 
 // 내용을 카드에 추가
-      chatRoomCard.appendChild(cardBody);
-      console.log(chatRoomCard);
+        chatRoomCard.appendChild(cardBody);
+        console.log(chatRoomCard);
 // 카드를 부모 요소에 추가
-      roomListContainer.appendChild(chatRoomCard);
+        roomListContainer.appendChild(chatRoomCard);
 
-    })
+      })
+    } else {
+      var messageContainer = document.createElement('div');
+      messageContainer.classList.add('message-container');
+
+      var messageParagraph = document.createElement('p');
+      messageParagraph.classList.add('message');
+      messageParagraph.textContent = '현재 사용 중인 채팅방이 없습니다.';
+
+      // 생성한 요소를 문서에 추가
+      messageContainer.appendChild(messageParagraph);
+      roomListContainer.appendChild(messageContainer);
+    }
 
   }
 
