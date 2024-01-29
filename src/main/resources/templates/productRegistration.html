@@ -169,6 +169,10 @@
       <input type="number" class="form-control" id="productPrice" required>
     </div>
     <div class="mb-3">
+      <label for="productContent" class="form-label">상품 소개</label>
+      <input type="text" class="form-control" id="productContent" required>
+    </div>
+    <div class="mb-3">
       <label for="productQuantity" class="form-label">상품 수량</label>
       <input type="number" class="form-control" id="productQuantity" required>
     </div>
@@ -305,7 +309,7 @@
     var productName = document.getElementById("productName").value;
     var productPrice = document.getElementById("productPrice").value;
     var productQuantity = document.getElementById("productQuantity").value;
-    var productContent = document.getElementById("productQuantity").value;
+    var productContent = document.getElementById("productContent").value;
     // 선택된 지역 가져오기
     var selectedRegion = document.getElementById("productRegion").innerText;
 
