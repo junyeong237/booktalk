@@ -54,7 +54,7 @@ public class ProductController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long productId,
         @RequestPart("req") ProductUpdateReq req,
-        @RequestParam("upload") List<MultipartFile> files
+        @RequestParam(value = "upload", required = false) List<MultipartFile> files
     ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
             .body(
