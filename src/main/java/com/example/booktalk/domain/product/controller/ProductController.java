@@ -3,14 +3,7 @@ package com.example.booktalk.domain.product.controller;
 
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
-import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
-import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
-import com.example.booktalk.domain.product.dto.response.ProductGetRes;
-import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
-import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
-import com.example.booktalk.domain.product.dto.response.ProductTopLikesListRes;
-import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
+import com.example.booktalk.domain.product.dto.response.*;
 import com.example.booktalk.domain.product.service.ProductService;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -120,6 +113,18 @@ public class ProductController {
     ) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.getProductSearchTagList(page - 1, size, sortBy, isAsc, search));
+    }
+
+    @GetMapping ("/user/{userId}")
+    public ResponseEntity<Page<UserProductListRes>> getUserProductList(
+            @PathVariable Long userId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(value = "sortBy", defaultValue = "createdAt") String sortBy,
+            @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getUserProductList(userId,page - 1, size, sortBy, isAsc));
     }
 
 }

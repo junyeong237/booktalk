@@ -202,7 +202,6 @@
                 }
             },
             error: function (error) {
-                console.error('Error loading review data:', error);
             }
         }).fail(function (res) {
             const jsonObject = JSON.parse(res.responseText);
@@ -252,12 +251,10 @@
             processData: false,
             data: formDataa,
             success: function (data) {
-                console.log('Review updated successfully:', data);
                 alert("리뷰 수정 완료!");
                 window.location.href = "/booktalk/reviews/list";
             },
             error: function (error) {
-                console.error('Error updating review:', error);
                 alert("리뷰 수정 실패!");
             }
         });

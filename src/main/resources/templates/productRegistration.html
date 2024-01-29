@@ -231,8 +231,6 @@
 
     var files = input.files;
 
-    console.log(files)
-
     reader.onloadend = function () {
       preview.src = reader.result;
     }
@@ -319,13 +317,11 @@
     var selectedCategories = [];
     const query = 'input[name="category-checkbox"]:checked';
     const selectedEls = document.querySelectorAll(query);
-    console.log(selectedEls);
     // 선택된 목록에서 value 찾기
     let result = [];
     selectedEls.forEach((el) => {
       result.push(el.value);
     });
-    console.log(result);
 
     var formData = new FormData();
     for (var i = 0; i < input.files.length; i++) {
@@ -353,9 +349,7 @@
       contentType: false	// 필수
     })
     .done(function (res) {
-      console.log('check');
       alert('등록완료');
-      console.log(res);
       window.location.href = host + '/booktalk/products/list';
     })
     .fail(function (res) {

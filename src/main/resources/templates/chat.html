@@ -121,9 +121,6 @@
 
     var socket = new SockJS('/chat');
     //var socket = new SockJS('http://' + window.location.host + '/chat');
-    console.log(socket);
-    console.log(roomId);
-    console.log(username);
     stompClient = Stomp.over(socket);
     var headers = {
       name: username
@@ -131,11 +128,9 @@
 
     stompClient.connect(headers, function (frame) {
       //setConnected(true);
-      console.log('Connected: ' + frame);
       loadChat(roomId);
       stompClient.subscribe('/topic/' + roomId,
           function (greeting) {
-            console.log(greeting);
             showGreeting(JSON.parse(greeting.body));
           });
       stompClient.send("/app/" + roomId + "/enter", {},
@@ -175,7 +170,6 @@
       url: `/api/v2/chats/rooms/` + roomId,
       type: 'GET',
       success: function (chatList) {
-        console.log(chatList)
         if (chatList != null) {
 
           for (ct in chatList) {
@@ -192,7 +186,6 @@
       },
       error: function (error) {
         // 서버 요청 중 오류가 발생했을 때의 처리
-        console.error('Error:', error);
         window.location.href = "/";
       }
     });
@@ -205,16 +198,13 @@
     msgContainer.id = "user-message";
     var msgContent = document.createElement('p');
     msgContent.innerHTML = msg;
-    console.log(msgContent);
     msgContainer.appendChild(msgContent);
-    console.log(msgContent);
     return msgContainer;
   }
 
   function disconnect() {
     if (stompClient !== null) {
       stompClient.send("/app/" + roomId + "/exit", {}, JSON.stringify({}));
-      console.log("채팅방을 종료하였습니다..");
       stompClient.disconnect();
       window.location.href = host + "/booktalk";
     }

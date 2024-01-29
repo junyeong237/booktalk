@@ -26,4 +26,11 @@ public class FrontProductController {
         return "productRegistration";
     }
 
+    @GetMapping("/booktalk/products/{userId}/user")
+    public String userProductsPage(@PathVariable Long userId, Model model) {
+
+        model.addAttribute("userId", userId);
+        return "otherProducts";
+    }
+
 }

@@ -235,8 +235,7 @@
           </div>
 
           <div class="d-flex" id="button-group">
-            <a id="registerReview" href="#" onclick="registerTradeForm()"
-               class="btn btn-outline-primary mx-1">리뷰작성하기</a>
+            <a id="registerReview" href="#" class="btn btn-outline-primary mx-1">리뷰작성하기</a>
             <div style="margin-left: auto;">
               <!--              class="ml-auto" 적용이 왜 안될까-->
               <a id="productListButoon" href="/booktalk/products/list"
@@ -271,6 +270,7 @@
           url: `/api/v2/products/` + productId,
         })
         .done(function (res) {
+          isFinished = res.finished;
           //$('#product-container').empty(); //
           renderProductInfo(res);
           //renderProduct(res);
@@ -298,6 +298,17 @@
             updateProduct();
           }
         });
+        
+        $('#registerReview').click(function (event) {
+          event.preventDefault();
+
+          const auth = getToken();
+          if (auth === undefined || auth === '') {
+            alert('로그인 후 이용 가능합니다.');
+          } else {
+            registerTradeForm(isFinished);
+          }
+        });
 
         $.ajax({
           type: 'GET',
@@ -307,11 +318,21 @@
           nickname = fetchedNickname;
         })
         .fail(function () {
-          console.error('Failed to fetch user nickname');
         });
 
-
       });
+  function registerTradeForm(finished) {
+    const auth = getToken();
+    if (auth === undefined || auth === '') {
+      alert('로그인 후 이용 가능합니다.');
+    } else {
+      if (finished === true) {
+        window.location.href = '/booktalk/reviews/post/' + productId;
+      } else {
+        alert('판매자가 판매를 완료하지 않았습니다.');
+      }
+    }
+  }
 
   function renderProductInfo(product) {
     var productCheckbox = document.getElementById('product-sale');
@@ -347,7 +368,6 @@
     //이미지 값 세팅
     var imageContainer = document.getElementById('image-container');
     const imageUrls = product.imageListRes;
-    console.log(imageUrls);
 
     if (imageUrls.length) {
       imageUrls.forEach((imageUrl) => {
@@ -481,7 +501,6 @@
     dropdownButton.setAttribute('aria-haspopup', 'true');
     dropdownButton.setAttribute('aria-expanded', 'false');
     dropdownButton.innerText = '선택하세요';
-    console.log(dropdownButton);
     var dropdownMenu = document.createElement('div');
     dropdownMenu.className = 'dropdown-menu';
     dropdownMenu.setAttribute('aria-labelledby', 'productRegion');
@@ -587,16 +606,13 @@
 
     const query = 'input[name="category-checkbox"]:checked';
     const selectedEls = document.querySelectorAll(query);
-    console.log(selectedEls);
     // 선택된 목록에서 value 찾기
     let result = [];
     selectedEls.forEach((el) => {
       result.push(el.value);
     });
-    console.log(result);
 
     var input = document.getElementById('productImage');
-    console.log(input);
     var formData = new FormData();
     for (var i = 0; i < input.files.length; i++) {
       formData.append('upload', input.files[i]);
@@ -615,7 +631,6 @@
     const json = JSON.stringify(req);
     const blob = new Blob([json], {type: "application/json"});
     formData.append("req", blob);
-    console.log(formData);
 
     $.ajax({
       type: "PUT",
@@ -677,7 +692,6 @@
       data: JSON.stringify(data),
     })
     .done(function (res) {
-      console.log(res.id);
       window.location.href = host + '/booktalk/chats/rooms/' + res.id + '/front';
     })
     .fail(function (res) {
@@ -776,16 +790,6 @@
       const messages = jsonObject.messages;
       alert(messages);
     });
-  }
-
-  function registerTradeForm() {
-    const auth = getToken();
-    if (auth === undefined || auth === '') {
-      alert('로그인 후 이용 가능합니다.');
-    } else {
-      // If authentication is valid, navigate to the link
-      window.location.href = '/booktalk/reviews/post/' + productId;
-    }
   }
 
 </script>
