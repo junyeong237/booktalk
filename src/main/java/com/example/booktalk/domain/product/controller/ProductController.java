@@ -13,6 +13,7 @@ import com.example.booktalk.domain.product.dto.response.ProductTopLikesListRes;
 import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
 import com.example.booktalk.domain.product.service.ProductService;
 import com.example.booktalk.global.security.UserDetailsImpl;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductCreateRes> createProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @RequestPart("req") ProductCreateReq req,
-        @RequestParam(value = "upload",required = false) List<MultipartFile> files
+        @Valid @RequestPart("req") ProductCreateReq req,
+        @RequestParam(value = "upload", required = false) List<MultipartFile> files
     ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.createProduct(userDetails.getUser().getId(), req, files));
@@ -53,7 +54,7 @@ public class ProductController {
     public ResponseEntity<ProductUpdateRes> updateProduct(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long productId,
-        @RequestPart("req") ProductUpdateReq req,
+        @Valid @RequestPart("req") ProductUpdateReq req,
         @RequestParam("upload") List<MultipartFile> files
     ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
