@@ -418,6 +418,9 @@
   }
 
   function updateProduct() {
+    // 기존에 선택된 카테고리와 지역을 저장하는 변수 추가
+    var selectedCategory = $('#product-category').val();
+    var selectedRegion = $('#product-region').val();
 
     // 부모 요소 생성
     var parentDiv = document.getElementById("upload-container");
@@ -517,8 +520,10 @@
       checkboxContainer.style.flexDirection = 'row';
 
       categories.forEach(function (category) {
+                // 기존에 선택된 카테고리인지 확인하여 체크 상태 설정
+                var isChecked = selectedCategory.includes(category.name) ? 'checked' : '';
         checkboxContainer.appendChild(
-            createCheckbox(category.name, 'categoryCheckbox' + category.id, category.name)
+             createCheckbox(category.name, 'categoryCheckbox' + category.id, category.name, isChecked)
         );
       });
 
@@ -527,6 +532,8 @@
     .fail(function (res) {
       alert('카테고리 목록을 가져오는 데 실패했습니다.');
     });
+    // 기존에 선택된 지역 설정
+    $('#productRegion').text(selectedRegion);
 
     $('#button-group').empty();
     var buttonGroup = document.getElementById('button-group');
@@ -549,7 +556,7 @@
 
   }
 
-  function createCheckbox(value, id, labelText) {
+  function createCheckbox(value, id, labelText, isChecked) {
     var checkboxDiv = document.createElement('div');
     checkboxDiv.classList.add('form-check');
 
@@ -559,6 +566,8 @@
     checkboxInput.setAttribute('value', value);
     checkboxInput.setAttribute('id', id);
     checkboxInput.setAttribute('name', 'category-checkbox');
+    // 기존에 선택된 카테고리인 경우 체크 상태 설정
+    checkboxInput.checked = isChecked;
 
     var label = document.createElement('label');
     label.classList.add('form-check-label');
