@@ -262,6 +262,7 @@
 
   const host = 'http://' + window.location.host;
   const productId = /*[[${productId}]]*/;
+  const role = getUserRole();
   let nickname;
   let productUserNickname;
       $(document).ready(function () {
@@ -273,7 +274,7 @@
           //$('#product-container').empty(); //
           renderProductInfo(res);
           //renderProduct(res);
-          if(productUserNickname !==nickname){
+          if(nickname !== productUserNickname && role === 'USER'){
             $('#productEditButton').hide();
             $('#productDeleteButton').hide();
           }
