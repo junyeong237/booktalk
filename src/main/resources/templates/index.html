@@ -249,6 +249,10 @@
       imageElement.src = "https://via.placeholder.com/150";
     }
 
+    imageElement.addEventListener('click', function() {
+      window.location.href = '/booktalk/products/detail/' + product.id;
+    });
+
     imageElement.className = 'card-img-top';
     imageElement.alt = 'Item Image';
 
