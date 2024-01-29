@@ -572,16 +572,21 @@
   }
 
   function CompleteEditProduct(productId) {
+
     var selectedRegion = document.getElementById("productRegion").innerText;
 
     const query = 'input[name="category-checkbox"]:checked';
     const selectedEls = document.querySelectorAll(query);
+    console.log(selectedEls);
+    // 선택된 목록에서 value 찾기
     let result = [];
     selectedEls.forEach((el) => {
       result.push(el.value);
     });
+    console.log(result);
 
     var input = document.getElementById('productImage');
+    console.log(input);
     var formData = new FormData();
     for (var i = 0; i < input.files.length; i++) {
       formData.append('upload', input.files[i]);
@@ -600,26 +605,28 @@
     const json = JSON.stringify(req);
     const blob = new Blob([json], {type: "application/json"});
     formData.append("req", blob);
+    console.log(formData);
 
     $.ajax({
       type: "PUT",
-      url: `/api/v2/products/${productId}`, // 템플릿 문자열로 변경
-      data: formData,
-      processData: false,
-      contentType: false,
+      url: `/api/v2/products/` + productId,
+      data: formData,		// 필수
+      processData: false,	// 필수
+      contentType: false,	// 필수
     })
-            .done(function (res) {
-              alert('전송완료');
-              location.reload();
-            })
-            .fail(function (res) {
-              alert('전송실패');
-              const jsonObject = JSON.parse(res.responseText);
-              const messages = jsonObject.messages;
-              alert(messages);
-            });
-  }
+    .done(function (res) {
+      alert('전송완료');
+      location.reload();
+    })
+    .fail(function (res) {
+      alert('전송실패');
+      const jsonObject = JSON.parse(res.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
 
+    });
+
+  }
 
   function deleteProduct() {
 
