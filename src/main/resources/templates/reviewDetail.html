@@ -166,6 +166,7 @@
 <script th:inline="javascript">
   const host = 'http://' + window.location.host;
   const reviewId = /*[[${reviewId}]]*/;
+  const role = getUserRole();
   let nickname;
   let detailNickname;
 
@@ -178,7 +179,7 @@
     .done(function (fetchedNickname) {
       detailNickname = fetchedNickname;
 
-      if(detailNickname !== nickname){
+      if(detailNickname !== nickname  && role === 'USER'){
         $('#editPostBtn').hide();
         $('#deletePostBtn').hide();
       }
