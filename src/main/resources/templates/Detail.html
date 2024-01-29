@@ -16,6 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
   <script src="/js/basic.js"></script>
   <style>
 
@@ -297,9 +298,13 @@
 
     var productLikes = document.getElementById('productLikes');
     productLikes.innerText = "관심 : " + product.productLikes;
-    productLikes.addEventListener('click', function () {
-      addProductLikes(product.id);
+    $(document).ready(function () {
+      $('#productLikes').on('click', _.debounce(handleLikeButtonClick, 300));
     });
+
+    function handleLikeButtonClick() {
+      addProductLikes(product.id);
+    }
 
     var productSeller = document.getElementById('product-seller');
     productSeller.innerText = "작성자: " + product.user.name;
