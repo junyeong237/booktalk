@@ -57,6 +57,13 @@
     // 토큰 삭제
     Cookies.remove('AccessToken', {path: '/'});
     Cookies.remove('RefreshToken', {path: '/'});
+
+    $('#email, #password').keypress(function (e) {
+      if (e.which === 13) {
+        e.preventDefault();
+        onLogin();
+      }
+    });
   });
 
   let href = location.href;
