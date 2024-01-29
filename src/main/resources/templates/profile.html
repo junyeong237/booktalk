@@ -311,6 +311,16 @@
 
     var input = document.getElementById('productImage');
 
+    // 이미지가 선택되었는지 확인
+    if (input.files.length === 0) {
+      // 이미지를 선택하지 않았을 때 알림창 표시
+      var confirmResult = confirm('이미지를 선택하지 않았습니다. 그래도 수정하시겠습니까?');
+      if (!confirmResult) {
+        // 사용자가 취소를 선택한 경우 아무 일도 하지 않고 함수 종료
+        return;
+      }
+    }
+
     var formData = new FormData();
     for (var i = 0; i < input.files.length; i++) {
       formData.append('upload', input.files[i]);

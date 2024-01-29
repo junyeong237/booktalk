@@ -141,6 +141,9 @@
     // col-md-2 엘리먼트 생성
     var colImage = document.createElement("div");
     colImage.className = "col-md-2 d-flex justify-content-center";
+    colImage.addEventListener('click', function() {
+      window.location.href = '/booktalk/products/detail/' + product.id;
+    });
     console.log(product.imageListRes)
     // 이미지 엘리먼트 생성
     var image = document.createElement("img");
