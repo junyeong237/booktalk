@@ -2,7 +2,6 @@ $(document).ready(function () {
   const auth = getToken();
 
   if (auth !== undefined && auth !== '') { //토큰이 존재 즉 로그인중
-    console.log('auth:', auth);
     $('#logout-button').show();
     $('#login-button').hide();
     const role = getUserRole();
@@ -31,7 +30,6 @@ $(document).ready(function () {
       protocol + window.location.host + '/api/v2/notifications/subscribe');
   // let eventSource = new EventSource(
   //     'http://' + window.location.host + '/api/notification/subscribe');
-  console.log('확인');
   eventSource.addEventListener("createChatRoom", function (event) {
     console.log(event);
     let message = event.data;
