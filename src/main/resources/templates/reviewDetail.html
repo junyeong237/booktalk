@@ -175,8 +175,7 @@
     })
     .done(function (fetchedNickname) {
       detailNickname = fetchedNickname;
-      console.log(detailNickname);
-      console.log(nickname);
+
       if(detailNickname !== nickname){
         $('#editPostBtn').hide();
         $('#deletePostBtn').hide();
