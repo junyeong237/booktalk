@@ -144,9 +144,18 @@
   }
 
   function sendMessage() {
+
+    var msgInput = $("#message-input").val();
+    var msg = msgInput.trim();
+
+    if(msg === ""){
+      return;
+    }
+
     stompClient.send("/app/" + roomId + "/chat", {},
-        JSON.stringify({'message': $("#message-input").val()}));
-    $('#message-input').val('');
+        JSON.stringify({'message': msg}));
+    $("#message-input").val('');
+    scrollToBottom();
   }
 
   function showGreeting(message) {
@@ -177,6 +186,7 @@
           }
 
         }
+        scrollToBottom();
 
         $("#chat-box").append("여기까지 읽으셨습니다.")
       },
@@ -210,7 +220,10 @@
     }
 
   }
-
+  function scrollToBottom() {
+    var chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
 
 </script>
