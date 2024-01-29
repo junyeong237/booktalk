@@ -188,8 +188,9 @@
                       id="productLikes"></button>
             </div>
             <div class="mb-2">
+              <h5 id="product-seller"></h5>
               <button class="btn btn-outline-primary mb-2" id="chat-user"></button>
-              <h5 id="product-author"></h5>
+              <button class="btn btn-outline-primary mb-2" id="product-author"></button>
 
             </div>
           </div>
@@ -300,8 +301,11 @@
       addProductLikes(product.id);
     });
 
+    var productSeller = document.getElementById('product-seller');
+    productSeller.innerText = "작성자: " + product.user.name;
+
     var productAuthor = document.getElementById('product-author');
-    productAuthor.innerText = "작성자: " + product.user.name;
+    productAuthor.innerText = "프로필 보러가기"
     productAuthor.style.cursor = "pointer";
 
     productAuthor.addEventListener('click', function () {
