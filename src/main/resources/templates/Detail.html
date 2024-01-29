@@ -619,6 +619,7 @@
       location.reload();
     })
     .fail(function (res) {
+      alert('수정실패');
       const jsonObject = JSON.parse(res.responseText);
       const messages = jsonObject.messages;
       alert(messages);
