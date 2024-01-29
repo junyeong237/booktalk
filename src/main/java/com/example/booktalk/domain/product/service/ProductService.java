@@ -25,6 +25,8 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -84,8 +86,16 @@ public class ProductService {
         User user = userRepository.findUserByIdWithThrow(userId);
         Product product = productRepository.findProductByIdWithThrow(productId);
         validateProductUser(user, product);
-        List<ImageCreateRes> imageCreateResList = new ArrayList<>();
-        
+        List<ImageCreateRes> imageCreateResList;
+
+        if(files != null && !files.isEmpty()) {
+            imageCreateResList = imageFileService.updateImage(userId, productId, files);
+        } else {
+            List<ImageListRes> imageList = imageFileService.getImages(productId);
+            imageCreateResList = imageList.stream()
+                    .map(image -> new ImageCreateRes(image.imagePathUrl()))
+                    .collect(Collectors.toList());
+        }
         product.update(req);
         updateCategory(req.categoryList(), product);
         UserRes userRes = new UserRes(user.getId(), user.getNickname());
