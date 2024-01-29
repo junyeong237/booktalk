@@ -257,7 +257,9 @@
 <script th:inline="javascript">
 
   const host = 'http://' + window.location.host;
-  const productId = /*[[${productId}]]*/
+  const productId = /*[[${productId}]]*/;
+  let nickname;
+  let productUserNickname;
       $(document).ready(function () {
         $.ajax({
           type: 'GET',
@@ -267,6 +269,10 @@
           //$('#product-container').empty(); //
           renderProductInfo(res);
           //renderProduct(res);
+          if(productUserNickname !==nickname){
+            $('#productEditButton').hide();
+            $('#productDeleteButton').hide();
+          }
         })
 
         .fail(function (res) {
@@ -288,6 +294,18 @@
           }
         });
 
+        $.ajax({
+          type: 'GET',
+          url: '/api/v2/users/nickname',
+        })
+        .done(function (fetchedNickname) {
+          nickname = fetchedNickname;
+        })
+        .fail(function () {
+          console.error('Failed to fetch user nickname');
+        });
+
+
       });
 
   function renderProductInfo(product) {
@@ -303,6 +321,7 @@
     var productAuthor = document.getElementById('product-author');
     productAuthor.innerText = "작성자: " + product.user.name;
     productAuthor.style.cursor = "pointer";
+    productUserNickname=product.user.name;
 
     productAuthor.addEventListener('click', function () {
       getOtherProfile(product.user.id)

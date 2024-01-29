@@ -103,4 +103,9 @@ public class UserController {
     public UserRoleType getUserRole(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userDetails.getUser().getRole();
     }
+
+    @GetMapping("/nickname")
+    public String getUsernickname(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userDetails.getUser().getNickname();
+    }
 }
