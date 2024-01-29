@@ -234,6 +234,10 @@
     image.style.maxWidth = "100%";
     image.style.maxHeight = "100%";
 
+    colImage.addEventListener('click', function() {
+      window.location.href = '/booktalk/products/detail/' + product.id;
+    });
+
     // col-md-10 엘리먼트 생성
     var colText = document.createElement("div");
     colText.className = "col-md-8 align-self-center";
