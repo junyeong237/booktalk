@@ -95,7 +95,9 @@
       <a href="/booktalk" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="60" height="32" role="img" aria-label="Bootstrap">
           <div class="image-container">
-            <img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png" width="180" height="65" alt="Book Image" />
+            <img
+                src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png"
+                width="180" height="65" alt="Book Image"/>
           </div>
         </svg>
       </a>
@@ -181,7 +183,7 @@
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="productRegion"
                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          선택하세요
+          SEOUL
         </button>
         <div class="dropdown-menu" aria-labelledby="regionDropdown">
           <a class="dropdown-item" href="#">SEOUL</a>
@@ -357,7 +359,7 @@
       window.location.href = host + '/booktalk/products/list';
     })
     .fail(function (res) {
-      alert('전송실패');
+      alert('등록실패');
       const jsonObject = JSON.parse(res.responseText);
       const messages = jsonObject.messages;
       alert(messages);

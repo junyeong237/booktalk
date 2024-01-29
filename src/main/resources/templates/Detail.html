@@ -624,11 +624,11 @@
       contentType: false,	// 필수
     })
     .done(function (res) {
-      alert('전송완료');
+      alert('수정완료');
       location.reload();
     })
     .fail(function (res) {
-      alert('전송실패');
+      alert('수정실패');
       const jsonObject = JSON.parse(res.responseText);
       const messages = jsonObject.messages;
       alert(messages);
