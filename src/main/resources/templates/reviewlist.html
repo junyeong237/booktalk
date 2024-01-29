@@ -153,11 +153,9 @@
       method: 'GET',
       dataType: 'json',
       success: function (data) {
-        console.log('서버에서 받은 데이터:', data);
         displayReviews(data);
       },
       error: function (error) {
-        console.error('오류:', error);
       }
     });
   }

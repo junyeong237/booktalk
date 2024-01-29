@@ -174,9 +174,7 @@
         var createBtn = document.getElementById("createBtn");
         var editBtn = document.getElementById("editBtn");
 
-        console.log(reviewId);
-
-// 파일 입력 요소 생성
+        // 파일 입력 요소 생성
         var input = document.createElement("input");
         input.type = "file";
         input.className = "form-control";
@@ -184,9 +182,7 @@
         input.accept = "image/*";
         input.addEventListener("change", previewImage);
 
-// 부모 요소에 자식 요소 추가
-
-
+        // 부모 요소에 자식 요소 추가
         var productNameInput = document.getElementById("productName");
         var productLink = document.getElementById("productLink");
         productNameInput.value = productId;
@@ -194,13 +190,11 @@
         productLink.href = "/booktalk/products/detail/" + productId;
 
         if (reviewId == null || reviewId === '') {
-          console.log('reviewId:',reviewId);
           $('#createBtn').show();
           $('#editBtn').hide();
           //deleteCookie();
         }
         else {
-          console.log('reviewId:',reviewId);
           $('#editBtn').show();
           $('#createBtn').hide();
         }
@@ -224,7 +218,6 @@
       productId: productId
     };
 
-    console.log("Form Data:", formData);
     var inputScroe = $('#score').val()
     var intScroe = parseInt(inputScroe);
 
@@ -268,7 +261,6 @@
         contentType: false	// 필수
       })
       .done(function (res) {
-        console.log("Response Data:", res);
         alert("리뷰 작성 완료!");
         window.location.href = "/booktalk/reviews/list";
       })
@@ -297,8 +289,6 @@
     var reader = new FileReader();
 
     var files = input.files;
-
-    console.log(files)
 
     reader.onloadend = function () {
       preview.src = reader.result;

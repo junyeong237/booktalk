@@ -188,7 +188,6 @@
           url: `/api/v2/users/` + userId,
         })
         .done(function (res) {
-          console.log(res)
           $('#profile-scroe').text(res.score);
           $('#profile-email').text(res.email);
           $('#profile-nickname').text(res.nickname);

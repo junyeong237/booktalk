@@ -175,7 +175,6 @@
         })
         .done(function (res) {
           $('#chatRoomList').empty();
-          console.log(res);
           renderChatRoomList(res);
 
         })
@@ -229,7 +228,6 @@
 
 // 내용을 카드에 추가
         chatRoomCard.appendChild(cardBody);
-        console.log(chatRoomCard);
 // 카드를 부모 요소에 추가
         roomListContainer.appendChild(chatRoomCard);
 
@@ -256,7 +254,6 @@
       url: `/api/v2/chatRooms/` + id,
     })
     .done(function (res) {
-      console.log("채팅방을 종료하였습니다..");
       window.location.href = host + '/booktalk';
     })
     .fail(function (res) {

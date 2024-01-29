@@ -218,7 +218,6 @@
       url: `/api/v2/users`,
     })
     .done(function (res) {
-      console.log(res)
       $('#profile-scroe').text(res.score);
       $('#profile-email').text(res.email);
       $('#profile-nickname').text(res.nickname);
@@ -361,8 +360,6 @@
     var reader = new FileReader();
 
     var files = input.files;
-
-    console.log(files)
 
     reader.onloadend = function () {
       preview.src = reader.result;

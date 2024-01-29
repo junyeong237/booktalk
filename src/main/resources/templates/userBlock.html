@@ -160,7 +160,6 @@
           displayUsers(users);
         },
         error: function (error) {
-          console.error('유저 정보를 불러오는 중 오류 발생:', error);
         }
       });
     }
@@ -230,7 +229,6 @@
           displayReports(reports, userItem);
         },
         error: function (error) {
-          console.error('신고 글 정보를 불러오는 중 오류 발생:', error);
         }
       });
     }
@@ -258,7 +256,6 @@
           location.reload();
         },
         error: function (error) {
-          console.error('사용자 차단/차단해제 중 오류 발생:', error);
         }
       }).fail(function (res) {
         alert('차단 실패');

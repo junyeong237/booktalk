@@ -175,8 +175,6 @@
       if (auth === undefined || auth === '') {
         alert('로그인 후 이용 가능 합니다.');
       } else {
-        // Your logic for the button goes here
-        console.log(`${elementId} button clicked`);
       }
     }
 
@@ -188,7 +186,6 @@
   });
 
   function fetchReviewDetails(reviewId) {
-    console.log('Fetching review details for reviewId:', reviewId);
     var preview = document.getElementById('imagePreview');
 
     var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
@@ -198,12 +195,8 @@
       method: 'GET',
       dataType: 'json',
       success: function (data) {
-        console.log('Received review details:', data);
-
-        console.log('reviewImagePathUrl:',data.reviewImagePathUrl);
 
         if(data.reviewImagePathUrl != null){
-          console.log(preview);
           preview.src = data.reviewImagePathUrl;
         }
 
@@ -267,7 +260,6 @@
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(newComment),
       success: function (data, status, xhr) {
-        console.log('Comment submitted successfully. Response Status:', xhr.status);
 
         fetchReviewDetails(reviewId);
         alert('댓글 작성 완료');
@@ -294,7 +286,6 @@
       url: '/api/v2/comments/' + commentId,
       method: 'DELETE',
       success: function (data, status, xhr) {
-        console.log('Comment deleted successfully. Response Status:', xhr.status);
 
         fetchReviewDetails(reviewId);
       },
@@ -309,8 +300,6 @@
   $(document).on('click', '.delete-comment-btn', function () {
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    console.log('Clicked Delete Button. Comment ID:', commentId);
-
     if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
       deleteComment(commentId);
     }
@@ -323,8 +312,6 @@
       url: '/api/v2/reviews/' + reviewId,
       method: 'DELETE',
       success: function (data, status, xhr) {
-        console.log('Review deleted successfully. Response Status:', xhr.status);
-
         window.location.href = '/booktalk/reviews/list';
       },
       error: function (res) {
@@ -386,8 +373,6 @@
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(editedComment),
       success: function (data, status, xhr) {
-        console.log('Comment edited successfully. Response Status:', xhr.status);
-
         fetchReviewDetails(reviewId);
         alert('댓글이 수정되었습니다.');
       },
@@ -404,16 +389,12 @@
   $(document).on('click', '.edit-comment-btn', function () {
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    console.log('Clicked  Button. Comment ID:', commentId);
-
     var existingContent = $(this).closest('.comment').find('p:last-child').text().trim();
 
     displayEditForm(commentId, existingContent);
   });
 
   $(document).on('click', '#likeReviewBtn', function () {
-    console.log('Like button clicked.');
-
     likeReview();
   });
 
@@ -428,7 +409,6 @@
       contentType: 'application/json',
       data: JSON.stringify(request),
       success: function (data, status, xhr) {
-        console.log('Review liked successfully. Response Status:', xhr.status);
         fetchReviewDetails(reviewId);
       },
       error: function (res) {

@@ -225,7 +225,6 @@
     // col-md-2 엘리먼트 생성
     var colImage = document.createElement("div");
     colImage.className = "col-md-2 d-flex justify-content-center";
-    console.log(product.imageListRes)
     // 이미지 엘리먼트 생성
     var image = document.createElement("img");
     image.src = product.imageListRes.imagePathUrl;
@@ -310,7 +309,6 @@
 
   function showProductsByTag(category) {
     alert(category)
-    console.log(category);
     //event.preventDefault(); // 기본 동작 막기 새로고침막음
     showProducts(1, null, category);
   }
