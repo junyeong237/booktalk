@@ -144,7 +144,7 @@
     colImage.addEventListener('click', function() {
       window.location.href = '/booktalk/products/detail/' + product.id;
     });
-    console.log(product.imageListRes)
+    colImage.style.cursor = 'pointer';
     // 이미지 엘리먼트 생성
     var image = document.createElement("img");
     image.src = product.imageListRes.imagePathUrl;

@@ -120,6 +120,8 @@
         <div class="mb-3">
           <label for="productName" class="form-label">상품 번호:</label>
           <a href="#" id="productLink">상품바로이동</a>
+          <input type="text" class="form-control" id="productNum" name="productNum" required
+                 readonly>
           <input type="text" class="form-control" id="productName" name="productName" required
                  readonly>
         </div>
@@ -205,9 +207,10 @@
 
   async function fetchReviewDetails(reviewId) {
     var preview = document.getElementById('imagePreview');
-
-    var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
+    var productNum = document.getElementById("productNum"); // 상품 번호 입력 필드
     var productLink = document.getElementById("productLink");
+    var productName = document.getElementById("productName");
+
     await $.ajax({
       url: '/api/v2/reviews/' + reviewId,
       method: 'GET',
@@ -219,9 +222,17 @@
           preview.src = data.reviewImagePathUrl;
         }
 
+        productNum.value = data.productId;
 
-
-        productNameInput.value = data.productId;
+        $.ajax({
+          url: '/api/v2/products/' + data.productId,
+          method: 'GET',
+          dataType: 'json',
+          success: function (productData) {
+            productNum.value = '상품 번호 : ' + data.productId;
+            productName.value = ' 상품명 : ' + productData.name;
+          }
+        });
 
         productLink.href = "/booktalk/products/detail/" + data.productId;
 
