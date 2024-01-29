@@ -164,9 +164,27 @@
 <script th:inline="javascript">
   const host = 'http://' + window.location.host;
   const reviewId = /*[[${reviewId}]]*/;
+  let nickname;
+  let detailNickname;
 
-  $(document).ready(function () {
-    fetchReviewDetails(reviewId);
+  $(document).ready(async function () {
+    await fetchReviewDetails(reviewId);
+    $.ajax({
+      type: 'GET',
+      url: '/api/v2/users/nickname',
+    })
+    .done(function (fetchedNickname) {
+      detailNickname = fetchedNickname;
+      console.log(detailNickname);
+      console.log(nickname);
+      if(detailNickname !== nickname){
+        $('#editPostBtn').hide();
+        $('#deletePostBtn').hide();
+      }
+    })
+    .fail(function () {
+      console.error('Failed to fetch user nickname');
+    });
 
 
     function handleButtonClick(elementId, event) {
@@ -184,26 +202,21 @@
       handleButtonClick('editPostBtn', event);
     });
 
-
   });
 
-  function fetchReviewDetails(reviewId) {
-    console.log('Fetching review details for reviewId:', reviewId);
+  async function fetchReviewDetails(reviewId) {
     var preview = document.getElementById('imagePreview');
 
     var productNameInput = document.getElementById("productName"); //이건 <input> 타입임
     var productLink = document.getElementById("productLink");
-    $.ajax({
+    await $.ajax({
       url: '/api/v2/reviews/' + reviewId,
       method: 'GET',
       dataType: 'json',
       success: function (data) {
-        console.log('Received review details:', data);
-
-        console.log('reviewImagePathUrl:',data.reviewImagePathUrl);
+        nickname = data.nickname;
 
         if(data.reviewImagePathUrl != null){
-          console.log(preview);
           preview.src = data.reviewImagePathUrl;
         }
 
@@ -267,7 +280,6 @@
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(newComment),
       success: function (data, status, xhr) {
-        console.log('Comment submitted successfully. Response Status:', xhr.status);
 
         fetchReviewDetails(reviewId);
         alert('댓글 작성 완료');
@@ -294,7 +306,6 @@
       url: '/api/v2/comments/' + commentId,
       method: 'DELETE',
       success: function (data, status, xhr) {
-        console.log('Comment deleted successfully. Response Status:', xhr.status);
 
         fetchReviewDetails(reviewId);
       },
@@ -309,7 +320,6 @@
   $(document).on('click', '.delete-comment-btn', function () {
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    console.log('Clicked Delete Button. Comment ID:', commentId);
 
     if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
       deleteComment(commentId);
@@ -323,7 +333,6 @@
       url: '/api/v2/reviews/' + reviewId,
       method: 'DELETE',
       success: function (data, status, xhr) {
-        console.log('Review deleted successfully. Response Status:', xhr.status);
 
         window.location.href = '/booktalk/reviews/list';
       },
@@ -386,7 +395,6 @@
       contentType: 'application/json;charset=UTF-8',
       data: JSON.stringify(editedComment),
       success: function (data, status, xhr) {
-        console.log('Comment edited successfully. Response Status:', xhr.status);
 
         fetchReviewDetails(reviewId);
         alert('댓글이 수정되었습니다.');
@@ -404,7 +412,6 @@
   $(document).on('click', '.edit-comment-btn', function () {
     var commentId = $(this).closest('.comment').data('comment-id');
 
-    console.log('Clicked  Button. Comment ID:', commentId);
 
     var existingContent = $(this).closest('.comment').find('p:last-child').text().trim();
 
@@ -412,7 +419,6 @@
   });
 
   $(document).on('click', '#likeReviewBtn', function () {
-    console.log('Like button clicked.');
 
     likeReview();
   });
@@ -428,7 +434,6 @@
       contentType: 'application/json',
       data: JSON.stringify(request),
       success: function (data, status, xhr) {
-        console.log('Review liked successfully. Response Status:', xhr.status);
         fetchReviewDetails(reviewId);
       },
       error: function (res) {
