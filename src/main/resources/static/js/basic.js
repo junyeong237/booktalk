@@ -70,8 +70,8 @@ function myPage() {
 }
 
 function products() {
-    window.location.href = 'http://' + window.location.host
-        + '/booktalk/products/list';
+  window.location.href = 'http://' + window.location.host
+      + '/booktalk/products/list';
 }
 
 function chatRooms() {
@@ -93,7 +93,6 @@ function reviews() {
         + '/booktalk/reviews/list';
   }
 }
-
 
 function alertBadge() {
 
@@ -138,7 +137,9 @@ function getUserRole() {
       role = data;
     },
     error: function (error) {
-      alert('알 수 없는 오류 발생');
+      const jsonObject = JSON.parse(error.responseText);
+      const messages = jsonObject.messages;
+      alert(messages);
     }
   });
   return role;

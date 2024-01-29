@@ -87,17 +87,14 @@
 
     .card-img-top {
       width: auto;
-      height: 250px;
+      height: 350px;
       display: block;
 
     }
+    
 
-
-    .main-product-page {
-      width: auto;
-      height: 400px;
-      display: block;
-
+    .card {
+      width: 80%;
     }
 
   </style>
@@ -114,7 +111,9 @@
       <a href="/booktalk" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="60" height="32" role="img" aria-label="Bootstrap">
           <div class="image-container">
-            <img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png" width="180" height="65" alt="Book Image" />
+            <img
+                src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png"
+                width="180" height="65" alt="Book Image"/>
           </div>
         </svg>
       </a>
@@ -248,6 +247,10 @@
     } else {
       imageElement.src = "https://via.placeholder.com/150";
     }
+
+    imageElement.addEventListener('click', function() {
+      window.location.href = '/booktalk/products/detail/' + product.id;
+    });
 
     imageElement.className = 'card-img-top';
     imageElement.alt = 'Item Image';

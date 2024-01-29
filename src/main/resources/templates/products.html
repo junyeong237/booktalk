@@ -36,7 +36,9 @@
       <a href="/booktalk" class="d-inline-flex link-body-emphasis text-decoration-none">
         <svg class="bi" width="60" height="32" role="img" aria-label="Bootstrap">
           <div class="image-container">
-            <img src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png" width="180" height="65" alt="Book Image" />
+            <img
+                src="https://booktalk-s3-1.s3.ap-northeast-2.amazonaws.com/7218e908-b9b5-4f58-b5ac-84cbaef6f9e8.png"
+                width="180" height="65" alt="Book Image"/>
           </div>
         </svg>
       </a>
@@ -128,7 +130,8 @@
         좋아요
       </label>
     </div>
-    <button type="button" class="btn btn-outline-primary position-relative" id="sorting-button" onclick="toggleSortingDirection()">
+    <button type="button" class="btn btn-outline-primary position-relative" id="sorting-button"
+            onclick="toggleSortingDirection()">
       <span id="sorting-text">오름차순으로</span>
     </button>
 
@@ -162,6 +165,7 @@
   });
   // 전역 변수로 정렬 방향을 저장할 변수 추가
   let isAscending = false;
+
   function showProducts(page, search, tag) {
     var selectedValue = document.querySelector('input[name="sortingOption"]:checked').value;
     var addurl;
@@ -232,6 +236,10 @@
     image.alt = "상품이미지";
     image.style.maxWidth = "100%";
     image.style.maxHeight = "100%";
+
+    colImage.addEventListener('click', function() {
+      window.location.href = '/booktalk/products/detail/' + product.id;
+    });
 
     // col-md-10 엘리먼트 생성
     var colText = document.createElement("div");
@@ -308,7 +316,6 @@
   }
 
   function showProductsByTag(category) {
-    alert(category)
     //event.preventDefault(); // 기본 동작 막기 새로고침막음
     showProducts(1, null, category);
   }
