@@ -10,14 +10,7 @@ import com.example.booktalk.domain.imageFile.exception.NotFoundImageFileExceptio
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.product.dto.request.ProductCreateReq;
 import com.example.booktalk.domain.product.dto.request.ProductUpdateReq;
-import com.example.booktalk.domain.product.dto.response.ProductCreateRes;
-import com.example.booktalk.domain.product.dto.response.ProductDeleteRes;
-import com.example.booktalk.domain.product.dto.response.ProductGetRes;
-import com.example.booktalk.domain.product.dto.response.ProductListRes;
-import com.example.booktalk.domain.product.dto.response.ProductSerachListRes;
-import com.example.booktalk.domain.product.dto.response.ProductTagListRes;
-import com.example.booktalk.domain.product.dto.response.ProductTopLikesListRes;
-import com.example.booktalk.domain.product.dto.response.ProductUpdateRes;
+import com.example.booktalk.domain.product.dto.response.*;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.product.exception.NotPermissionAuthority;
 import com.example.booktalk.domain.product.exception.ProductErrorCode;
@@ -229,6 +222,30 @@ public class ProductService {
                     product.getRegion(), imageGetRes);
             });
 
+    }
+    @Transactional(readOnly = true)
+    public Page<UserProductListRes> getUserProductList(Long userId, int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productList = productRepository.findProductsByUserIdAndDeletedFalse(userId,pageable);
+
+        return productList
+                .map(product -> {
+                    List<ImageListRes> imageListRes = imageFileService.getImages(product.getId());
+
+                    List<String> categories = product.getProductCategoryList().stream()
+                            .map(productCategory -> {
+                                return productCategory.getCategory().getName();
+                            })
+                            .toList();
+                    ImageListRes imageGetRes = imageListRes.isEmpty() ? null : imageListRes.get(0);
+
+                    return new UserProductListRes(product.getId(), product.getName(), product.getPrice(),
+                            product.getQuantity(), product.getProductLikeCnt(), categories,
+                            product.getRegion(), imageGetRes);
+                });
     }
 
     public ProductDeleteRes deleteProduct(Long userId, Long productId) {
