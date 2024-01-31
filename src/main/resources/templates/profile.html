@@ -383,20 +383,22 @@
   }
 
   function quitMember() {
-    $('#passwordModal').modal('show');
-    const data = {
-      "password": $('#passwordInput').val(),
-      "passwordCheck": $('#passwordInputCheck').val()
+    const confirmed = confirm("정말로 탈퇴하시겠습니까?");
+
+    if (!confirmed) {
+
+      return;
     }
 
     $.ajax({
       type: 'PUT',
       url: `/api/v2/users/withdraw`,
       contentType: "application/json",
-      data: JSON.stringify(data)
     })
     .done(function (res) {
-      window.location.href = 'http://' + window.location.host + '/booktalk/users/profile'
+      document.cookie = "RefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "AccessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = 'http://' + window.location.host + '/booktalk'
     })
     .fail(function (res) {
       resetModal();

@@ -93,7 +93,8 @@ public class UserService {
         String email = req.email();
         String password = req.password();
 
-        User user = userRepository.findUserByEmailWithThrow(email);
+        User user1 = userRepository.findUserByEmailWithThrow(email);
+        User user = userRepository.findUserByIdWithThrow(user1.getId());
 
         if (user.isDeleted()) {
             throw new BadLoginException(UserErrorCode.NOT_FOUND_USER);
@@ -179,19 +180,12 @@ public class UserService {
     }
 
     @CacheEvict(value = "user", key = "#userId")
-    public UserWithdrawRes withdraw(UserWithdrawReq req, Long userId) {
-        String password = req.password();
-        String passwordCheck = req.passwordCheck();
+    public UserWithdrawRes withdraw(Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadLoginException(UserErrorCode.BAD_LOGIN);
-        }
-        if (!Objects.equals(password, passwordCheck)) {
-            throw new InvalidPasswordCheckException(UserErrorCode.INVALID_PASSWORD_CHECK);
-        }
         user.withdraw();
+        userRepository.save(user);
         return new UserWithdrawRes("탈퇴 완료");
     }
 

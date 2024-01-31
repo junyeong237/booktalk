@@ -86,10 +86,10 @@ public class UserController {
     }
 
     @PutMapping("/withdraw")
-    public ResponseEntity<UserWithdrawRes> withdraw(@RequestBody UserWithdrawReq req,
+    public ResponseEntity<UserWithdrawRes> withdraw(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.withdraw(req, userDetails.getUser().getId()));
+            .body(userService.withdraw(userDetails.getUser().getId()));
     }
 
     @PutMapping("/password/{userId}")
