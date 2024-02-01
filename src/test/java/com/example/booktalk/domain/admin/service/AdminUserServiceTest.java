@@ -60,7 +60,7 @@ class AdminUserServiceTest {
         mockUsers.add(mockUser2);
 
         // Stubbing the userRepository.findAll() method
-        when(userRepository.findAll()).thenReturn(mockUsers);
+        when(userRepository.findByDeletedFalse()).thenReturn(mockUsers);
 
         // When
         List<UserReportRes> result = adminUserService.getAllUsers();
