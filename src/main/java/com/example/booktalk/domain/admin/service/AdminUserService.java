@@ -24,7 +24,7 @@ public class AdminUserService {
 
     @Transactional(readOnly = true)
     public List<UserReportRes> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findByDeletedFalse();
         return users
             .stream()
             .map(user -> new UserReportRes(user.getId(), user.getNickname(), user.getReportCount(),
