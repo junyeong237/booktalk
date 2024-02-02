@@ -6,7 +6,6 @@ import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
-import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserOwnProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
@@ -16,7 +15,15 @@ import com.example.booktalk.domain.user.dto.response.UserSignupRes;
 import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
-import com.example.booktalk.domain.user.exception.*;
+import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
+import com.example.booktalk.domain.user.exception.BadLoginException;
+import com.example.booktalk.domain.user.exception.BlockedUserException;
+import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
+import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
+import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
+import com.example.booktalk.domain.user.exception.NicknameDuplicateExcpetion;
+import com.example.booktalk.domain.user.exception.UserErrorCode;
+import com.example.booktalk.domain.user.exception.WithdrawCheckException;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
@@ -27,7 +34,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,7 +150,6 @@ public class UserService {
             profileImagePathUrl);
     }
 
-    @CacheEvict(value = "user", key = "#userId")
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId, MultipartFile file) throws IOException {
         String description = req.description();
@@ -152,7 +157,7 @@ public class UserService {
         String location = req.location();
         String nickname = req.nickname();
 
-        User user = userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithNotCache(userId);
 
         if (!Objects.equals(user.getId(), userDetailsId)) {
             throw new ForbiddenAccessProfileException(UserErrorCode.FORBIDDEN_ACCESS_PROFILE);
@@ -171,18 +176,17 @@ public class UserService {
             user.updateProfile(description, phone, location, nickname,
                 user.getProfileImagePathUrl());
         }
-        userRepository.save(user);
+        //userRepository.save(user);
         return new UserProfileUpdateRes(user.getId(), nickname, user.getEmail(), description,
             location, user.getPhone(), user.getProfileImagePathUrl());
     }
 
-    @CacheEvict(value = "user", key = "#userId")
     public UserWithdrawRes withdraw(Long userId) {
 
-        User user = userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithNotCache(userId);
 
         user.withdraw();
-        userRepository.save(user);
+        //userRepository.save(user);
         return new UserWithdrawRes("탈퇴 완료");
     }
 
@@ -191,7 +195,7 @@ public class UserService {
         String newPassword = passwordEncoder.encode(req.newPassword());
         String newPasswordCheck = req.newPasswordCheck();
 
-        User user = userRepository.findUserByIdWithThrow(id);
+        User user = userRepository.findUserByIdWithNotCache(id);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadLoginException(UserErrorCode.BAD_LOGIN);
@@ -203,7 +207,7 @@ public class UserService {
         return new UserPWUpdateRes("비밀번호 변경 완료");
     }
 
-    public void UserWithdrawCheck(Long userId){
+    public void UserWithdrawCheck(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
         if (user.isDeleted()) {

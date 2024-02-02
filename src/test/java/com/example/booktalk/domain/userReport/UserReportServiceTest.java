@@ -71,8 +71,10 @@ class UserReportServiceTest {
         void User_Report_생성_성공() {
             //given
             UserReportCreateReq req = new UserReportCreateReq(reportedUser.getId(), "신고 이유");
-            given(userRepository.findUserByIdWithThrow(reportingUser.getId())).willReturn(reportingUser);
-            given(userRepository.findUserByReportedIdWithThrow(req.reportedUserId())).willReturn(reportedUser);
+            given(userRepository.findUserByIdWithThrow(reportingUser.getId())).willReturn(
+                reportingUser);
+            given(userRepository.findUserByIdWithNotCache(req.reportedUserId())).willReturn(
+                reportedUser);
 
             //when
             UserReportCreateRes result = userReportService.createUserReport(req,
@@ -87,8 +89,10 @@ class UserReportServiceTest {
         void User_Report_자신을_신고할_경우_에러를_반환() {
             //given
             UserReportCreateReq req = new UserReportCreateReq(reportingUser.getId(), "자기 자신 신고");
-            given(userRepository.findUserByIdWithThrow(reportingUser.getId())).willReturn(reportingUser);
-            given(userRepository.findUserByReportedIdWithThrow(reportingUser.getId())).willReturn(reportingUser);
+            given(userRepository.findUserByIdWithThrow(reportingUser.getId())).willReturn(
+                reportingUser);
+            given(userRepository.findUserByIdWithNotCache(reportingUser.getId())).willReturn(
+                reportingUser);
 
             //when & then
             assertThrows(NotPermissionSelfReportException.class,

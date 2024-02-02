@@ -1,14 +1,19 @@
 package com.example.booktalk.domain.admin.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.example.booktalk.domain.user.dto.response.UserBlockRes;
 import com.example.booktalk.domain.user.dto.response.UserReportRes;
-import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.dto.response.UserUnblockRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
 import com.example.booktalk.domain.user.exception.NotBlockSelfException;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,14 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 class AdminUserServiceTest {
 
@@ -44,18 +41,18 @@ class AdminUserServiceTest {
         List<User> mockUsers = new ArrayList<>();
 
         User mockUser1 = User.builder()
-                .randomNickname("user1")
-                .email("email1@example.com")
-                .password("password1")
-                .build();
+            .randomNickname("user1")
+            .email("email1@example.com")
+            .password("password1")
+            .build();
         ReflectionTestUtils.setField(mockUser1, "id", 1L);
         mockUsers.add(mockUser1);
 
         User mockUser2 = User.builder()
-                .randomNickname("user2")
-                .email("email2@example.com")
-                .password("password2")
-                .build();
+            .randomNickname("user2")
+            .email("email2@example.com")
+            .password("password2")
+            .build();
         ReflectionTestUtils.setField(mockUser2, "id", 2L);
         mockUsers.add(mockUser2);
 
@@ -81,13 +78,13 @@ class AdminUserServiceTest {
         Long blockUserId = 2L;
 
         User mockUser1 = User.builder()
-                .randomNickname("user1")
-                .email("email1@example.com")
-                .password("password1")
-                .build();
+            .randomNickname("user1")
+            .email("email1@example.com")
+            .password("password1")
+            .build();
         ReflectionTestUtils.setField(mockUser1, "id", 1L);
 
-        when(userRepository.findUserByIdWithThrow(blockUserId)).thenReturn(mockUser1);
+        when(userRepository.findUserByIdWithNotCache(blockUserId)).thenReturn(mockUser1);
 
         // When
         UserBlockRes result = adminUserService.createUserBlock(myUserId, blockUserId);
@@ -105,7 +102,7 @@ class AdminUserServiceTest {
 
         // When & Then
         NotBlockSelfException exception = assertThrows(NotBlockSelfException.class,
-                () -> adminUserService.createUserBlock(myUserId, myUserId));
+            () -> adminUserService.createUserBlock(myUserId, myUserId));
         assertEquals(UserErrorCode.FORBIDDEN_NOT_BLOCK_SELF, exception.getErrorCode());
     }
 
@@ -117,18 +114,18 @@ class AdminUserServiceTest {
         Long adminId = 2L;
 
         User admin = User.builder()
-                .randomNickname("admin")
-                .email("email1@example.com")
-                .role(UserRoleType.ADMIN)
-                .password("password1")
-                .build();
+            .randomNickname("admin")
+            .email("email1@example.com")
+            .role(UserRoleType.ADMIN)
+            .password("password1")
+            .build();
         ReflectionTestUtils.setField(admin, "id", adminId);
 
-        when(userRepository.findUserByIdWithThrow(adminId)).thenReturn(admin);
+        when(userRepository.findUserByIdWithNotCache(adminId)).thenReturn(admin);
 
         // When & Then
         NotBlockSelfException exception = assertThrows(NotBlockSelfException.class,
-                () -> adminUserService.createUserBlock(myUserId, adminId));
+            () -> adminUserService.createUserBlock(myUserId, adminId));
         assertEquals(UserErrorCode.FORBIDDEN_NOT_BLOCK_ADMIN, exception.getErrorCode());
     }
 
@@ -138,13 +135,13 @@ class AdminUserServiceTest {
         // Given
         Long userId = 1L;
         User mockUser1 = User.builder()
-                .randomNickname("user1")
-                .email("email1@example.com")
-                .password("password1")
-                .build();
+            .randomNickname("user1")
+            .email("email1@example.com")
+            .password("password1")
+            .build();
         ReflectionTestUtils.setField(mockUser1, "id", userId);
 
-        when(userRepository.findUserByIdWithThrow(userId)).thenReturn(mockUser1);
+        when(userRepository.findUserByIdWithNotCache(userId)).thenReturn(mockUser1);
 
         // When
         UserUnblockRes result = adminUserService.createUserUnBlock(userId);
@@ -153,8 +150,6 @@ class AdminUserServiceTest {
         assertEquals("차단해제 되었습니다", result.msg());
         assertEquals(UserRoleType.USER, mockUser1.getRole());
     }
-
-
 
 
 }
