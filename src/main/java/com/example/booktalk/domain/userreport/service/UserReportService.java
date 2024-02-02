@@ -26,7 +26,7 @@ public class UserReportService {
     public UserReportCreateRes createUserReport(UserReportCreateReq req, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
-        User reportedUser = userRepository.findUserByReportedIdWithThrow(req.reportedUserId());
+        User reportedUser = userRepository.findUserByIdWithNotCache(req.reportedUserId());
 
         if (user.getId().equals(reportedUser.getId())) {
             throw new NotPermissionSelfReportException(

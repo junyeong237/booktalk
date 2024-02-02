@@ -27,9 +27,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
     }
 
-    @CacheEvict(value = "user", key = "#reportedId")
-    default User findUserByReportedIdWithThrow(Long reportedId) {
-        return findById(reportedId).orElseThrow(() ->
+    @CacheEvict(value = "user", key = "#userId")
+    default User findUserByIdWithNotCache(Long userId) {
+        return findById(userId).orElseThrow(() ->
             new NotFoundUserException(UserErrorCode.NOT_FOUND_USER));
 
     }

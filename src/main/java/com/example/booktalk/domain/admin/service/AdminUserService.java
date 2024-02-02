@@ -11,7 +11,6 @@ import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +31,8 @@ public class AdminUserService {
             ).toList();
     }
 
-    @CacheEvict(value = "user", key = "#userId")
     public UserBlockRes createUserBlock(Long myUserId, Long userId) {
-        User user = userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithNotCache(userId);
         if (Objects.equals(myUserId, userId)) {
             throw new NotBlockSelfException(UserErrorCode.FORBIDDEN_NOT_BLOCK_SELF);
         }
@@ -48,7 +46,7 @@ public class AdminUserService {
     }
 
     public UserUnblockRes createUserUnBlock(Long userId) {
-        User user = userRepository.findUserByIdWithThrow(userId);
+        User user = userRepository.findUserByIdWithNotCache(userId);
         UserRoleType role = UserRoleType.USER;
         user.updateRole(role);
 
