@@ -16,14 +16,7 @@ import com.example.booktalk.domain.user.dto.response.UserSignupRes;
 import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.entity.UserRoleType;
-import com.example.booktalk.domain.user.exception.AlreadyExistEmailException;
-import com.example.booktalk.domain.user.exception.BadLoginException;
-import com.example.booktalk.domain.user.exception.BlockedUserException;
-import com.example.booktalk.domain.user.exception.ForbiddenAccessProfileException;
-import com.example.booktalk.domain.user.exception.InvalidAdminCodeException;
-import com.example.booktalk.domain.user.exception.InvalidPasswordCheckException;
-import com.example.booktalk.domain.user.exception.NicknameDuplicateExcpetion;
-import com.example.booktalk.domain.user.exception.UserErrorCode;
+import com.example.booktalk.domain.user.exception.*;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import com.example.booktalk.global.jwt.JwtUtil;
 import com.example.booktalk.global.redis.RefreshTokenService;
@@ -135,6 +128,10 @@ public class UserService {
     public UserProfileGetRes getProfile(Long userId) {
         User user = userRepository.findUserByIdWithThrow(userId);
 
+        if (user.isDeleted()) {
+            throw new WithdrawCheckException(UserErrorCode.WITHDRAWN_USER);
+        }
+
         Long id = user.getId();
         String nickname = user.getNickname();
         String description = user.getDescription();
@@ -204,5 +201,13 @@ public class UserService {
         }
         user.updatePassword(newPassword);
         return new UserPWUpdateRes("비밀번호 변경 완료");
+    }
+
+    public void UserWithdrawCheck(Long userId){
+        User user = userRepository.findUserByIdWithThrow(userId);
+
+        if (user.isDeleted()) {
+            throw new WithdrawCheckException(UserErrorCode.WITHDRAWN_USER);
+        }
     }
 }

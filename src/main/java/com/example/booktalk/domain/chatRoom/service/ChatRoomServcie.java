@@ -12,6 +12,8 @@ import com.example.booktalk.domain.user.dto.response.UserRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
 import java.util.List;
+
+import com.example.booktalk.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,12 @@ public class ChatRoomServcie {
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
 
     public ChatRoomCreateRes createChatRoom(Long userId, ChatRoomCreateReq req) {
+        userService.UserWithdrawCheck(req.receiverId());
+
         User receiver = userRepository.findUserByIdWithThrow(req.receiverId());
         User sender = userRepository.findUserByIdWithThrow(userId);
 
