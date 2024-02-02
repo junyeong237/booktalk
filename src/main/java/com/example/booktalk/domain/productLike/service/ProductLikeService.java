@@ -27,7 +27,7 @@ public class ProductLikeService {
     private final ProductLikeRepository productLikeRepository;
     private final UserRepository userRepository;
     private final ImageFileService imageFileService;
-    
+
     public ProductLikeSwitchRes switchProductLike(Long productId, Long userId) {
 
         User user = userRepository.findUserByIdWithThrow(userId);
@@ -66,6 +66,9 @@ public class ProductLikeService {
         for (ProductLike productLike : productLikeList) {
             Product product = productRepository.findProductByIdWithThrow(
                 productLike.getProduct().getId());
+            if (product.getDeleted()) {
+                continue;
+            }
             likedProducts.add(product);
         }
 
