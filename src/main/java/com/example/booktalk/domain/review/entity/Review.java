@@ -5,6 +5,7 @@ import com.example.booktalk.domain.comment.entity.Comment;
 import com.example.booktalk.domain.common.BaseEntity;
 import com.example.booktalk.domain.product.entity.Product;
 import com.example.booktalk.domain.review.dto.request.ReviewUpdateReq;
+import com.example.booktalk.domain.reviewlike.entity.ReviewLike;
 import com.example.booktalk.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,9 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
+    private List<ReviewLike> reviewLikeList = new ArrayList<>();
 
     @Column
     private String reviewImagePathUrl;
