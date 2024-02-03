@@ -150,6 +150,7 @@ public class UserService {
             profileImagePathUrl);
     }
 
+
     public UserProfileUpdateRes updateProfile(Long userId, UserProfileReq req,
         Long userDetailsId, MultipartFile file) throws IOException {
         String description = req.description();
