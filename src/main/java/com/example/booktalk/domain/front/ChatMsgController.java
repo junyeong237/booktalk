@@ -1,5 +1,6 @@
 package com.example.booktalk.domain.front;
 
+import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.global.security.UserDetailsImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ public class ChatMsgController {
     public String chatPage(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long roomId, Model model) {
         model.addAttribute("roomId", roomId);
+        User user1 = userDetails.getUser();
         model.addAttribute("username", userDetails.getUser().getNickname());
         return "chat";
     }
