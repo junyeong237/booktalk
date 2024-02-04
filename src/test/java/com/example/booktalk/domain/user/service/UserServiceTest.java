@@ -4,24 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.data.util.ReflectionUtils.setField;
 
 import com.example.booktalk.domain.imageFile.service.ImageFileService;
 import com.example.booktalk.domain.user.dto.request.UserLoginReq;
 import com.example.booktalk.domain.user.dto.request.UserPWUpdateReq;
 import com.example.booktalk.domain.user.dto.request.UserProfileReq;
 import com.example.booktalk.domain.user.dto.request.UserSignupReq;
-import com.example.booktalk.domain.user.dto.request.UserWithdrawReq;
 import com.example.booktalk.domain.user.dto.response.UserLoginRes;
 import com.example.booktalk.domain.user.dto.response.UserPWUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileGetRes;
 import com.example.booktalk.domain.user.dto.response.UserProfileUpdateRes;
 import com.example.booktalk.domain.user.dto.response.UserSignupRes;
-import com.example.booktalk.domain.user.dto.response.UserWithdrawRes;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.exception.UserErrorCode;
 import com.example.booktalk.domain.user.repository.UserRepository;
@@ -32,7 +28,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +39,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
-import java.lang.reflect.Field;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -189,111 +183,85 @@ class UserServiceTest {
             assertNotNull(res.location());
         }
 
-//        @Test
-//        void 프로필_수정() throws IOException {
-//            // given
-//            Long userId = 2L;
-//            Long userDetailsId = 2L;
-//            UserProfileReq req = new UserProfileReq(
-//                "password",
-//                "nickname",
-//                "location",
-//                "description",
-//                "phone"
-//            );
-//            MultipartFile file = new MockMultipartFile(
-//                "name",
-//                "UrlPath".getBytes()
-//            );
-//
-//            given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
-//            given(passwordEncoder.matches(req.password(), user.getPassword())).willReturn(true);
-//
-//            // when
-//            UserProfileUpdateRes res = userService.updateProfile(userId, req, userDetailsId, file);
-//
-//            // then
-//            assertThat(res.description()).isEqualTo(user.getDescription());
-//            assertThat(res.nickname()).isEqualTo(user.getNickname());
-//            assertThat(res.location()).isEqualTo(user.getLocation());
-//            assertThat(res.phone()).isEqualTo(user.getPhone());
-//        }
-//
-//        @Test
-//        void 프로필_수정_실패_비밀번호불일치() {
-//            // given
-//            Long userId = 2L;
-//            Long userDetailsId = 2L;
-//            UserProfileReq req = new UserProfileReq(
-//                "Password",
-//                "newNickname",
-//                "newLocation",
-//                "newDescription",
-//                "newPhone"
-//            );
-//            MultipartFile file = new MockMultipartFile(
-//                "name",
-//                "UrlPath".getBytes()
-//            );
-//            given(userRepository.findUserByIdWithThrow(userId)).willReturn(user);
-//
-//            //when
-//            GlobalException exception = assertThrows(GlobalException.class, () -> {
-//                userService.updateProfile(userId, req, userDetailsId, file);
-//            });
-//
-//            //then
-//            assertEquals(UserErrorCode.NOT_MATCH_PASSWORD,
-//                exception.getErrorCode());
-//        }
-//    }
-
-    @Nested
-    class 비밀번호_변경_테스트 {
-
         @Test
-        void 비밀번호_변경_성공() {
-            //given
-            Long userId = 1L;
-            Long userDetailsId =1L;
-            UserPWUpdateReq req = new UserPWUpdateReq(
-                "password",
-                "newPassword",
-                "newPassword"
+        void 프로필_수정() throws IOException {
+            // given
+            Long userId = 2L;
+            Long userDetailsId = 2L;
+            UserProfileReq req = new UserProfileReq(
+                "nickname",
+                "location",
+                "description",
+                "phone"
             );
-            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user1);
-            given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(true);
-            given(passwordEncoder.encode(req.newPassword())).willReturn(req.newPasswordCheck());
-            given(passwordEncoder.matches(req.newPasswordCheck(), req.newPassword())).willReturn(true);
+            MultipartFile file = new MockMultipartFile(
+                "name",
+                "UrlPath".getBytes()
+            );
 
-            //when
-            UserPWUpdateRes res = userService.passwordUpdate(req,userId);
+            given(userRepository.findUserByIdWithNotCache(userId)).willReturn(user);
 
-            //then
-            assertThat(req.newPassword()).isEqualTo(user1.getPassword());
+            // when
+            UserProfileUpdateRes res = userService.updateProfile(userId, req, userDetailsId, file);
+
+            // then
+            assertThat(res.description()).isEqualTo(user.getDescription());
+            assertThat(res.nickname()).isEqualTo(user.getNickname());
+            assertThat(res.location()).isEqualTo(user.getLocation());
+            assertThat(res.phone()).isEqualTo(user.getPhone());
         }
 
-        @Test
-        void 비밀번호_변경_실패() {
-            //given
-            Long userDetailsId =1L;
-            UserPWUpdateReq req = new UserPWUpdateReq(
-                "password",
-                "newPassword",
-                "newPassword"
-            );
-            given(userRepository.findUserByIdWithThrow(userDetailsId)).willReturn(user1);
-            given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(true);
-            given(passwordEncoder.encode(req.newPassword())).willReturn("wrongPassword");
+        @Nested
+        class 비밀번호_변경_테스트 {
 
-            //when
-            GlobalException exception = assertThrows(GlobalException.class, () -> {
-                userService.passwordUpdate(req,userDetailsId);
-            });
+            @Test
+            void 비밀번호_변경_성공() {
+                //given
+                Long userId = 1L;
+                Long userDetailsId = 1L;
+                UserPWUpdateReq req = new UserPWUpdateReq(
+                    "password",
+                    "newPassword",
+                    "newPassword"
+                );
+                given(userRepository.findUserByIdWithNotCache(userDetailsId)).willReturn(user1);
+                given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(
+                    true);
+                given(passwordEncoder.encode(req.newPassword())).willReturn(req.newPasswordCheck());
+                given(
+                    passwordEncoder.matches(req.newPasswordCheck(), req.newPassword())).willReturn(
+                    true);
 
-            //then
-            assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
-                exception.getErrorCode());
+                //when
+                UserPWUpdateRes res = userService.passwordUpdate(req, userId);
+
+                //then
+                assertThat(req.newPassword()).isEqualTo(user1.getPassword());
+            }
+
+            @Test
+            void 비밀번호_변경_실패() {
+                //given
+                Long userDetailsId = 1L;
+                UserPWUpdateReq req = new UserPWUpdateReq(
+                    "password",
+                    "newPassword",
+                    "newPassword"
+                );
+                given(userRepository.findUserByIdWithNotCache(userDetailsId)).willReturn(user1);
+                given(passwordEncoder.matches(req.password(), user1.getPassword())).willReturn(
+                    true);
+                given(passwordEncoder.encode(req.newPassword())).willReturn("wrongPassword");
+
+                //when
+                GlobalException exception = assertThrows(GlobalException.class, () -> {
+                    userService.passwordUpdate(req, userDetailsId);
+                });
+
+                //then
+                assertEquals(UserErrorCode.INVALID_PASSWORD_CHECK,
+                    exception.getErrorCode());
+            }
         }
     }
-}}
+}
