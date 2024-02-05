@@ -9,6 +9,8 @@ import com.example.booktalk.domain.chatRoom.entity.ChatRoom;
 import com.example.booktalk.domain.chatRoom.repository.ChatRoomRepository;
 import com.example.booktalk.domain.user.entity.User;
 import com.example.booktalk.domain.user.repository.UserRepository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -53,6 +55,17 @@ public class ChatService {
                 chat -> new ChatListRes(chat.getId(), chat.getSender().getNickname(), chat.getContent(),
                     chat.getCreatedAt()))
             .toList();
+    }
+
+    public void deleteChat() {
+        // 현재 시간 기준으로 3일 이전의 시간을 계산합니다.
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+
+        // 3일 이전의 시간보다 이전에 생성된 채팅을 모두 가져옵니다.
+        List<Chat> chatsToDelete = chatRepository.findByCreatedAtBefore(threeDaysAgo);
+
+        // 가져온 채팅을 모두 삭제합니다.
+        chatRepository.deleteAll(chatsToDelete);
     }
 
 
