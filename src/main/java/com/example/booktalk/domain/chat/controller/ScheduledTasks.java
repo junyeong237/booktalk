@@ -1,10 +1,13 @@
 package com.example.booktalk.domain.chat.controller;
 
+import com.example.booktalk.domain.chat.repository.ChatRepository;
 import com.example.booktalk.domain.chat.service.ChatService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -17,5 +20,6 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 60*1000*60*24*3)
     public void deleteChatPeriodically() {
         chatService.deleteChat();
+
     }
 }

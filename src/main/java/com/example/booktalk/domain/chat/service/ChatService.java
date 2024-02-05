@@ -62,10 +62,7 @@ public class ChatService {
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
 
         // 3일 이전의 시간보다 이전에 생성된 채팅을 모두 가져옵니다.
-        List<Chat> chatsToDelete = chatRepository.findByCreatedAtBefore(threeDaysAgo);
-
-        // 가져온 채팅을 모두 삭제합니다.
-        chatRepository.deleteAll(chatsToDelete);
+        chatRepository.deleteOldChats(threeDaysAgo);
     }
 
 
