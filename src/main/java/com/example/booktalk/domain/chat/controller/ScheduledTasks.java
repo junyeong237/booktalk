@@ -16,8 +16,8 @@ public class ScheduledTasks {
 
     private final ChatService chatService;
 
-    // 3일 마다 deleteChat 메서드를 실행합니다.
-    @Scheduled(fixedRate = 60*1000*60*24*3)
+    // 자정마다 deleteChat 메서드를 실행합니다.
+    @Scheduled(cron = "0 0 0 * * *")
     public void deleteChatPeriodically() {
         chatService.deleteChat();
 
