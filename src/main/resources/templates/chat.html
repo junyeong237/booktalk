@@ -118,7 +118,6 @@
 
 
   function connect(roomId, username) {
-
     var socket = new SockJS('/chat');
     //var socket = new SockJS('http://' + window.location.host + '/chat');
     stompClient = Stomp.over(socket);
@@ -136,6 +135,7 @@
       stompClient.send("/app/" + roomId + "/enter", {},
           JSON.stringify({'message': $("#message-input").val()}));
     });
+
   }
 
   function sendMessage() {
