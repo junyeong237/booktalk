@@ -47,6 +47,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         List<Product> productList = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
+            .distinct()
             .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
@@ -80,10 +81,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     pathBuilder.get(order.getProperty(), Comparable.class)));
             }
         }
+
         long total = query.fetch().size();
         List<Product> productList = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
+            .distinct()
             .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
