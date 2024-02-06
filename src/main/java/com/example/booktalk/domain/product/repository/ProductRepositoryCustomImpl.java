@@ -13,9 +13,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -49,8 +49,15 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .limit(pageable.getPageSize())
             .fetch();
 
-        return PageableExecutionUtils.getPage(productList, pageable,
-            () -> query.fetchCount());
+        JPAQuery<Long> countQuery = jpaQueryFactory
+            .selectFrom(product)
+            .where(product.deleted.eq(false))
+            .where(product.name.contains(search))
+            .select(product.countDistinct());
+
+        long count = countQuery.fetchFirst() != null ? countQuery.fetchFirst() : 0L;
+
+        return new PageImpl<>(productList, pageable, count);
     }
 
     @Override
@@ -73,16 +80,23 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     pathBuilder.get(order.getProperty(), Comparable.class)));
             }
         }
-
+        long total = query.fetch().size();
         List<Product> productList = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
+        JPAQuery<Long> countQuery = jpaQueryFactory
+            .select(product)
+            .from(product)
+            .leftJoin(product.productCategoryList, productCategory)
+            .where(product.deleted.eq(false))
+            .where(hasTag(tag))
+            .select(product.countDistinct());
 
-        //distinct() !
-        return PageableExecutionUtils.getPage(productList, pageable,
-            () -> query.distinct().fetchCount());
+        long count = countQuery.fetchFirst() != null ? countQuery.fetchFirst() : 0L;
+
+        return new PageImpl<>(productList, pageable, count);
     }
 
     private BooleanExpression hasTag(String tagName) {
