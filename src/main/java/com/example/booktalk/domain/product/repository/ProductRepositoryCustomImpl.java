@@ -50,10 +50,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
-            .selectFrom(product)
+            .select(product.countDistinct())
+            .from(product)
             .where(product.deleted.eq(false))
-            .where(product.name.contains(search))
-            .select(product.countDistinct());
+            .where(product.name.contains(search));
 
         long count = countQuery.fetchFirst() != null ? countQuery.fetchFirst() : 0L;
 
@@ -87,12 +87,11 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
-            .select(product)
+            .select(product.countDistinct())
             .from(product)
             .leftJoin(product.productCategoryList, productCategory)
             .where(product.deleted.eq(false))
-            .where(hasTag(tag))
-            .select(product.countDistinct());
+            .where(hasTag(tag));
 
         long count = countQuery.fetchFirst() != null ? countQuery.fetchFirst() : 0L;
 
