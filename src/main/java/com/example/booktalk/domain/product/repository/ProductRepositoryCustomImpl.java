@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -47,6 +48,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         List<Product> productList = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
+            .distinct()
             .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory
@@ -80,20 +82,13 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     pathBuilder.get(order.getProperty(), Comparable.class)));
             }
         }
-        long total = query.fetch().size();
-        List<Product> productList = query
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
 
-        JPAQuery<Long> countQuery = jpaQueryFactory
-            .select(product.countDistinct())
-            .from(product)
-            .leftJoin(product.productCategoryList, productCategory)
-            .where(product.deleted.eq(false))
-            .where(hasTag(tag));
+        List<Long> productIds = getProductIds(query);
 
-        long count = countQuery.fetchFirst() != null ? countQuery.fetchFirst() : 0L;
+// 가져온 id들을 기반으로 다시 해당 product들을 조회합니다.
+        List<Product> productList = getProductsPageByIds(productIds, pageable);
+
+        long count = productIds.size();
 
         return new PageImpl<>(productList, pageable, count);
     }
@@ -103,4 +98,25 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             .category.name.eq(tagName);
     }
 
+    // 처음에 쿼리를 실행하여 결과로 나온 Product의 id들을 가져오는 메서드
+    private List<Long> getProductIds(JPAQuery<Product> query) {
+        // 쿼리 실행 후 결과로 나온 Product 엔티티의 id를 리스트로 변환하여 반환
+        return query
+            .fetch()
+            .stream()
+            .map(Product::getId)
+            .collect(Collectors.toList());
+    }
+
+    // getProductIds() 메서드를 사용하여 다시 product를 조회하는 메서드
+    private List<Product> getProductsPageByIds(List<Long> productIds, Pageable pageable) {
+        // productIds에 해당하는 Product 엔티티들을 조회하여 리스트로 반환
+        return jpaQueryFactory
+            .selectFrom(product)
+            .where(product.id.in(productIds))
+            .distinct()
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+    }
 }
